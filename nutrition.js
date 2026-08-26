@@ -1,13 +1,13 @@
 /* =====================================================
-   MY TRANSFORMATION — NUTRITION.JS
-   Motore nutrizionale — V1
+   MY TRANSFORMATION
+   NUTRITION ENGINE
 ===================================================== */
 
-const NUTRITION_STORAGE_KEY = "myTransformationNutrition";
+const NUTRITION_KEY = "myTransformationNutrition";
 
 
 /* =====================================================
-   LETTURA PROFILO
+   PROFILO
 ===================================================== */
 
 function getNutritionProfile() {
@@ -16,22 +16,31 @@ function getNutritionProfile() {
         "myTransformationProfile"
     );
 
-    if (!data) return null;
+    if (!data) {
+        return null;
+    }
 
     try {
         return JSON.parse(data);
-    } catch {
+    } catch (error) {
+        console.error(
+            "Errore profilo nutrizionale:",
+            error
+        );
         return null;
     }
 }
 
 
 /* =====================================================
-   CALCOLO BMR
-   Mifflin-St Jeor
+   BMR — MIFFLIN ST JEOR
 ===================================================== */
 
 function calculateBMR(profile) {
+
+    if (!profile) {
+        return null;
+    }
 
     const weight = Number(profile.weight);
     const height = Number(profile.height);
@@ -45,43 +54,31 @@ function calculateBMR(profile) {
         return null;
     }
 
-    let bmr;
-
     if (profile.sex === "male") {
 
-        bmr =
+        return Math.round(
             (10 * weight) +
             (6.25 * height) -
             (5 * age) +
-            5;
-
-    } else {
-
-        bmr =
-            (10 * weight) +
-            (6.25 * height) -
-            (5 * age) -
-            161;
+            5
+        );
 
     }
 
-    return Math.round(bmr);
+    return Math.round(
+        (10 * weight) +
+        (6.25 * height) -
+        (5 * age) -
+        161
+    );
 }
 
 
 /* =====================================================
-   FATTORE ATTIVITÀ
+   ATTIVITÀ
 ===================================================== */
 
 function getActivityMultiplier(profile) {
-
-    /*
-       Per ora utilizziamo il volume di allenamento
-       come stima iniziale.
-
-       In una fase successiva aggiungeremo anche
-       l'attività quotidiana reale.
-    */
 
     const days =
         Number(profile.trainingDays);
@@ -108,7 +105,7 @@ function getActivityMultiplier(profile) {
 
 
 /* =====================================================
-   CALCOLO TDEE
+   TDEE
 ===================================================== */
 
 function calculateTDEE(profile) {
@@ -116,13 +113,13 @@ function calculateTDEE(profile) {
     const bmr =
         calculateBMR(profile);
 
-    if (!bmr) return null;
-
-    const multiplier =
-        getActivityMultiplier(profile);
+    if (!bmr) {
+        return null;
+    }
 
     return Math.round(
-        bmr * multiplier
+        bmr *
+        getActivityMultiplier(profile)
     );
 }
 
@@ -131,53 +128,53 @@ function calculateTDEE(profile) {
    CALORIE TARGET
 ===================================================== */
 
-function calculateCalorieTarget(profile) {
+function calculateCalories(profile) {
 
     const tdee =
         calculateTDEE(profile);
 
-    if (!tdee) return null;
+    if (!tdee) {
+        return null;
+    }
 
-    let deficit = 0;
+    let factor = 1;
 
-    /*
-       L'obiettivo non è creare un deficit estremo.
-       Partiamo in modo conservativo e poi
-       adattiamo in base ai progressi reali.
-    */
 
     switch (profile.goal) {
 
         case "fatloss":
-            deficit = 0.15;
+            factor = 0.85;
             break;
 
         case "definition":
-            deficit = 0.15;
+            factor = 0.85;
             break;
 
         case "recomp":
-            deficit = 0.08;
+            factor = 0.92;
             break;
 
         case "muscle":
-            deficit = -0.05;
+            factor = 1.05;
             break;
 
         default:
-            deficit = 0;
+            factor = 1;
+
     }
 
 
-    const calories =
-        Math.round(
-            tdee * (1 - deficit)
-        );
+    /*
+       Limite prudenziale.
+       Il sistema verrà raffinato successivamente
+       con peso, andamento e feedback.
+    */
 
-
-    return Math.max(
-        calories,
-        1400
+    return Math.round(
+        Math.max(
+            1400,
+            tdee * factor
+        )
     );
 }
 
@@ -195,15 +192,8 @@ function calculateProtein(profile) {
         return null;
     }
 
-
-    /*
-       Target iniziale elevato ma ragionevole
-       per preservare la massa muscolare
-       durante la perdita di grasso.
-    */
-
     return Math.round(
-        weight * 2.0
+        weight * 2
     );
 }
 
@@ -220,7 +210,6 @@ function calculateFat(profile) {
     if (!Number.isFinite(weight)) {
         return null;
     }
-
 
     return Math.round(
         weight * 0.8
@@ -253,7 +242,7 @@ function calculateCarbs(
     const fatCalories =
         fat * 9;
 
-    const remainingCalories =
+    const remaining =
         calories -
         proteinCalories -
         fatCalories;
@@ -262,14 +251,14 @@ function calculateCarbs(
     return Math.max(
         0,
         Math.round(
-            remainingCalories / 4
+            remaining / 4
         )
     );
 }
 
 
 /* =====================================================
-   CREA TARGET NUTRIZIONALE
+   CREA TARGET
 ===================================================== */
 
 function generateNutritionTarget(profile) {
@@ -286,7 +275,7 @@ function generateNutritionTarget(profile) {
         calculateTDEE(profile);
 
     const calories =
-        calculateCalorieTarget(profile);
+        calculateCalories(profile);
 
     const protein =
         calculateProtein(profile);
@@ -304,17 +293,17 @@ function generateNutritionTarget(profile) {
 
     return {
 
-        bmr,
+        bmr: bmr,
 
-        tdee,
+        tdee: tdee,
 
-        calories,
+        calories: calories,
 
-        protein,
+        protein: protein,
 
-        carbs,
+        carbs: carbs,
 
-        fat,
+        fat: fat,
 
         meals:
             Number(profile.meals),
@@ -332,38 +321,46 @@ function generateNutritionTarget(profile) {
 
 function saveNutritionTarget(target) {
 
-    if (!target) return;
+    if (!target) {
+        return;
+    }
 
     localStorage.setItem(
-        NUTRITION_STORAGE_KEY,
+        NUTRITION_KEY,
         JSON.stringify(target)
     );
 }
 
 
 /* =====================================================
-   RECUPERA TARGET
+   LEGGE TARGET
 ===================================================== */
 
 function getNutritionTarget() {
 
     const data =
         localStorage.getItem(
-            NUTRITION_STORAGE_KEY
+            NUTRITION_KEY
         );
 
 
-    if (!data) return null;
+    if (!data) {
+        return null;
+    }
 
 
     try {
 
         return JSON.parse(data);
 
-    } catch {
+    } catch (error) {
+
+        console.error(
+            "Errore target nutrizionale:",
+            error
+        );
 
         return null;
-
     }
 }
 
@@ -372,7 +369,7 @@ function getNutritionTarget() {
    AGGIORNA TARGET
 ===================================================== */
 
-function updateNutritionTarget() {
+function refreshNutrition() {
 
     const profile =
         getNutritionProfile();
@@ -399,10 +396,10 @@ function updateNutritionTarget() {
 
 
 /* =====================================================
-   DISTRIBUZIONE PASTI
+   DISTRIBUZIONE DEI PASTI
 ===================================================== */
 
-function calculateMealDistribution(
+function getMealDistribution(
     target
 ) {
 
@@ -415,81 +412,102 @@ function calculateMealDistribution(
         Number(target.meals);
 
 
-    /*
-       Distribuzione iniziale.
-       In seguito la renderemo intelligente
-       in base a orari e preferenze.
-    */
-
     let percentages;
 
 
-    if (meals === 2) {
+    switch (meals) {
 
-        percentages = [
-            0.45,
-            0.55
-        ];
+        case 2:
 
-    } else if (meals === 3) {
+            percentages = [
+                0.45,
+                0.55
+            ];
 
-        percentages = [
-            0.30,
-            0.35,
-            0.35
-        ];
+            break;
 
-    } else if (meals === 4) {
 
-        percentages = [
-            0.25,
-            0.30,
-            0.20,
-            0.25
-        ];
+        case 3:
 
-    } else {
+            percentages = [
+                0.30,
+                0.35,
+                0.35
+            ];
 
-        percentages = [
-            0.20,
-            0.25,
-            0.15,
-            0.20,
-            0.20
-        ];
+            break;
+
+
+        case 4:
+
+            percentages = [
+                0.25,
+                0.30,
+                0.20,
+                0.25
+            ];
+
+            break;
+
+
+        case 5:
+
+            percentages = [
+                0.20,
+                0.25,
+                0.15,
+                0.20,
+                0.20
+            ];
+
+            break;
+
+
+        default:
+
+            percentages = [
+                0.30,
+                0.35,
+                0.35
+            ];
 
     }
 
 
     return percentages.map(
-        percentage => ({
+        percentage => {
 
-            calories:
-                Math.round(
-                    target.calories *
-                    percentage
-                ),
+            return {
 
-            protein:
-                Math.round(
-                    target.protein *
-                    percentage
-                ),
+                calories:
+                    Math.round(
+                        target.calories *
+                        percentage
+                    ),
 
-            carbs:
-                Math.round(
-                    target.carbs *
-                    percentage
-                ),
+                protein:
+                    Math.round(
+                        target.protein *
+                        percentage
+                    ),
 
-            fat:
-                Math.round(
-                    target.fat *
-                    percentage
-                )
+                carbs:
+                    Math.round(
+                        target.carbs *
+                        percentage
+                    ),
 
-        })
+                fat:
+                    Math.round(
+                        target.fat *
+                        percentage
+                    )
+
+            };
+
+        }
     );
+
 }
 
 
@@ -508,19 +526,7 @@ function initializeNutrition() {
     }
 
 
-    const target =
-        generateNutritionTarget(
-            profile
-        );
-
-
-    if (target) {
-
-        saveNutritionTarget(
-            target
-        );
-
-    }
+    refreshNutrition();
 
 }
 
