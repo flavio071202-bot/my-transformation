@@ -22,7 +22,6 @@
     --border: #29292f;
     --text: #f5f5f5;
     --muted: #92929a;
-    --accent: #ffffff;
     --success: #35d07f;
     --danger: #ff5c5c;
 }
@@ -33,12 +32,13 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
                  "Helvetica Neue", Arial, sans-serif;
     min-height: 100vh;
-    padding-bottom: 90px;
+    padding-bottom: 100px;
 }
 
 button,
 input,
-select {
+select,
+textarea {
     font: inherit;
 }
 
@@ -46,13 +46,135 @@ button {
     cursor: pointer;
 }
 
+.hidden {
+    display: none !important;
+}
+
+/* =========================
+   SETUP
+========================= */
+
+.setup {
+    min-height: 100vh;
+    padding: 35px 20px 40px;
+    max-width: 600px;
+    margin: auto;
+}
+
+.setup-logo {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 55px;
+}
+
+.setup-logo span {
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.setup-step {
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+}
+
+.setup h1 {
+    font-size: 38px;
+    line-height: 1.03;
+    letter-spacing: -1.7px;
+    margin-bottom: 12px;
+}
+
+.setup-intro {
+    color: var(--muted);
+    line-height: 1.5;
+    font-size: 15px;
+    margin-bottom: 30px;
+}
+
+.setup-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    color: white;
+    border-radius: 14px;
+    padding: 14px;
+    outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #66666d;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+select option {
+    background: #151518;
+    color: white;
+}
+
+.primary {
+    width: 100%;
+    border: none;
+    background: white;
+    color: black;
+    border-radius: 15px;
+    padding: 15px;
+    font-weight: 800;
+    margin-top: 22px;
+}
+
+.secondary {
+    width: 100%;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: white;
+    border-radius: 15px;
+    padding: 14px;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+/* =========================
+   APP
+========================= */
+
 .app {
     max-width: 600px;
     margin: auto;
-    padding: 24px 18px 100px;
+    padding: 24px 18px 110px;
 }
-
-/* HEADER */
 
 .header {
     display: flex;
@@ -64,7 +186,6 @@ button {
 .logo {
     font-size: 20px;
     font-weight: 800;
-    letter-spacing: -0.5px;
 }
 
 .logo span {
@@ -73,8 +194,8 @@ button {
 }
 
 .settings {
-    width: 42px;
-    height: 42px;
+    width: 43px;
+    height: 43px;
     border-radius: 50%;
     background: var(--card);
     border: 1px solid var(--border);
@@ -82,18 +203,16 @@ button {
     font-size: 18px;
 }
 
-/* HERO */
-
 .hero {
     margin-bottom: 24px;
 }
 
 .hero-label {
     color: var(--muted);
-    font-size: 13px;
+    font-size: 12px;
     text-transform: uppercase;
-    letter-spacing: 1.4px;
-    margin-bottom: 7px;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
 }
 
 .hero h1 {
@@ -106,9 +225,8 @@ button {
 .hero p {
     color: var(--muted);
     font-size: 14px;
+    line-height: 1.45;
 }
-
-/* PROGRESS */
 
 .progress-card {
     background: var(--card);
@@ -127,7 +245,7 @@ button {
 
 .progress-title {
     color: var(--muted);
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .progress-value {
@@ -144,12 +262,10 @@ button {
 
 .progress-fill {
     height: 100%;
-    width: 8%;
+    width: 0%;
     background: white;
     border-radius: 20px;
 }
-
-/* GRID */
 
 .grid {
     display: grid;
@@ -167,12 +283,12 @@ button {
 
 .stat-label {
     color: var(--muted);
-    font-size: 12px;
+    font-size: 11px;
     margin-bottom: 8px;
 }
 
 .stat-value {
-    font-size: 25px;
+    font-size: 24px;
     font-weight: 800;
 }
 
@@ -181,8 +297,6 @@ button {
     font-size: 11px;
     margin-top: 4px;
 }
-
-/* SECTION */
 
 .section {
     margin-top: 26px;
@@ -200,14 +314,8 @@ button {
     font-weight: 750;
 }
 
-.section-link {
-    color: var(--muted);
-    font-size: 13px;
-}
-
-/* TODAY */
-
-.today-card {
+.today-card,
+.list-card {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 22px;
@@ -232,8 +340,8 @@ button {
     border-radius: 14px;
     background: var(--card2);
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     font-size: 19px;
 }
 
@@ -253,8 +361,8 @@ button {
 }
 
 .check {
-    width: 26px;
-    height: 26px;
+    width: 27px;
+    height: 27px;
     border: 1px solid #44444a;
     border-radius: 50%;
     background: transparent;
@@ -266,8 +374,6 @@ button {
     border-color: var(--success);
     color: #07130c;
 }
-
-/* COACH */
 
 .coach-card {
     background: linear-gradient(145deg, #19191d, #101012);
@@ -290,7 +396,32 @@ button {
     font-weight: 600;
 }
 
-/* NAV */
+.list-row {
+    padding: 17px;
+    border-bottom: 1px solid var(--border);
+}
+
+.list-row:last-child {
+    border-bottom: none;
+}
+
+.list-row strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.list-row span {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+}
 
 .nav {
     position: fixed;
@@ -329,92 +460,20 @@ button {
     margin-bottom: 3px;
 }
 
-/* SCREENS */
-
-.screen {
-    display: none;
-}
-
-.screen.active {
-    display: block;
-}
-
-/* FORM */
-
-.form-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 22px;
-    padding: 20px;
-    margin-bottom: 14px;
-}
-
-.form-group {
-    margin-bottom: 17px;
-}
-
-.form-group:last-child {
-    margin-bottom: 0;
-}
-
-.form-group label {
-    display: block;
+.profile-info {
     color: var(--muted);
-    font-size: 12px;
-    margin-bottom: 7px;
+    font-size: 13px;
+    line-height: 1.6;
 }
 
-.form-group input,
-.form-group select {
-    width: 100%;
-    background: var(--card2);
-    border: 1px solid var(--border);
-    color: white;
-    border-radius: 13px;
-    padding: 13px;
-    outline: none;
+.danger {
+    color: var(--danger);
+    border-color: rgba(255,92,92,.3);
 }
 
-.primary {
-    width: 100%;
-    border: none;
-    background: white;
-    color: black;
-    border-radius: 14px;
-    padding: 14px;
-    font-weight: 750;
-    margin-top: 10px;
-}
-
-/* LIST */
-
-.list-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 22px;
-    overflow: hidden;
-}
-
-.list-row {
-    padding: 17px;
-    border-bottom: 1px solid var(--border);
-}
-
-.list-row:last-child {
-    border-bottom: none;
-}
-
-.list-row strong {
-    display: block;
-    margin-bottom: 5px;
-}
-
-.list-row span {
-    color: var(--muted);
-    font-size: 12px;
-}
-
-/* DESKTOP */
+/* =========================
+   RESPONSIVE
+========================= */
 
 @media (min-width: 700px) {
     .app {
@@ -426,12 +485,157 @@ button {
 
 <body>
 
+<!-- =========================
+     CONFIGURAZIONE INIZIALE
+========================= -->
+
+<div id="setupScreen" class="setup hidden">
+
+    <div class="setup-logo">
+        MY <span>TRANSFORMATION</span>
+    </div>
+
+    <div class="setup-step">Configurazione iniziale</div>
+
+    <h1>Costruiamo il tuo percorso.</h1>
+
+    <p class="setup-intro">
+        Prima di iniziare dobbiamo conoscere il tuo punto di partenza.
+        Inserisci i tuoi dati reali. Il piano verrà costruito successivamente
+        sulla base del tuo profilo.
+    </p>
+
+    <div class="setup-card">
+
+        <div class="form-group">
+            <label>ETÀ</label>
+            <input id="setupAge" type="number" min="13" max="100"
+                   placeholder="es. 25">
+        </div>
+
+        <div class="form-group">
+            <label>SESSO</label>
+            <select id="setupSex">
+                <option value="">Seleziona</option>
+                <option value="male">Uomo</option>
+                <option value="female">Donna</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>ALTEZZA (CM)</label>
+            <input id="setupHeight" type="number"
+                   placeholder="es. 175">
+        </div>
+
+        <div class="form-group">
+            <label>PESO ATTUALE (KG)</label>
+            <input id="setupWeight" type="number" step="0.1"
+                   placeholder="es. 70">
+        </div>
+
+        <div class="form-group">
+            <label>OBIETTIVO PRINCIPALE</label>
+            <select id="setupGoal">
+                <option value="">Seleziona</option>
+                <option value="fatloss">Perdere grasso</option>
+                <option value="recomp">Ricomporsi</option>
+                <option value="muscle">Aumentare massa muscolare</option>
+                <option value="definition">Definizione</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>ALLENAMENTI A SETTIMANA</label>
+            <select id="setupTrainingDays">
+                <option value="">Seleziona</option>
+                <option value="2">2 giorni</option>
+                <option value="3">3 giorni</option>
+                <option value="4">4 giorni</option>
+                <option value="5">5 giorni</option>
+                <option value="6">6 giorni</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>DURATA DELL'ALLENAMENTO</label>
+            <select id="setupTrainingDuration">
+                <option value="">Seleziona</option>
+                <option value="45">30–45 minuti</option>
+                <option value="60">45–60 minuti</option>
+                <option value="90">60–90 minuti</option>
+                <option value="120">90–120 minuti</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>DOVE TI ALLENI?</label>
+            <select id="setupTrainingPlace">
+                <option value="">Seleziona</option>
+                <option value="gym">Palestra</option>
+                <option value="home">Casa</option>
+                <option value="both">Palestra + casa</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>QUANTI PASTI VUOI FARE?</label>
+            <select id="setupMeals">
+                <option value="">Seleziona</option>
+                <option value="2">2 pasti</option>
+                <option value="3">3 pasti</option>
+                <option value="4">4 pasti</option>
+                <option value="5">5 pasti</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>ALIMENTI CHE TI PIACCIONO</label>
+            <textarea id="setupLikes"
+                placeholder="Es. pollo, riso, pasta, uova, yogurt greco..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>ALIMENTI CHE NON VUOI MANGIARE</label>
+            <textarea id="setupDislikes"
+                placeholder="Scrivi gli alimenti che non gradisci..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>ALLERGIE / INTOLLERANZE</label>
+            <textarea id="setupAllergies"
+                placeholder="Se non ne hai, scrivi: nessuna"></textarea>
+        </div>
+
+        <button class="primary" onclick="completeSetup()">
+            INIZIA LA TRASFORMAZIONE
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     APP PRINCIPALE
+========================= -->
+
+<div id="mainApp" class="hidden">
+
 <div class="app">
 
 <header class="header">
-    <div class="logo">MY <span>TRANSFORMATION</span></div>
-    <button class="settings" onclick="showScreen('profile')">⚙︎</button>
+
+    <div class="logo">
+        MY <span>TRANSFORMATION</span>
+    </div>
+
+    <button class="settings" onclick="showScreen('profile')">
+        ⚙︎
+    </button>
+
 </header>
+
 
 <!-- HOME -->
 
@@ -444,85 +648,116 @@ button {
     </div>
 
     <div class="progress-card">
+
         <div class="progress-top">
+
             <div>
                 <div class="progress-title">FASE ATTUALE</div>
                 <div class="progress-value">Preparazione</div>
             </div>
+
             <div class="progress-title">0%</div>
+
         </div>
 
         <div class="progress-bar">
             <div class="progress-fill"></div>
         </div>
+
     </div>
+
 
     <div class="grid">
 
         <div class="stat">
             <div class="stat-label">PESO</div>
-            <div class="stat-value" id="weightHome">—</div>
-            <div class="stat-sub">inseriscilo nel profilo</div>
+            <div class="stat-value" id="homeWeight">—</div>
+            <div class="stat-sub">peso attuale</div>
         </div>
 
         <div class="stat">
-            <div class="stat-label">DISCIPLINA</div>
-            <div class="stat-value">—</div>
-            <div class="stat-sub">inizia oggi</div>
+            <div class="stat-label">OBIETTIVO</div>
+            <div class="stat-value" id="homeGoal">—</div>
+            <div class="stat-sub">obiettivo principale</div>
         </div>
 
         <div class="stat">
             <div class="stat-label">ALLENAMENTI</div>
-            <div class="stat-value">0</div>
-            <div class="stat-sub">questo mese</div>
+            <div class="stat-value" id="homeTraining">—</div>
+            <div class="stat-sub">giorni / settimana</div>
         </div>
 
         <div class="stat">
-            <div class="stat-label">STREAK</div>
-            <div class="stat-value">0 🔥</div>
-            <div class="stat-sub">giorni consecutivi</div>
+            <div class="stat-label">PASTI</div>
+            <div class="stat-value" id="homeMeals">—</div>
+            <div class="stat-sub">pasti / giorno</div>
         </div>
 
     </div>
+
 
     <div class="section">
 
         <div class="section-header">
             <div class="section-title">Oggi</div>
-            <div class="section-link">Obiettivi</div>
         </div>
 
         <div class="today-card">
 
             <div class="today-item">
-                <div class="today-icon">🥩</div>
+
+                <div class="today-icon">🥗</div>
+
                 <div class="today-info">
                     <div class="today-name">Alimentazione</div>
-                    <div class="today-detail">Configura il tuo piano</div>
+                    <div class="today-detail">
+                        Il piano verrà costruito nella prossima fase.
+                    </div>
                 </div>
-                <button class="check" onclick="toggleCheck(this)">✓</button>
+
+                <button class="check"
+                        onclick="toggleCheck(this)">✓</button>
+
             </div>
 
+
             <div class="today-item">
+
                 <div class="today-icon">🏋️</div>
+
                 <div class="today-info">
                     <div class="today-name">Allenamento</div>
-                    <div class="today-detail">Nessuna scheda configurata</div>
+                    <div class="today-detail">
+                        Programmazione non ancora attiva.
+                    </div>
                 </div>
-                <button class="check" onclick="toggleCheck(this)">✓</button>
+
+                <button class="check"
+                        onclick="toggleCheck(this)">✓</button>
+
             </div>
 
+
             <div class="today-item">
+
                 <div class="today-icon">💧</div>
+
                 <div class="today-info">
                     <div class="today-name">Acqua</div>
-                    <div class="today-detail">Obiettivo giornaliero</div>
+                    <div class="today-detail">
+                        Tracking non ancora attivo.
+                    </div>
                 </div>
-                <button class="check" onclick="toggleCheck(this)">✓</button>
+
+                <button class="check"
+                        onclick="toggleCheck(this)">✓</button>
+
             </div>
 
         </div>
+
     </div>
+
 
     <div class="section">
 
@@ -531,15 +766,22 @@ button {
         </div>
 
         <div class="coach-card">
-            <div class="coach-label">Messaggio del giorno</div>
-            <div class="coach-text">
-                Prima costruiamo il sistema. Poi iniziamo a spingere.
+
+            <div class="coach-label">
+                Messaggio del giorno
             </div>
+
+            <div class="coach-text">
+                Il percorso è appena iniziato.
+                Prima costruiamo le fondamenta. Poi iniziamo a spingere.
+            </div>
+
         </div>
 
     </div>
 
 </section>
+
 
 <!-- DIETA -->
 
@@ -548,10 +790,14 @@ button {
     <div class="hero">
         <div class="hero-label">Nutrizione</div>
         <h1>Dieta</h1>
-        <p>Il piano alimentare verrà costruito in base al tuo profilo.</p>
+        <p>
+            Il piano alimentare verrà generato dopo aver costruito
+            il motore nutrizionale.
+        </p>
     </div>
 
     <div class="grid">
+
         <div class="stat">
             <div class="stat-label">CALORIE</div>
             <div class="stat-value">—</div>
@@ -563,59 +809,77 @@ button {
             <div class="stat-value">—</div>
             <div class="stat-sub">g / giorno</div>
         </div>
+
     </div>
 
     <div class="list-card">
 
         <div class="list-row">
             <strong>🥣 Colazione</strong>
-            <span>Il tuo piano verrà generato dopo la configurazione.</span>
+            <span>
+                Il tuo piano verrà generato automaticamente.
+            </span>
         </div>
 
         <div class="list-row">
             <strong>🍝 Pranzo</strong>
-            <span>Quantità e alimenti saranno personalizzati.</span>
+            <span>
+                Quantità e alimenti saranno personalizzati.
+            </span>
         </div>
 
         <div class="list-row">
             <strong>🥩 Cena</strong>
-            <span>Il piano sarà adattato al tuo obiettivo.</span>
+            <span>
+                Il piano sarà adattato al tuo obiettivo.
+            </span>
         </div>
 
     </div>
 
 </section>
 
-<!-- WORKOUT -->
+
+<!-- ALLENAMENTO -->
 
 <section id="workout" class="screen">
 
     <div class="hero">
         <div class="hero-label">Training</div>
         <h1>Allenamento</h1>
-        <p>La tua programmazione mensile.</p>
+        <p>
+            La tua programmazione verrà costruita sulla base
+            del profilo.
+        </p>
     </div>
 
     <div class="progress-card">
+
         <div class="progress-title">PROGRAMMA</div>
+
         <div class="progress-value" style="margin-top:7px;">
-            Nessuna scheda
+            In preparazione
         </div>
+
         <p style="color:var(--muted);font-size:12px;margin-top:8px;">
-            Configura prima il tuo profilo.
+            Il motore di allenamento verrà aggiunto nella prossima fase.
         </p>
+
     </div>
 
 </section>
 
-<!-- PROGRESS -->
+
+<!-- PROGRESSI -->
 
 <section id="progress" class="screen">
 
     <div class="hero">
         <div class="hero-label">Tracking</div>
         <h1>Progressi</h1>
-        <p>Qui vedrai la trasformazione nel tempo.</p>
+        <p>
+            Qui verrà registrata la trasformazione nel tempo.
+        </p>
     </div>
 
     <div class="list-card">
@@ -639,6 +903,7 @@ button {
 
 </section>
 
+
 <!-- COACH -->
 
 <section id="coach" class="screen">
@@ -646,83 +911,53 @@ button {
     <div class="hero">
         <div class="hero-label">Personal AI</div>
         <h1>Coach</h1>
-        <p>Il tuo coach personale sarà collegato al tuo percorso.</p>
+        <p>
+            Il tuo coach AI verrà collegato al percorso nelle prossime fasi.
+        </p>
     </div>
 
     <div class="coach-card">
-        <div class="coach-label">Coach AI</div>
 
-        <div class="coach-text">
-            "Non iniziamo con le scuse. Prima configuriamo il tuo percorso,
-            poi ogni giorno avrai qualcosa da fare."
+        <div class="coach-label">
+            COACH AI
         </div>
 
-        <button class="primary" onclick="alert('Il Coach AI verrà collegato nella prossima fase.')">
-            PARLA CON IL COACH
-        </button>
+        <div class="coach-text">
+            "Non cerchiamo la giornata perfetta.
+            Costruiamo una routine che riesci a rispettare."
+        </div>
+
     </div>
 
 </section>
 
-<!-- PROFILE -->
+
+<!-- PROFILO -->
 
 <section id="profile" class="screen">
 
     <div class="hero">
-        <div class="hero-label">Configurazione</div>
+        <div class="hero-label">Impostazioni</div>
         <h1>Il tuo profilo.</h1>
-        <p>Inserisci i tuoi dati quando sei pronto.</p>
+        <p>
+            Qui puoi modificare i dati del tuo percorso.
+        </p>
     </div>
 
-    <div class="form-card">
+    <div class="setup-card">
 
-        <div class="form-group">
-            <label>ETÀ</label>
-            <input id="age" type="number" placeholder="es. 23">
+        <div class="profile-info" id="profileSummary">
+            Nessun profilo configurato.
         </div>
 
-        <div class="form-group">
-            <label>ALTEZZA (CM)</label>
-            <input id="height" type="number" placeholder="es. 173">
-        </div>
+        <button class="primary"
+                onclick="editProfile()">
+            MODIFICA PROFILO
+        </button>
 
-        <div class="form-group">
-            <label>PESO (KG)</label>
-            <input id="weight" type="number" step="0.1" placeholder="es. 67">
-        </div>
-
-        <div class="form-group">
-            <label>ALLENAMENTI A SETTIMANA</label>
-            <select id="trainingDays">
-                <option value="">Seleziona</option>
-                <option>3</option>
-                <option>4</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>PASTI AL GIORNO</label>
-            <select id="meals">
-                <option value="">Seleziona</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>OBIETTIVO</label>
-            <select id="goal">
-                <option value="">Seleziona</option>
-                <option>Perdere grasso</option>
-                <option>Ricomporsi</option>
-                <option>Aumentare massa muscolare</option>
-                <option>Definizione</option>
-            </select>
-        </div>
-
-        <button class="primary" onclick="saveProfile()">
-            SALVA PROFILO
+        <button class="secondary danger"
+                onclick="resetProfile()">
+            CANCELLA PROFILO
         </button>
 
     </div>
@@ -731,11 +966,13 @@ button {
 
 </div>
 
-<!-- NAVIGATION -->
+
+<!-- NAV -->
 
 <nav class="nav">
 
-    <button class="active" onclick="showScreen('home', this)">
+    <button class="active"
+            onclick="showScreen('home', this)">
         <span class="nav-icon">⌂</span>
         Home
     </button>
@@ -762,74 +999,358 @@ button {
 
 </nav>
 
+</div>
+
+
 <script>
 
-function showScreen(id, button) {
+/* =========================
+   PROFILO
+========================= */
 
-    document.querySelectorAll('.screen').forEach(screen => {
-        screen.classList.remove('active');
-    });
+const goalNames = {
+    fatloss: "Perdere grasso",
+    recomp: "Ricomporsi",
+    muscle: "Massa muscolare",
+    definition: "Definizione"
+};
 
-    document.getElementById(id).classList.add('active');
+const placeNames = {
+    gym: "Palestra",
+    home: "Casa",
+    both: "Palestra + casa"
+};
 
-    document.querySelectorAll('.nav button').forEach(btn => {
-        btn.classList.remove('active');
-    });
 
-    if (button) {
-        button.classList.add('active');
+function getProfile() {
+
+    const data = localStorage.getItem(
+        "myTransformationProfile"
+    );
+
+    if (!data) return null;
+
+    try {
+        return JSON.parse(data);
+    } catch {
+        return null;
     }
+}
+
+
+function completeSetup() {
+
+    const profile = {
+
+        age: document.getElementById("setupAge").value,
+
+        sex: document.getElementById("setupSex").value,
+
+        height: document.getElementById("setupHeight").value,
+
+        weight: document.getElementById("setupWeight").value,
+
+        goal: document.getElementById("setupGoal").value,
+
+        trainingDays:
+            document.getElementById("setupTrainingDays").value,
+
+        trainingDuration:
+            document.getElementById("setupTrainingDuration").value,
+
+        trainingPlace:
+            document.getElementById("setupTrainingPlace").value,
+
+        meals:
+            document.getElementById("setupMeals").value,
+
+        likes:
+            document.getElementById("setupLikes").value,
+
+        dislikes:
+            document.getElementById("setupDislikes").value,
+
+        allergies:
+            document.getElementById("setupAllergies").value,
+
+        createdAt: new Date().toISOString()
+
+    };
+
+
+    if (
+        !profile.age ||
+        !profile.sex ||
+        !profile.height ||
+        !profile.weight ||
+        !profile.goal ||
+        !profile.trainingDays ||
+        !profile.trainingDuration ||
+        !profile.trainingPlace ||
+        !profile.meals
+    ) {
+
+        alert(
+            "Completa tutti i campi principali prima di continuare."
+        );
+
+        return;
+    }
+
+
+    localStorage.setItem(
+        "myTransformationProfile",
+        JSON.stringify(profile)
+    );
+
+
+    showMainApp();
+
+    updateDashboard();
+
+    updateProfileSummary();
+}
+
+
+function showMainApp() {
+
+    document
+        .getElementById("setupScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("mainApp")
+        .classList.remove("hidden");
+}
+
+
+function showSetup() {
+
+    document
+        .getElementById("mainApp")
+        .classList.add("hidden");
+
+    document
+        .getElementById("setupScreen")
+        .classList.remove("hidden");
 
     window.scrollTo(0,0);
 }
 
+
+function editProfile() {
+
+    const profile = getProfile();
+
+    if (!profile) {
+
+        showSetup();
+
+        return;
+    }
+
+
+    document.getElementById("setupAge").value =
+        profile.age || "";
+
+    document.getElementById("setupSex").value =
+        profile.sex || "";
+
+    document.getElementById("setupHeight").value =
+        profile.height || "";
+
+    document.getElementById("setupWeight").value =
+        profile.weight || "";
+
+    document.getElementById("setupGoal").value =
+        profile.goal || "";
+
+    document.getElementById("setupTrainingDays").value =
+        profile.trainingDays || "";
+
+    document.getElementById("setupTrainingDuration").value =
+        profile.trainingDuration || "";
+
+    document.getElementById("setupTrainingPlace").value =
+        profile.trainingPlace || "";
+
+    document.getElementById("setupMeals").value =
+        profile.meals || "";
+
+    document.getElementById("setupLikes").value =
+        profile.likes || "";
+
+    document.getElementById("setupDislikes").value =
+        profile.dislikes || "";
+
+    document.getElementById("setupAllergies").value =
+        profile.allergies || "";
+
+
+    showSetup();
+}
+
+
+function resetProfile() {
+
+    const confirmation = confirm(
+        "Sei sicuro di voler cancellare il profilo?"
+    );
+
+    if (!confirmation) return;
+
+    localStorage.removeItem(
+        "myTransformationProfile"
+    );
+
+    location.reload();
+}
+
+
+/* =========================
+   DASHBOARD
+========================= */
+
+function updateDashboard() {
+
+    const profile = getProfile();
+
+    if (!profile) return;
+
+
+    document.getElementById("homeWeight").textContent =
+        profile.weight + " kg";
+
+
+    document.getElementById("homeGoal").textContent =
+        goalNames[profile.goal] || "—";
+
+
+    document.getElementById("homeTraining").textContent =
+        profile.trainingDays;
+
+
+    document.getElementById("homeMeals").textContent =
+        profile.meals;
+
+
+    updateProfileSummary();
+}
+
+
+function updateProfileSummary() {
+
+    const profile = getProfile();
+
+    if (!profile) return;
+
+
+    const summary = document.getElementById(
+        "profileSummary"
+    );
+
+
+    summary.innerHTML = `
+        <strong style="color:white;font-size:17px;">
+            Profilo configurato
+        </strong>
+        <br><br>
+        Età: ${profile.age}<br>
+        Altezza: ${profile.height} cm<br>
+        Peso: ${profile.weight} kg<br>
+        Obiettivo: ${goalNames[profile.goal] || "—"}<br>
+        Allenamenti: ${profile.trainingDays} giorni/settimana<br>
+        Durata: ${profile.trainingDuration} minuti<br>
+        Luogo: ${placeNames[profile.trainingPlace] || "—"}<br>
+        Pasti: ${profile.meals} al giorno
+    `;
+}
+
+
+/* =========================
+   NAVIGAZIONE
+========================= */
+
+function showScreen(id, button) {
+
+    document
+        .querySelectorAll(".screen")
+        .forEach(screen => {
+            screen.classList.remove("active");
+        });
+
+
+    const target =
+        document.getElementById(id);
+
+    if (target) {
+        target.classList.add("active");
+    }
+
+
+    document
+        .querySelectorAll(".nav button")
+        .forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+
+    if (button) {
+        button.classList.add("active");
+    }
+
+
+    if (id === "profile") {
+        updateProfileSummary();
+    }
+
+
+    window.scrollTo(0,0);
+}
+
+
+/* =========================
+   CHECK
+========================= */
+
 function toggleCheck(button) {
-    button.classList.toggle('done');
+
+    button.classList.toggle("done");
+
 }
 
-function saveProfile() {
 
-    const profile = {
-        age: document.getElementById('age').value,
-        height: document.getElementById('height').value,
-        weight: document.getElementById('weight').value,
-        trainingDays: document.getElementById('trainingDays').value,
-        meals: document.getElementById('meals').value,
-        goal: document.getElementById('goal').value
-    };
+/* =========================
+   AVVIO APP
+========================= */
 
-    localStorage.setItem('myTransformationProfile', JSON.stringify(profile));
+function initializeApp() {
 
-    if (profile.weight) {
-        document.getElementById('weightHome').textContent =
-            profile.weight + ' kg';
+    const profile = getProfile();
+
+
+    if (profile) {
+
+        showMainApp();
+
+        updateDashboard();
+
+    } else {
+
+        document
+            .getElementById("mainApp")
+            .classList.add("hidden");
+
+        document
+            .getElementById("setupScreen")
+            .classList.remove("hidden");
+
     }
 
-    alert('Profilo salvato. Il prossimo passo sarà costruire il motore della tua trasformazione.');
 }
 
-function loadProfile() {
 
-    const saved = localStorage.getItem('myTransformationProfile');
-
-    if (!saved) return;
-
-    const profile = JSON.parse(saved);
-
-    document.getElementById('age').value = profile.age || '';
-    document.getElementById('height').value = profile.height || '';
-    document.getElementById('weight').value = profile.weight || '';
-    document.getElementById('trainingDays').value = profile.trainingDays || '';
-    document.getElementById('meals').value = profile.meals || '';
-    document.getElementById('goal').value = profile.goal || '';
-
-    if (profile.weight) {
-        document.getElementById('weightHome').textContent =
-            profile.weight + ' kg';
-    }
-}
-
-loadProfile();
+initializeApp();
 
 </script>
 
