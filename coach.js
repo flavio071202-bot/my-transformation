@@ -1,10 +1,10 @@
 /* =====================================================
    MY TRANSFORMATION
-   AI COACH ENGINE — V3
+   AI COACH ENGINE — V4
 ===================================================== */
 
 const COACH_STORAGE_KEY = "myTransformationCoach";
-const COACH_PROMPT_VERSION = "3.0";
+const COACH_PROMPT_VERSION = "4.0";
 
 
 /* =====================================================
@@ -18,6 +18,7 @@ function coachNumber(value, fallback = 0) {
     return Number.isFinite(number)
         ? number
         : fallback;
+
 }
 
 
@@ -81,13 +82,19 @@ function getCoachNutrition() {
 
     }
 
+    if (typeof refreshNutrition === "function") {
+
+        return refreshNutrition();
+
+    }
+
     return null;
 
 }
 
 
 /* =====================================================
-   PIANO ALIMENTARE
+   PIANO ATTUALE
 ===================================================== */
 
 function getCoachMeals() {
@@ -98,7 +105,25 @@ function getCoachMeals() {
 
     }
 
-    return null;
+    const data = localStorage.getItem(
+        "myTransformationMeals"
+    );
+
+    if (!data) {
+
+        return null;
+
+    }
+
+    try {
+
+        return JSON.parse(data);
+
+    } catch {
+
+        return null;
+
+    }
 
 }
 
@@ -146,20 +171,25 @@ function getCoachPreferences(profile) {
     if (!profile) {
 
         return {
+
             likes: "",
             dislikes: "",
             allergies: ""
+
         };
 
     }
 
     return {
 
-        likes: coachNormalize(profile.likes),
+        likes:
+            coachNormalize(profile.likes),
 
-        dislikes: coachNormalize(profile.dislikes),
+        dislikes:
+            coachNormalize(profile.dislikes),
 
-        allergies: coachNormalize(profile.allergies)
+        allergies:
+            coachNormalize(profile.allergies)
 
     };
 
@@ -174,13 +204,17 @@ function getCoachGoalName(goal) {
 
     const goals = {
 
-        fatloss: "Perdita di grasso",
+        fatloss:
+            "Perdita di grasso",
 
-        definition: "Definizione",
+        definition:
+            "Definizione",
 
-        recomp: "Ricomposizione corporea",
+        recomp:
+            "Ricomposizione corporea",
 
-        muscle: "Aumento della massa muscolare"
+        muscle:
+            "Aumento della massa muscolare"
 
     };
 
@@ -224,7 +258,7 @@ ${coachNormalize(profile.sex)}
 Altezza:
 ${coachNormalize(profile.height)} cm
 
-Peso attuale:
+Peso:
 ${coachNormalize(profile.weight)} kg
 
 Obiettivo:
@@ -266,7 +300,7 @@ function buildCoachNutritionContext(nutrition) {
         return `
 TARGET NUTRIZIONALE
 
-Dati nutrizionali non ancora disponibili.
+Dati non disponibili.
 `;
 
     }
@@ -356,12 +390,12 @@ ${coachNumber(progress.mealAdherence)}%
 
 
 /* =====================================================
-   CONTESTO DIETA
+   CONTESTO DIETA ATTUALE
 ===================================================== */
 
 function buildCoachMealsContext(plan) {
 
-    if (!plan || !plan.meals) {
+    if (!plan) {
 
         return `
 PIANO ALIMENTARE ATTUALE
@@ -371,46 +405,96 @@ Nessun piano disponibile.
 
     }
 
-    let output = `
+    /*
+       Supportiamo sia il vecchio formato
+       sia il futuro formato settimanale.
+    */
+
+    if (plan.days && Array.isArray(plan.days)) {
+
+        let output =
+            "PIANO ALIMENTARE ATTUALE\n";
+
+        plan.days.forEach((day, index) => {
+
+            output += `\nGIORNO ${index + 1}\n`;
+
+            if (day.meals) {
+
+                day.meals.forEach(meal => {
+
+                    output +=
+                        `\n${meal.name || "Pasto"}\n`;
+
+                    if (meal.foods) {
+
+                        meal.foods.forEach(food => {
+
+                            output +=
+                                `- ${food.name}: ${food.grams} g\n`;
+
+                        });
+
+                    }
+
+                    if (meal.totals) {
+
+                        output +=
+                            `Kcal: ${meal.totals.kcal || 0}\n`;
+
+                        output +=
+                            `Proteine: ${meal.totals.protein || 0} g\n`;
+
+                        output +=
+                            `Carboidrati: ${meal.totals.carbs || 0} g\n`;
+
+                        output +=
+                            `Grassi: ${meal.totals.fat || 0} g\n`;
+
+                    }
+
+                });
+
+            }
+
+        });
+
+        return output;
+
+    }
+
+    if (plan.meals) {
+
+        let output =
+            "PIANO ALIMENTARE ATTUALE\n";
+
+        plan.meals.forEach(meal => {
+
+            output +=
+                `\n${meal.name || "Pasto"}\n`;
+
+            if (meal.foods) {
+
+                meal.foods.forEach(food => {
+
+                    output +=
+                        `- ${food.name}: ${food.grams} g\n`;
+
+                });
+
+            }
+
+        });
+
+        return output;
+
+    }
+
+    return `
 PIANO ALIMENTARE ATTUALE
+
+Formato non disponibile.
 `;
-
-    plan.meals.forEach((meal, index) => {
-
-        output += `
-
-${index + 1}. ${
-    meal.name || "Pasto"
-}
-
-`;
-
-        if (meal.foods && meal.foods.length) {
-
-            meal.foods.forEach(food => {
-
-                output +=
-                    `- ${food.name}: ${food.grams} g\n`;
-
-            });
-
-        }
-
-        output +=
-            `Calorie: ${meal.totals?.kcal || 0} kcal\n`;
-
-        output +=
-            `Proteine: ${meal.totals?.protein || 0} g\n`;
-
-        output +=
-            `Carboidrati: ${meal.totals?.carbs || 0} g\n`;
-
-        output +=
-            `Grassi: ${meal.totals?.fat || 0} g\n`;
-
-    });
-
-    return output;
 
 }
 
@@ -421,7 +505,7 @@ ${index + 1}. ${
 
 function buildCoachWorkoutContext(workout) {
 
-    if (!workout || !workout.workouts) {
+    if (!workout) {
 
         return `
 ALLENAMENTO ATTUALE
@@ -431,42 +515,67 @@ Nessun allenamento disponibile.
 
     }
 
-    let output = `
+    if (!workout.workouts) {
+
+        return `
 ALLENAMENTO ATTUALE
+
+Dati non disponibili.
 `;
 
-    workout.workouts.forEach((session, index) => {
+    }
 
-        output += `
+    let output =
+        "ALLENAMENTO ATTUALE\n";
 
-SESSIONE ${index + 1}:
+    workout.workouts.forEach(
+        (session, index) => {
+
+            output += `
+
+SESSIONE ${index + 1}
 ${session.name || "Allenamento"}
 
 `;
 
-        if (session.exercises) {
+            if (session.exercises) {
 
-            session.exercises.forEach(exercise => {
+                session.exercises.forEach(
+                    exercise => {
 
-                output +=
-                    `- ${exercise.name}`;
+                        output +=
+                            `- ${exercise.name}`;
 
-                output +=
-                    ` | ${exercise.sets} serie`;
+                        if (exercise.sets !== undefined) {
 
-                output +=
-                    ` | ${exercise.reps} ripetizioni`;
+                            output +=
+                                ` | ${exercise.sets} serie`;
 
-                output +=
-                    ` | RIR ${exercise.rir}`;
+                        }
 
-                output += "\n";
+                        if (exercise.reps !== undefined) {
 
-            });
+                            output +=
+                                ` | ${exercise.reps} ripetizioni`;
+
+                        }
+
+                        if (exercise.rir !== undefined) {
+
+                            output +=
+                                ` | RIR ${exercise.rir}`;
+
+                        }
+
+                        output += "\n";
+
+                    }
+                );
+
+            }
 
         }
-
-    });
+    );
 
     return output;
 
@@ -474,7 +583,7 @@ ${session.name || "Allenamento"}
 
 
 /* =====================================================
-   REGOLE DEL COACH
+   REGOLE COACH
 ===================================================== */
 
 function getCoachRules() {
@@ -484,66 +593,154 @@ REGOLE DEL COACH
 
 Sei il Coach IA ufficiale di MY TRANSFORMATION.
 
-Devi analizzare i dati dell'utente prima di
-proporre qualsiasi modifica.
+Il tuo compito è analizzare il percorso dell'utente
+e costruire una strategia personalizzata.
 
-La dieta deve essere PERSONALIZZATA e VARIATA.
+La dieta NON deve essere una dieta fissa contenuta
+nell'app.
 
-Non devi utilizzare una dieta fissa o preimpostata.
+La dieta deve essere GENERATA DAL COACH.
 
-Non devi ripetere automaticamente gli stessi pasti
-per tutta la settimana.
+Deve essere settimanale e composta da 7 giorni.
 
-Devi rispettare sempre:
+La settimana deve essere varia.
 
-- obiettivo dell'utente
+Non copiare la stessa giornata per tutta la settimana.
+
+Considera sempre:
+
+- profilo dell'utente
+- obiettivo
 - peso
 - altezza
 - età
 - sesso
-- allenamenti
-- durata degli allenamenti
 - numero di pasti
+- allenamenti
+- durata allenamenti
 - preferenze alimentari
 - alimenti non graditi
-- allergie e alimenti da evitare
-- andamento del peso
-- aderenza alla dieta
-- aderenza agli allenamenti
+- allergie
 - calorie
 - macronutrienti
+- andamento del peso
+- aderenza alimentare
+- aderenza agli allenamenti
+- piano precedente
 
-Non modificare calorie o macro senza una motivazione
-basata sui dati.
+Non modificare calorie o macronutrienti senza una
+motivazione basata sui dati.
 
 Considera il trend del peso e non una singola pesata.
 
 Se il percorso sta procedendo bene, non modificare
 inutilmente il target.
 
-Puoi comunque modificare gli alimenti per aumentare
-varietà e sostenibilità.
+Puoi modificare gli alimenti per aumentare varietà,
+sostenibilità e aderenza.
 
-Se il percorso non procede come previsto, analizza
-prima la causa e poi proponi una modifica.
-
-Non creare deficit estremi.
+Non creare deficit calorici estremi.
 
 Non promettere risultati garantiti.
 
-Non prescrivere farmaci, sostanze dopanti o pratiche
-pericolose.
+Non prescrivere farmaci o sostanze dopanti.
 
-Se mancano dati importanti, dichiaralo chiaramente.
+Rispetta sempre allergie e alimenti esclusi.
 
-Rispondi sempre in italiano.
+Se mancano dati importanti, dichiaralo.
 
-Il tuo stile deve essere diretto, concreto e motivante.
+Rispondi in italiano.
 
-Non devi semplicemente dire all'utente quello che
-vuole sentirsi dire.
+Devi ragionare sui dati e non semplicemente
+assecondare l'utente.
+`;
 
-Devi ragionare sui dati.
+}
+
+
+/* =====================================================
+   FORMATO IMPORTAZIONE
+===================================================== */
+
+function getImportFormatRules() {
+
+    return `
+FORMATO DI IMPORTAZIONE MY TRANSFORMATION
+
+IMPORTANTE:
+
+Alla fine della risposta devi creare un blocco
+di dati valido JSON.
+
+Il blocco deve essere racchiuso ESATTAMENTE tra:
+
+=== MY_TRANSFORMATION_DIET_START ===
+
+e:
+
+=== MY_TRANSFORMATION_DIET_END ===
+
+Tra queste due righe deve esserci SOLO JSON valido.
+
+NON inserire testo, commenti o markdown dentro
+il blocco JSON.
+
+La struttura DEVE essere:
+
+{
+  "version": "1.0",
+  "type": "weekly",
+  "week": [
+    {
+      "day": "Lunedì",
+      "meals": [
+        {
+          "name": "Colazione",
+          "foods": [
+            {
+              "name": "Alimento",
+              "grams": 100
+            }
+          ],
+          "totals": {
+            "kcal": 500,
+            "protein": 30,
+            "carbs": 60,
+            "fat": 15
+          }
+        }
+      ],
+      "totals": {
+        "kcal": 2000,
+        "protein": 150,
+        "carbs": 220,
+        "fat": 60
+      }
+    }
+  ]
+}
+
+REGOLE JSON:
+
+- week deve contenere ESATTAMENTE 7 giorni.
+- I giorni devono essere da Lunedì a Domenica.
+- Ogni giorno deve avere tutti i pasti previsti.
+- Ogni alimento deve avere nome e grammatura.
+- grams deve essere un numero.
+- kcal deve essere un numero.
+- protein deve essere un numero.
+- carbs deve essere un numero.
+- fat deve essere un numero.
+- Non utilizzare valori come "circa".
+- Non utilizzare stringhe al posto dei numeri.
+- Non inserire testo fuori dal formato previsto.
+- Il JSON deve essere valido e leggibile da JavaScript.
+
+La parte visibile della risposta può contenere
+spiegazioni e la dieta completa.
+
+Il blocco JSON finale invece deve contenere
+SOLO i dati necessari all'app.
 `;
 
 }
@@ -556,49 +753,48 @@ Devi ragionare sui dati.
 function getWeeklyDietRequest() {
 
     return `
-OBIETTIVO
+CREA LA NUOVA SETTIMANA ALIMENTARE.
 
-Crea una DIETA COMPLETA DI 7 GIORNI.
+Devi creare una dieta completa di 7 giorni:
 
-La settimana deve essere realmente varia.
+Lunedì
+Martedì
+Mercoledì
+Giovedì
+Venerdì
+Sabato
+Domenica
 
-Ogni giorno deve avere pasti diversi o comunque
-variazioni significative.
+Ogni giorno deve avere tutti i pasti necessari.
 
-Non utilizzare una singola giornata e copiarla
-per tutta la settimana.
+La dieta deve essere varia.
 
-Rispetta il numero di pasti configurato dall'utente.
+Varia le fonti proteiche, i carboidrati,
+le verdure, la frutta e le altre componenti
+quando è compatibile con il profilo.
 
-Per ogni giorno crea tutti i pasti necessari.
+Non utilizzare una dieta generica.
 
-Per ogni alimento indica:
+Non ripetere la stessa identica giornata.
 
-- nome
-- quantità in grammi
+Per ogni alimento indica la grammatura.
 
 Per ogni pasto indica:
 
-- calorie
+- kcal
 - proteine
 - carboidrati
 - grassi
 
 Per ogni giornata indica:
 
-- calorie totali
+- kcal totali
 - proteine totali
 - carboidrati totali
 - grassi totali
 
-Alla fine spiega brevemente la logica utilizzata
-per costruire la settimana.
-
-La dieta deve essere costruita sui dati dell'utente.
-
-Non inventare allergie, preferenze o dati personali.
-
-Non usare alimenti esclusi dall'utente.
+Alla fine della risposta crea anche il blocco
+JSON secondo le regole di importazione.
 `;
 
 }
@@ -621,20 +817,25 @@ Valuta:
 4. calorie
 5. macronutrienti
 6. progressione dell'allenamento
+7. sostenibilità del piano
 
-Stabilisci se è necessario modificare qualcosa.
+Stabilisci se il piano attuale deve essere:
 
-Se non è necessario modificare nulla,
-spiega chiaramente perché.
+- mantenuto
+- modificato leggermente
+- modificato in modo significativo
 
-Indica la priorità della prossima settimana.
+Spiega sempre il motivo.
+
+Non cambiare il piano senza una motivazione
+basata sui dati.
 `;
 
 }
 
 
 /* =====================================================
-   COSTRUZIONE PROMPT
+   COSTRUISCI PROMPT
 ===================================================== */
 
 function buildCoachPrompt(
@@ -660,6 +861,11 @@ function buildCoachPrompt(
         requestType === "analysis"
             ? getAnalysisRequest()
             : getWeeklyDietRequest();
+
+    const importRules =
+        requestType === "analysis"
+            ? ""
+            : getImportFormatRules();
 
     const prompt = `
 
@@ -712,25 +918,10 @@ RICHIESTA
 ${request}
 
 ====================================================
-FORMATO DELLA RISPOSTA
+REGOLE DI IMPORTAZIONE
 ====================================================
 
-Rispondi in italiano.
-
-Usa titoli chiari.
-
-Se stai creando la dieta settimanale,
-organizzala chiaramente da LUNEDÌ a DOMENICA.
-
-Non saltare nessun giorno.
-
-Non saltare nessun pasto previsto.
-
-Indica sempre le grammature.
-
-Indica calorie e macronutrienti.
-
-Alla fine fornisci un riepilogo della settimana.
+${importRules}
 
 ====================================================
 FINE CONTESTO
@@ -751,7 +942,9 @@ async function copyCoachPrompt(
 ) {
 
     const prompt =
-        buildCoachPrompt(requestType);
+        buildCoachPrompt(
+            requestType
+        );
 
     try {
 
@@ -764,19 +957,29 @@ async function copyCoachPrompt(
     } catch {
 
         const textarea =
-            document.createElement("textarea");
+            document.createElement(
+                "textarea"
+            );
 
-        textarea.value = prompt;
+        textarea.value =
+            prompt;
 
-        textarea.style.position = "fixed";
-        textarea.style.opacity = "0";
+        textarea.style.position =
+            "fixed";
 
-        document.body.appendChild(textarea);
+        textarea.style.opacity =
+            "0";
+
+        document.body.appendChild(
+            textarea
+        );
 
         textarea.select();
 
         const success =
-            document.execCommand("copy");
+            document.execCommand(
+                "copy"
+            );
 
         textarea.remove();
 
@@ -788,14 +991,16 @@ async function copyCoachPrompt(
 
 
 /* =====================================================
-   PULSANTE GENERA COACH
+   GENERA RICHIESTA COACH
 ===================================================== */
 
 function openChatGPTWithCoachPrompt(
     requestType = "weekly_diet"
 ) {
 
-    copyCoachPrompt(requestType);
+    copyCoachPrompt(
+        requestType
+    );
 
     showCoachPromptInstructions(
         requestType
@@ -824,7 +1029,9 @@ function showCoachPromptInstructions(
     }
 
     const modal =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
     modal.id =
         "coachPromptModal";
@@ -836,7 +1043,7 @@ function showCoachPromptInstructions(
                 position:fixed;
                 inset:0;
                 z-index:9999;
-                background:rgba(0,0,0,0.80);
+                background:rgba(0,0,0,.82);
                 display:flex;
                 align-items:center;
                 justify-content:center;
@@ -857,7 +1064,7 @@ function showCoachPromptInstructions(
                     border-radius:28px;
                     padding:28px;
                     color:#f5f5f7;
-                    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+                    box-shadow:0 20px 60px rgba(0,0,0,.5);
                 "
             >
 
@@ -886,12 +1093,12 @@ function showCoachPromptInstructions(
                 <h2
                     style="
                         font-size:30px;
-                        line-height:1.05;
+                        line-height:1.08;
                         letter-spacing:-.04em;
-                        margin-bottom:14px;
+                        margin:0 0 14px;
                     "
                 >
-                    Il Coach ha preparato la richiesta.
+                    La richiesta è pronta.
                 </h2>
 
                 <p
@@ -899,11 +1106,11 @@ function showCoachPromptInstructions(
                         color:#a4a4ad;
                         font-size:16px;
                         line-height:1.55;
-                        margin-bottom:22px;
+                        margin:0 0 22px;
                     "
                 >
-                    Il prompt è stato copiato
-                    automaticamente negli appunti.
+                    Il prompt completo del Coach è stato
+                    copiato automaticamente negli appunti.
                 </p>
 
                 <div
@@ -923,7 +1130,7 @@ function showCoachPromptInstructions(
                             margin-bottom:14px;
                         "
                     >
-                        📋 Cosa devi fare
+                        📋 Ora fai così
                     </div>
 
                     <div
@@ -978,10 +1185,11 @@ function showCoachPromptInstructions(
                         margin-bottom:22px;
                     "
                 >
-                    💡 <strong style="color:#f5f5f7;">
-                    Non devi scrivere nulla.
+                    💡
+                    <strong style="color:#f5f5f7;">
+                        Non devi scrivere nulla.
                     </strong>
-                    Il testo è già pronto e copiato.
+                    Il testo è già pronto.
                     Devi solo incollarlo in ChatGPT.
                 </div>
 
@@ -1028,13 +1236,15 @@ function showCoachPromptInstructions(
 
     `;
 
-    document.body.appendChild(modal);
+    document.body.appendChild(
+        modal
+    );
 
 }
 
 
 /* =====================================================
-   APERTURA CHATGPT
+   APRI CHATGPT
 ===================================================== */
 
 function launchChatGPTFromCoach() {
@@ -1079,7 +1289,7 @@ function closeCoachPromptInstructions() {
 
 
 /* =====================================================
-   GENERA PROMPT DIETA
+   PROMPT DIETA
 ===================================================== */
 
 function generateWeeklyDietPrompt() {
@@ -1092,7 +1302,7 @@ function generateWeeklyDietPrompt() {
 
 
 /* =====================================================
-   GENERA PROMPT ANALISI
+   PROMPT ANALISI
 ===================================================== */
 
 function generateCoachAnalysisPrompt() {
@@ -1273,7 +1483,9 @@ function refreshCoach() {
 
     localStorage.setItem(
         COACH_STORAGE_KEY,
-        JSON.stringify(analysis)
+        JSON.stringify(
+            analysis
+        )
     );
 
     return analysis;
