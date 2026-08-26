@@ -29,8 +29,13 @@ body {
         "Helvetica Neue",
         Arial,
         sans-serif;
+
     min-height: 100vh;
-    padding-bottom: 100px;
+    min-height: 100dvh;
+
+    padding-bottom: 110px;
+
+    -webkit-font-smoothing: antialiased;
 }
 
 button,
@@ -49,23 +54,33 @@ button {
     display: none !important;
 }
 
-/* ========================================
+
+/* =====================================================
    CONFIGURAZIONE
-======================================== */
+===================================================== */
 
 .setup {
+    width: 100%;
+    max-width: 620px;
+
     min-height: 100vh;
     min-height: 100dvh;
-    padding: 35px 20px 50px;
-    max-width: 600px;
-    margin: auto;
+
+    margin: 0 auto;
+
+    padding:
+        35px
+        20px
+        60px;
 }
 
 .setup-logo {
     font-size: 20px;
     font-weight: 800;
-    margin-bottom: 55px;
+
     letter-spacing: -0.5px;
+
+    margin-bottom: 55px;
 }
 
 .setup-logo span {
@@ -75,30 +90,45 @@ button {
 
 .setup-step {
     color: var(--muted);
+
     font-size: 12px;
+
     text-transform: uppercase;
+
     letter-spacing: 1.8px;
+
     margin-bottom: 10px;
 }
 
 .setup h1 {
     font-size: 40px;
+
     line-height: 1.02;
+
     letter-spacing: -1.8px;
+
     margin-bottom: 14px;
 }
 
 .setup-intro {
     color: var(--muted);
-    line-height: 1.55;
+
     font-size: 15px;
+
+    line-height: 1.55;
+
     margin-bottom: 30px;
 }
 
 .setup-card {
     background: var(--card);
-    border: 1px solid var(--border);
+
+    border:
+        1px solid
+        var(--border);
+
     border-radius: 24px;
+
     padding: 20px;
 }
 
@@ -106,28 +136,37 @@ button {
     margin-bottom: 19px;
 }
 
-.form-group:last-child {
-    margin-bottom: 0;
-}
-
 .form-group label {
     display: block;
+
     color: var(--muted);
+
     font-size: 12px;
-    margin-bottom: 8px;
+
     letter-spacing: 0.3px;
+
+    margin-bottom: 8px;
 }
 
 input,
 select,
 textarea {
     width: 100%;
+
     background: var(--card2);
-    border: 1px solid var(--border);
+
     color: white;
+
+    border:
+        1px solid
+        var(--border);
+
     border-radius: 15px;
+
     padding: 15px;
+
     outline: none;
+
     -webkit-appearance: none;
     appearance: none;
 }
@@ -145,15 +184,27 @@ textarea:focus {
 
 select {
     background-image:
-        linear-gradient(45deg, transparent 50%, #888 50%),
-        linear-gradient(135deg, #888 50%, transparent 50%);
+        linear-gradient(
+            45deg,
+            transparent 50%,
+            #888 50%
+        ),
+        linear-gradient(
+            135deg,
+            #888 50%,
+            transparent 50%
+        );
+
     background-position:
         calc(100% - 20px) 50%,
         calc(100% - 14px) 50%;
+
     background-size:
         6px 6px,
         6px 6px;
+
     background-repeat: no-repeat;
+
     padding-right: 45px;
 }
 
@@ -163,21 +214,33 @@ select option {
 }
 
 textarea {
-    resize: vertical;
     min-height: 90px;
+
+    resize: vertical;
+
     line-height: 1.4;
 }
 
 .primary {
     width: 100%;
+
     border: none;
+
     background: white;
+
     color: black;
+
     border-radius: 15px;
+
     padding: 16px;
+
     font-weight: 800;
+
     margin-top: 22px;
-    transition: transform 0.15s ease;
+
+    transition:
+        transform 0.15s ease,
+        opacity 0.15s ease;
 }
 
 .primary:active {
@@ -186,64 +249,100 @@ textarea {
 
 .secondary {
     width: 100%;
-    border: 1px solid var(--border);
+
+    border:
+        1px solid
+        var(--border);
+
     background: var(--card);
+
     color: white;
+
     border-radius: 15px;
+
     padding: 15px;
+
     font-weight: 700;
+
     margin-top: 10px;
 }
 
 .danger {
     color: var(--danger);
-    border-color: rgba(255, 92, 92, 0.3);
+
+    border-color:
+        rgba(
+            255,
+            92,
+            92,
+            0.3
+        );
 }
 
-/* ========================================
+
+/* =====================================================
    APP
-======================================== */
+===================================================== */
 
 .app {
-    max-width: 600px;
-    margin: auto;
+    width: 100%;
+
+    max-width: 620px;
+
+    margin: 0 auto;
+
     padding:
         24px
         18px
-        110px;
+        120px;
 }
 
 .header {
     display: flex;
+
     justify-content: space-between;
+
     align-items: center;
+
     margin-bottom: 30px;
 }
 
 .logo {
     font-size: 20px;
+
     font-weight: 800;
+
     letter-spacing: -0.5px;
 }
 
 .logo span {
     color: var(--muted);
+
     font-weight: 500;
 }
 
 .settings {
     width: 45px;
+
     height: 45px;
+
     border-radius: 50%;
+
     background: var(--card);
-    border: 1px solid var(--border);
+
+    border:
+        1px solid
+        var(--border);
+
     color: white;
-    font-size: 20px;
+
+    font-size: 19px;
 }
 
-/* ========================================
+
+/* =====================================================
    SCHERMATE
-======================================== */
+===================================================== */
 
 .screen {
     display: none;
@@ -251,11 +350,31 @@ textarea {
 
 .screen.active {
     display: block;
+
+    animation:
+        screenAppear
+        0.18s
+        ease;
 }
 
-/* ========================================
+@keyframes screenAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+
+/* =====================================================
    HERO
-======================================== */
+===================================================== */
 
 .hero {
     margin-bottom: 25px;
@@ -263,111 +382,165 @@ textarea {
 
 .hero-label {
     color: var(--muted);
+
     font-size: 12px;
+
     text-transform: uppercase;
+
     letter-spacing: 1.7px;
+
     margin-bottom: 9px;
 }
 
 .hero h1 {
     font-size: 38px;
+
     line-height: 1;
+
     letter-spacing: -1.8px;
+
     margin-bottom: 11px;
 }
 
 .hero p {
     color: var(--muted);
+
     font-size: 14px;
+
     line-height: 1.5;
 }
 
-/* ========================================
+
+/* =====================================================
    PROGRESS CARD
-======================================== */
+===================================================== */
 
 .progress-card {
     background: var(--card);
-    border: 1px solid var(--border);
+
+    border:
+        1px solid
+        var(--border);
+
     border-radius: 22px;
+
     padding: 20px;
+
     margin-bottom: 14px;
 }
 
 .progress-top {
     display: flex;
+
     justify-content: space-between;
+
     align-items: end;
+
     margin-bottom: 15px;
 }
 
 .progress-title {
     color: var(--muted);
+
     font-size: 12px;
 }
 
 .progress-value {
     font-size: 27px;
+
     font-weight: 800;
+
     letter-spacing: -0.7px;
 }
 
 .progress-bar {
     height: 7px;
+
     background: #29292d;
+
     border-radius: 20px;
+
     overflow: hidden;
 }
 
 .progress-fill {
     height: 100%;
+
     width: 0%;
+
     background: white;
+
     border-radius: 20px;
-    transition: width 0.5s ease;
+
+    transition:
+        width
+        0.5s
+        ease;
 }
 
-/* ========================================
-   STATISTICHE
-======================================== */
+
+/* =====================================================
+   GRID
+===================================================== */
 
 .grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+
+    grid-template-columns:
+        1fr
+        1fr;
+
     gap: 12px;
+
     margin-bottom: 14px;
 }
 
 .stat {
     background: var(--card);
-    border: 1px solid var(--border);
+
+    border:
+        1px solid
+        var(--border);
+
     border-radius: 20px;
+
     padding: 18px;
+
     min-height: 120px;
 }
 
 .stat-label {
     color: var(--muted);
+
     font-size: 11px;
-    margin-bottom: 9px;
+
     letter-spacing: 0.5px;
+
+    margin-bottom: 9px;
 }
 
 .stat-value {
     font-size: 24px;
+
     font-weight: 800;
+
     letter-spacing: -0.6px;
+
+    word-break: break-word;
 }
 
 .stat-sub {
     color: var(--muted);
+
     font-size: 11px;
+
     margin-top: 5px;
 }
 
-/* ========================================
+
+/* =====================================================
    SEZIONI
-======================================== */
+===================================================== */
 
 .section {
     margin-top: 27px;
@@ -375,35 +548,52 @@ textarea {
 
 .section-header {
     display: flex;
+
     justify-content: space-between;
+
     align-items: center;
+
     margin-bottom: 12px;
 }
 
 .section-title {
     font-size: 20px;
+
     font-weight: 750;
+
     letter-spacing: -0.5px;
 }
 
-/* ========================================
-   CARD OGGI
-======================================== */
+
+/* =====================================================
+   OGGI
+===================================================== */
 
 .today-card,
 .list-card {
     background: var(--card);
-    border: 1px solid var(--border);
+
+    border:
+        1px solid
+        var(--border);
+
     border-radius: 22px;
+
     overflow: hidden;
 }
 
 .today-item {
     display: flex;
+
     align-items: center;
+
     gap: 14px;
+
     padding: 17px;
-    border-bottom: 1px solid var(--border);
+
+    border-bottom:
+        1px solid
+        var(--border);
 }
 
 .today-item:last-child {
@@ -412,55 +602,83 @@ textarea {
 
 .today-icon {
     width: 44px;
+
     height: 44px;
+
     min-width: 44px;
+
     border-radius: 14px;
+
     background: var(--card2);
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     font-size: 19px;
 }
 
 .today-info {
     flex: 1;
+
     min-width: 0;
 }
 
 .today-name {
     font-weight: 650;
+
     font-size: 14px;
 }
 
 .today-detail {
     color: var(--muted);
+
     font-size: 12px;
+
     margin-top: 4px;
+
     line-height: 1.35;
 }
 
 .check {
     width: 28px;
+
     height: 28px;
+
     min-width: 28px;
-    border: 1px solid #44444a;
+
+    border:
+        1px solid
+        #44444a;
+
     border-radius: 50%;
+
     background: transparent;
+
     color: transparent;
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 }
 
 .check.done {
     background: var(--success);
-    border-color: var(--success);
+
+    border-color:
+        var(--success);
+
     color: #07130c;
 }
 
-/* ========================================
-   COACH CARD
-======================================== */
+
+/* =====================================================
+   COACH
+===================================================== */
 
 .coach-card {
     background:
@@ -469,32 +687,47 @@ textarea {
             #19191d,
             #101012
         );
-    border: 1px solid var(--border);
+
+    border:
+        1px solid
+        var(--border);
+
     border-radius: 22px;
+
     padding: 20px;
 }
 
 .coach-label {
     color: var(--muted);
+
     text-transform: uppercase;
+
     letter-spacing: 1.3px;
+
     font-size: 11px;
+
     margin-bottom: 10px;
 }
 
 .coach-text {
     font-size: 16px;
+
     line-height: 1.48;
+
     font-weight: 600;
 }
 
-/* ========================================
+
+/* =====================================================
    LISTE
-======================================== */
+===================================================== */
 
 .list-row {
     padding: 17px;
-    border-bottom: 1px solid var(--border);
+
+    border-bottom:
+        1px solid
+        var(--border);
 }
 
 .list-row:last-child {
@@ -503,23 +736,30 @@ textarea {
 
 .list-row strong {
     display: block;
-    margin-bottom: 5px;
+
     font-size: 14px;
+
+    margin-bottom: 5px;
 }
 
 .list-row span {
     color: var(--muted);
+
     font-size: 12px;
+
     line-height: 1.4;
 }
 
-/* ========================================
+
+/* =====================================================
    PROFILO
-======================================== */
+===================================================== */
 
 .profile-info {
     color: var(--muted);
+
     font-size: 13px;
+
     line-height: 1.7;
 }
 
@@ -527,54 +767,131 @@ textarea {
     color: white;
 }
 
-/* ========================================
+
+/* =====================================================
    NAVIGAZIONE
-======================================== */
+===================================================== */
 
 .nav {
     position: fixed;
-    bottom: 12px;
+
     left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 24px);
-    max-width: 580px;
-    background: rgba(25, 25, 29, 0.94);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border);
+
+    bottom: 10px;
+
+    transform:
+        translateX(-50%);
+
+    width:
+        calc(100% - 20px);
+
+    max-width: 600px;
+
+    background:
+        rgba(
+            25,
+            25,
+            29,
+            0.94
+        );
+
+    backdrop-filter:
+        blur(20px);
+
+    -webkit-backdrop-filter:
+        blur(20px);
+
+    border:
+        1px solid
+        var(--border);
+
     border-radius: 24px;
+
     padding: 8px;
+
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+
+    grid-template-columns:
+        repeat(
+            5,
+            1fr
+        );
+
     z-index: 100;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+
+    box-shadow:
+        0
+        10px
+        40px
+        rgba(
+            0,
+            0,
+            0,
+            0.35
+        );
 }
 
 .nav button {
     border: none;
+
     background: transparent;
+
     color: var(--muted);
+
     padding: 9px 2px;
+
     border-radius: 17px;
+
     font-size: 10px;
-    transition: background 0.15s ease;
 }
 
 .nav button.active {
     background: #2a2a2f;
+
     color: white;
 }
 
 .nav-icon {
     display: block;
+
     font-size: 18px;
-    margin-bottom: 3px;
+
     line-height: 1;
+
+    margin-bottom: 3px;
 }
 
-/* ========================================
-   MOBILE
-======================================== */
+
+/* =====================================================
+   IPHONE
+===================================================== */
+
+@supports (
+    padding: env(safe-area-inset-bottom)
+) {
+
+    body {
+        padding-bottom:
+            calc(
+                110px +
+                env(safe-area-inset-bottom)
+            );
+    }
+
+    .nav {
+        bottom:
+            calc(
+                8px +
+                env(safe-area-inset-bottom)
+            );
+    }
+
+}
+
+
+/* =====================================================
+   SCHERMI PICCOLI
+===================================================== */
 
 @media (max-width: 380px) {
 
@@ -605,31 +922,18 @@ textarea {
     }
 
     .nav {
-        width: calc(100% - 16px);
-        bottom: 8px;
+        width:
+            calc(
+                100% - 12px
+            );
     }
+
 }
 
-/* ========================================
-   IPHONE SAFE AREA
-======================================== */
 
-@supports (padding: env(safe-area-inset-bottom)) {
-
-    body {
-        padding-bottom:
-            calc(100px + env(safe-area-inset-bottom));
-    }
-
-    .nav {
-        bottom:
-            calc(8px + env(safe-area-inset-bottom));
-    }
-}
-
-/* ========================================
-   DESKTOP
-======================================== */
+/* =====================================================
+   SCHERMI GRANDI
+===================================================== */
 
 @media (min-width: 700px) {
 
@@ -640,4 +944,5 @@ textarea {
     .setup {
         padding-top: 50px;
     }
+
 }
