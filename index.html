@@ -7,27 +7,30 @@
 
     <meta
         name="viewport"
-        content="width=device-width,
-        initial-scale=1.0,
-        viewport-fit=cover">
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
 
     <meta
         name="theme-color"
-        content="#09090b">
+        content="#080808"
+    >
 
     <meta
         name="apple-mobile-web-app-capable"
-        content="yes">
+        content="yes"
+    >
 
     <meta
         name="apple-mobile-web-app-status-bar-style"
-        content="black-translucent">
+        content="black-translucent"
+    >
 
     <title>MY TRANSFORMATION</title>
 
     <link
         rel="stylesheet"
-        href="style.css">
+        href="style.css"
+    >
 
 </head>
 
@@ -39,55 +42,53 @@
      CONFIGURAZIONE INIZIALE
 ===================================================== -->
 
-<div
+<section
     id="setupScreen"
-    class="setup hidden">
+    class="setup-screen"
+>
 
-    <div class="setup-logo">
-        MY <span>TRANSFORMATION</span>
-    </div>
+    <div class="setup-container">
 
-    <div class="setup-step">
-        Configurazione iniziale
-    </div>
+        <div class="eyebrow">
+            CONFIGURAZIONE INIZIALE
+        </div>
 
-    <h1>
-        Costruiamo il tuo percorso.
-    </h1>
+        <h1>
+            Costruiamo il tuo percorso.
+        </h1>
 
-    <p class="setup-intro">
-        Prima di iniziare dobbiamo conoscere
-        il tuo punto di partenza.
-        Inserisci i tuoi dati reali.
-        Il piano verrà costruito sulla base
-        del tuo profilo.
-    </p>
-
-
-    <div class="setup-card">
+        <p class="setup-description">
+            Prima di iniziare dobbiamo conoscere
+            il tuo punto di partenza.
+            Inserisci i tuoi dati reali.
+            Il piano verrà costruito
+            sulla base del tuo profilo.
+        </p>
 
 
-        <!-- ETÀ -->
+        <div class="setup-card">
 
-        <div class="form-group">
 
-            <label>ETÀ</label>
+            <!-- ETÀ -->
+
+            <label for="setupAge">
+                ETÀ
+            </label>
 
             <input
                 id="setupAge"
                 type="number"
                 min="13"
                 max="100"
-                placeholder="es. 23">
+                placeholder="es. 25"
+            >
 
-        </div>
 
+            <!-- SESSO -->
 
-        <!-- SESSO -->
-
-        <div class="form-group">
-
-            <label>SESSO</label>
+            <label for="setupSex">
+                SESSO
+            </label>
 
             <select id="setupSex">
 
@@ -105,14 +106,10 @@
 
             </select>
 
-        </div>
 
+            <!-- ALTEZZA -->
 
-        <!-- ALTEZZA -->
-
-        <div class="form-group">
-
-            <label>
+            <label for="setupHeight">
                 ALTEZZA (CM)
             </label>
 
@@ -121,35 +118,29 @@
                 type="number"
                 min="100"
                 max="250"
-                placeholder="es. 173">
+                placeholder="es. 175"
+            >
 
-        </div>
 
+            <!-- PESO -->
 
-        <!-- PESO -->
-
-        <div class="form-group">
-
-            <label>
+            <label for="setupWeight">
                 PESO ATTUALE (KG)
             </label>
 
             <input
                 id="setupWeight"
                 type="number"
-                step="0.1"
                 min="30"
                 max="300"
-                placeholder="es. 67">
+                step="0.1"
+                placeholder="es. 70"
+            >
 
-        </div>
 
+            <!-- OBIETTIVO -->
 
-        <!-- OBIETTIVO -->
-
-        <div class="form-group">
-
-            <label>
+            <label for="setupGoal">
                 OBIETTIVO PRINCIPALE
             </label>
 
@@ -163,6 +154,10 @@
                     Perdere grasso
                 </option>
 
+                <option value="definition">
+                    Definizione
+                </option>
+
                 <option value="recomp">
                     Ricomposizione corporea
                 </option>
@@ -171,20 +166,12 @@
                     Aumentare massa muscolare
                 </option>
 
-                <option value="definition">
-                    Definizione
-                </option>
-
             </select>
 
-        </div>
 
+            <!-- ALLENAMENTI -->
 
-        <!-- ALLENAMENTI -->
-
-        <div class="form-group">
-
-            <label>
+            <label for="setupTrainingDays">
                 ALLENAMENTI A SETTIMANA
             </label>
 
@@ -192,6 +179,10 @@
 
                 <option value="">
                     Seleziona
+                </option>
+
+                <option value="1">
+                    1 giorno
                 </option>
 
                 <option value="2">
@@ -214,17 +205,17 @@
                     6 giorni
                 </option>
 
+                <option value="7">
+                    7 giorni
+                </option>
+
             </select>
 
-        </div>
 
+            <!-- DURATA -->
 
-        <!-- DURATA -->
-
-        <div class="form-group">
-
-            <label>
-                DURATA DELL'ALLENAMENTO
+            <label for="setupTrainingDuration">
+                DURATA ALLENAMENTO
             </label>
 
             <select id="setupTrainingDuration">
@@ -233,32 +224,32 @@
                     Seleziona
                 </option>
 
+                <option value="30">
+                    30 minuti
+                </option>
+
                 <option value="45">
-                    30–45 minuti
+                    45 minuti
                 </option>
 
                 <option value="60">
-                    45–60 minuti
+                    60 minuti
+                </option>
+
+                <option value="75">
+                    75 minuti
                 </option>
 
                 <option value="90">
-                    60–90 minuti
-                </option>
-
-                <option value="120">
-                    90–120 minuti
+                    90 minuti
                 </option>
 
             </select>
 
-        </div>
 
+            <!-- LUOGO -->
 
-        <!-- LUOGO -->
-
-        <div class="form-group">
-
-            <label>
+            <label for="setupTrainingPlace">
                 DOVE TI ALLENI?
             </label>
 
@@ -276,31 +267,23 @@
                     Casa
                 </option>
 
-                <option value="both">
-                    Palestra + casa
+                <option value="outdoor">
+                    All'aperto
                 </option>
 
             </select>
 
-        </div>
 
+            <!-- PASTI -->
 
-        <!-- PASTI -->
-
-        <div class="form-group">
-
-            <label>
-                QUANTI PASTI VUOI FARE?
+            <label for="setupMeals">
+                PASTI AL GIORNO
             </label>
 
             <select id="setupMeals">
 
                 <option value="">
                     Seleziona
-                </option>
-
-                <option value="2">
-                    2 pasti
                 </option>
 
                 <option value="3">
@@ -317,69 +300,56 @@
 
             </select>
 
-        </div>
 
+            <!-- PREFERENZE -->
 
-        <!-- CIBI PREFERITI -->
-
-        <div class="form-group">
-
-            <label>
+            <label for="setupLikes">
                 ALIMENTI CHE TI PIACCIONO
             </label>
 
             <textarea
                 id="setupLikes"
-                placeholder="Es. pollo, riso, pasta, uova, yogurt greco...">
-            </textarea>
-
-        </div>
+                placeholder="es. pollo, riso, pasta, uova, yogurt..."
+            ></textarea>
 
 
-        <!-- CIBI ESCLUSI -->
+            <!-- NON GRADITI -->
 
-        <div class="form-group">
-
-            <label>
-                ALIMENTI CHE NON VUOI MANGIARE
+            <label for="setupDislikes">
+                ALIMENTI CHE NON TI PIACCIONO
             </label>
 
             <textarea
                 id="setupDislikes"
-                placeholder="Scrivi gli alimenti che non gradisci...">
-            </textarea>
-
-        </div>
+                placeholder="es. tonno, broccoli..."
+            ></textarea>
 
 
-        <!-- ALLERGIE -->
+            <!-- ALLERGIE -->
 
-        <div class="form-group">
-
-            <label>
-                ALLERGIE / INTOLLERANZE
+            <label for="setupAllergies">
+                ALLERGIE / ALIMENTI DA EVITARE
             </label>
 
             <textarea
                 id="setupAllergies"
-                placeholder="Se non ne hai, scrivi: nessuna">
-            </textarea>
+                placeholder="Inserisci eventuali alimenti da evitare..."
+            ></textarea>
+
+
+            <button
+                type="button"
+                class="primary-button"
+                onclick="completeSetup()"
+            >
+                CREA IL MIO PERCORSO
+            </button>
 
         </div>
 
-
-        <button
-            class="primary"
-            onclick="completeSetup()">
-
-            INIZIA LA TRASFORMAZIONE
-
-        </button>
-
-
     </div>
 
-</div>
+</section>
 
 
 
@@ -387,193 +357,153 @@
      APP PRINCIPALE
 ===================================================== -->
 
-<div
+<main
     id="mainApp"
-    class="hidden">
+    class="hidden"
+>
 
 
-    <main class="app">
+    <!-- =================================================
+         HOME
+    ================================================= -->
+
+    <section
+        id="home"
+        class="screen active"
+    >
+
+        <div class="page-container">
 
 
-        <!-- HEADER -->
+            <header class="top-header">
 
-        <header class="header">
+                <div>
 
-            <div class="logo">
-                MY <span>TRANSFORMATION</span>
-            </div>
+                    <div class="brand">
+                        MY TRANSFORMATION
+                    </div>
 
-            <button
-                class="settings"
-                onclick="showScreen('profile')">
+                    <div class="eyebrow">
+                        IL TUO PERCORSO
+                    </div>
 
-                ⚙️
-
-            </button>
-
-        </header>
-
-
-
-        <!-- =================================================
-             HOME
-        ================================================== -->
-
-        <section
-            id="home"
-            class="screen active">
-
-
-            <div class="hero">
-
-                <div class="hero-label">
-                    Il tuo percorso
                 </div>
 
-                <h1>
-                    Costruisci il tuo fisico.
-                </h1>
+                <button
+                    type="button"
+                    onclick="editProfile()"
+                    class="icon-button"
+                    aria-label="Profilo"
+                >
+                    ⚙️
+                </button>
 
-                <p>
-                    Un giorno alla volta.
-                    Nessuna scorciatoia.
-                </p>
+            </header>
 
-            </div>
+
+            <h1>
+                Costruisci il tuo fisico.
+            </h1>
+
+            <p class="subtitle">
+                Un giorno alla volta.
+                Nessuna scorciatoia.
+            </p>
 
 
             <!-- FASE -->
 
-            <div class="progress-card">
+            <div class="hero-card">
 
-                <div class="progress-top">
+                <span>
+                    FASE ATTUALE
+                </span>
 
-                    <div>
-
-                        <div class="progress-title">
-                            FASE ATTUALE
-                        </div>
-
-                        <div
-                            id="phaseName"
-                            class="progress-value">
-
-                            Preparazione
-
-                        </div>
-
-                    </div>
-
-                    <div
-                        id="phasePercent"
-                        class="progress-title">
-
-                        0%
-
-                    </div>
-
-                </div>
-
+                <strong>
+                    Preparazione
+                </strong>
 
                 <div class="progress-bar">
 
                     <div
-                        id="progressFill"
-                        class="progress-fill">
-
-                    </div>
+                        class="progress-fill"
+                        style="width: 0%"
+                    ></div>
 
                 </div>
 
             </div>
 
 
+            <!-- DATI RAPIDI -->
 
-            <!-- STATISTICHE -->
-
-            <div class="grid">
+            <div class="stats-grid">
 
 
-                <div class="stat">
+                <div class="stat-card">
 
-                    <div class="stat-label">
+                    <span>
                         PESO
-                    </div>
+                    </span>
 
-                    <div
-                        id="homeWeight"
-                        class="stat-value">
-
+                    <strong id="homeWeight">
                         —
+                    </strong>
 
-                    </div>
-
-                    <div class="stat-sub">
+                    <small>
                         peso attuale
-                    </div>
+                    </small>
 
                 </div>
 
 
-                <div class="stat">
+                <div class="stat-card">
 
-                    <div class="stat-label">
+                    <span>
                         OBIETTIVO
-                    </div>
+                    </span>
 
-                    <div
-                        id="homeGoal"
-                        class="stat-value">
-
+                    <strong id="homeGoal">
                         —
+                    </strong>
 
-                    </div>
-
-                    <div class="stat-sub">
-                        obiettivo principale
-                    </div>
+                    <small>
+                        obiettivo
+                    </small>
 
                 </div>
 
 
-                <div class="stat">
+                <div class="stat-card">
 
-                    <div class="stat-label">
+                    <span>
                         ALLENAMENTI
-                    </div>
+                    </span>
 
-                    <div
-                        id="homeTraining"
-                        class="stat-value">
-
+                    <strong id="homeTraining">
                         —
+                    </strong>
 
-                    </div>
-
-                    <div class="stat-sub">
+                    <small>
                         giorni / settimana
-                    </div>
+                    </small>
 
                 </div>
 
 
-                <div class="stat">
+                <div class="stat-card">
 
-                    <div class="stat-label">
+                    <span>
                         PASTI
-                    </div>
+                    </span>
 
-                    <div
-                        id="homeMeals"
-                        class="stat-value">
-
+                    <strong id="homeMeals">
                         —
+                    </strong>
 
-                    </div>
-
-                    <div class="stat-sub">
-                        pasti / giorno
-                    </div>
+                    <small>
+                        al giorno
+                    </small>
 
                 </div>
 
@@ -581,619 +511,809 @@
             </div>
 
 
+            <!-- CALORIE -->
 
-            <!-- OGGI -->
+            <div class="info-card">
 
-            <div class="section">
+                <span>
+                    TARGET GIORNALIERO
+                </span>
 
-                <div class="section-header">
-
-                    <div class="section-title">
-                        Oggi
-                    </div>
-
-                </div>
-
-
-                <div class="today-card">
-
-
-                    <div class="today-item">
-
-                        <div class="today-icon">
-                            🥗
-                        </div>
-
-                        <div class="today-info">
-
-                            <div class="today-name">
-                                Alimentazione
-                            </div>
-
-                            <div
-                                id="todayDiet"
-                                class="today-detail">
-
-                                Piano alimentare
-                                in preparazione.
-
-                            </div>
-
-                        </div>
-
-                        <button
-                            class="check"
-                            onclick="toggleCheck(this)">
-
-                            ✓
-
-                        </button>
-
-                    </div>
-
-
-
-                    <div class="today-item">
-
-                        <div class="today-icon">
-                            🏋️
-                        </div>
-
-                        <div class="today-info">
-
-                            <div class="today-name">
-                                Allenamento
-                            </div>
-
-                            <div
-                                id="todayWorkout"
-                                class="today-detail">
-
-                                Programmazione
-                                in preparazione.
-
-                            </div>
-
-                        </div>
-
-                        <button
-                            class="check"
-                            onclick="toggleCheck(this)">
-
-                            ✓
-
-                        </button>
-
-                    </div>
-
-
-
-                    <div class="today-item">
-
-                        <div class="today-icon">
-                            💧
-                        </div>
-
-                        <div class="today-info">
-
-                            <div class="today-name">
-                                Idratazione
-                            </div>
-
-                            <div
-                                id="todayWater"
-                                class="today-detail">
-
-                                Obiettivo acqua
-                                in preparazione.
-
-                            </div>
-
-                        </div>
-
-                        <button
-                            class="check"
-                            onclick="toggleCheck(this)">
-
-                            ✓
-
-                        </button>
-
-                    </div>
-
-
-                </div>
+                <strong id="homeCalories">
+                    —
+                </strong>
 
             </div>
 
 
+            <!-- PROGRESSI -->
 
-            <!-- COACH -->
+            <div class="section-heading">
 
-            <div class="section">
-
-                <div class="section-header">
-
-                    <div class="section-title">
-                        Coach
-                    </div>
-
-                </div>
-
-
-                <div class="coach-card">
-
-                    <div class="coach-label">
-                        Messaggio del giorno
-                    </div>
-
-                    <div
-                        id="dailyCoachMessage"
-                        class="coach-text">
-
-                        Il percorso è appena iniziato.
-                        Prima costruiamo le fondamenta.
-                        Poi iniziamo a spingere.
-
-                    </div>
-
-                </div>
+                <h2>
+                    Oggi
+                </h2>
 
             </div>
 
 
-        </section>
+            <div class="stats-grid">
 
 
+                <div class="stat-card">
 
-        <!-- =================================================
-             DIETA
-        ================================================== -->
+                    <span>
+                        PESO
+                    </span>
 
-        <section
-            id="diet"
-            class="screen">
+                    <strong id="homeProgressWeight">
+                        —
+                    </strong>
 
+                    <small>
+                        ultima registrazione
+                    </small>
 
-            <div class="hero">
-
-                <div class="hero-label">
-                    Nutrizione
                 </div>
 
-                <h1>
-                    Dieta
-                </h1>
 
-                <p>
-                    Il tuo piano alimentare viene
-                    costruito sulla base del tuo profilo.
-                </p>
+                <div class="stat-card">
+
+                    <span>
+                        ALLENAMENTO
+                    </span>
+
+                    <strong id="homeWorkoutAdherence">
+                        0%
+                    </strong>
+
+                    <small>
+                        completamento
+                    </small>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span>
+                        DIETA
+                    </span>
+
+                    <strong id="homeMealAdherence">
+                        0%
+                    </strong>
+
+                    <small>
+                        completamento
+                    </small>
+
+                </div>
+
 
             </div>
 
+        </div>
+
+    </section>
 
 
-            <!-- CALORIE E MACRO -->
 
-            <div class="grid">
+    <!-- =================================================
+         DIETA
+    ================================================= -->
+
+    <section
+        id="diet"
+        class="screen"
+    >
+
+        <div class="page-container">
 
 
-                <div class="stat">
+            <header class="page-header">
 
-                    <div class="stat-label">
+                <div>
+
+                    <div class="eyebrow">
+                        ALIMENTAZIONE
+                    </div>
+
+                    <h1>
+                        La tua dieta.
+                    </h1>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="icon-button"
+                    onclick="regenerateDailyMeals()"
+                >
+                    ↻
+                </button>
+
+            </header>
+
+
+            <p class="subtitle">
+                Un piano costruito sui tuoi dati,
+                sui tuoi obiettivi e sulle tue preferenze.
+            </p>
+
+
+            <!-- MACRO -->
+
+            <div class="macro-grid">
+
+
+                <div class="macro-card">
+
+                    <span>
                         CALORIE
-                    </div>
+                    </span>
 
-                    <div
-                        id="dietCalories"
-                        class="stat-value">
-
+                    <strong id="dietCalories">
                         —
+                    </strong>
 
-                    </div>
-
-                    <div class="stat-sub">
+                    <small>
                         kcal / giorno
-                    </div>
+                    </small>
 
                 </div>
 
 
+                <div class="macro-card">
 
-                <div class="stat">
-
-                    <div class="stat-label">
+                    <span>
                         PROTEINE
-                    </div>
+                    </span>
 
-                    <div
-                        id="dietProtein"
-                        class="stat-value">
-
+                    <strong id="dietProtein">
                         —
+                    </strong>
 
-                    </div>
-
-                    <div class="stat-sub">
+                    <small>
                         g / giorno
-                    </div>
+                    </small>
 
                 </div>
 
 
+                <div class="macro-card">
 
-                <div class="stat">
-
-                    <div class="stat-label">
+                    <span>
                         CARBOIDRATI
-                    </div>
+                    </span>
 
-                    <div
-                        id="dietCarbs"
-                        class="stat-value">
-
+                    <strong id="dietCarbs">
                         —
+                    </strong>
 
-                    </div>
-
-                    <div class="stat-sub">
+                    <small>
                         g / giorno
-                    </div>
+                    </small>
 
                 </div>
 
 
+                <div class="macro-card">
 
-                <div class="stat">
-
-                    <div class="stat-label">
+                    <span>
                         GRASSI
-                    </div>
+                    </span>
 
-                    <div
-                        id="dietFat"
-                        class="stat-value">
-
+                    <strong id="dietFat">
                         —
+                    </strong>
 
-                    </div>
-
-                    <div class="stat-sub">
+                    <small>
                         g / giorno
-                    </div>
+                    </small>
 
                 </div>
 
 
             </div>
 
+
+            <div class="section-heading">
+
+                <h2>
+                    Oggi
+                </h2>
+
+            </div>
 
 
             <!-- PASTI -->
 
-            <div class="list-card">
+            <div
+                id="meal1"
+                class="meal-card"
+            >
+
+                <div class="loading">
+                    In preparazione...
+                </div>
+
+            </div>
 
 
-                <div
-                    id="meal1"
-                    class="list-row">
+            <div
+                id="meal2"
+                class="meal-card"
+            >
 
-                    <strong>
-                        🥣 Colazione
-                    </strong>
+                <div class="loading">
+                    In preparazione...
+                </div>
+
+            </div>
+
+
+            <div
+                id="meal3"
+                class="meal-card"
+            >
+
+                <div class="loading">
+                    In preparazione...
+                </div>
+
+            </div>
+
+
+            <div
+                id="meal4"
+                class="meal-card"
+            ></div>
+
+
+            <div
+                id="meal5"
+                class="meal-card"
+            ></div>
+
+
+            <!-- TOTALI -->
+
+            <div class="info-card">
+
+                <span>
+                    TOTALE GIORNALIERO
+                </span>
+
+                <strong id="dietTotalCalories">
+                    —
+                </strong>
+
+                <div class="meal-macros">
+
+                    Proteine:
+                    <b id="dietTotalProtein">
+                        —
+                    </b>
+
+                    · Carboidrati:
+                    <b id="dietTotalCarbs">
+                        —
+                    </b>
+
+                    · Grassi:
+                    <b id="dietTotalFat">
+                        —
+                    </b>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         ALLENAMENTO
+    ================================================= -->
+
+    <section
+        id="workout"
+        class="screen"
+    >
+
+        <div class="page-container">
+
+
+            <header class="page-header">
+
+                <div>
+
+                    <div class="eyebrow">
+                        ALLENAMENTO
+                    </div>
+
+                    <h1 id="workoutTitle">
+                        Il tuo allenamento.
+                    </h1>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="icon-button"
+                    onclick="regenerateWorkout()"
+                >
+                    ↻
+                </button>
+
+            </header>
+
+
+            <p class="subtitle">
+                Allenamento progressivo costruito
+                sulla tua disponibilità.
+            </p>
+
+
+            <div class="info-card">
+
+                <span>
+                    SESSIONE
+                </span>
+
+                <strong id="workoutExerciseCount">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div
+                id="exercise1"
+                class="exercise-card"
+            ></div>
+
+            <div
+                id="exercise2"
+                class="exercise-card"
+            ></div>
+
+            <div
+                id="exercise3"
+                class="exercise-card"
+            ></div>
+
+            <div
+                id="exercise4"
+                class="exercise-card"
+            ></div>
+
+            <div
+                id="exercise5"
+                class="exercise-card"
+            ></div>
+
+            <div
+                id="exercise6"
+                class="exercise-card"
+            ></div>
+
+            <div
+                id="exercise7"
+                class="exercise-card"
+            ></div>
+
+            <div
+                id="exercise8"
+                class="exercise-card"
+            ></div>
+
+            <div
+                id="exercise9"
+                class="exercise-card"
+            ></div>
+
+            <div
+                id="exercise10"
+                class="exercise-card"
+            ></div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         PROGRESSI
+    ================================================= -->
+
+    <section
+        id="progress"
+        class="screen"
+    >
+
+        <div class="page-container">
+
+
+            <header class="page-header">
+
+                <div>
+
+                    <div class="eyebrow">
+                        PROGRESSI
+                    </div>
+
+                    <h1>
+                        I tuoi progressi.
+                    </h1>
+
+                </div>
+
+            </header>
+
+
+            <div class="stats-grid">
+
+
+                <div class="stat-card">
 
                     <span>
-                        In preparazione
+                        PESO ATTUALE
                     </span>
+
+                    <strong id="progressWeight">
+                        —
+                    </strong>
 
                 </div>
 
 
-
-                <div
-                    id="meal2"
-                    class="list-row">
-
-                    <strong>
-                        🍝 Pranzo
-                    </strong>
+                <div class="stat-card">
 
                     <span>
-                        In preparazione
+                        MEDIA 7 GIORNI
                     </span>
+
+                    <strong id="progressAverage">
+                        —
+                    </strong>
 
                 </div>
 
 
-
-                <div
-                    id="meal3"
-                    class="list-row">
-
-                    <strong>
-                        🥩 Cena
-                    </strong>
+                <div class="stat-card">
 
                     <span>
-                        In preparazione
+                        VARIAZIONE
                     </span>
 
-                </div>
-
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- =================================================
-             ALLENAMENTO
-        ================================================== -->
-
-        <section
-            id="workout"
-            class="screen">
-
-
-            <div class="hero">
-
-                <div class="hero-label">
-                    Training
-                </div>
-
-                <h1>
-                    Allenamento
-                </h1>
-
-                <p>
-                    La tua scheda verrà costruita
-                    sulla base del tuo profilo.
-                </p>
-
-            </div>
-
-
-            <div class="progress-card">
-
-                <div class="progress-title">
-                    PROGRAMMA ATTUALE
-                </div>
-
-                <div
-                    id="workoutStatus"
-                    class="progress-value"
-                    style="margin-top:7px;">
-
-                    In preparazione
-
-                </div>
-
-                <p
-                    style="
-                    color:var(--muted);
-                    font-size:12px;
-                    margin-top:8px;">
-
-                    Il programma verrà generato
-                    nella prossima fase.
-
-                </p>
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- =================================================
-             PROGRESSI
-        ================================================== -->
-
-        <section
-            id="progress"
-            class="screen">
-
-
-            <div class="hero">
-
-                <div class="hero-label">
-                    Tracking
-                </div>
-
-                <h1>
-                    Progressi
-                </h1>
-
-                <p>
-                    Registreremo la tua trasformazione
-                    nel tempo.
-                </p>
-
-            </div>
-
-
-            <div class="list-card">
-
-
-                <div class="list-row">
-
-                    <strong>
-                        ⚖️ Peso
+                    <strong id="progressChange">
+                        —
                     </strong>
 
-                    <span id="progressWeight">
-                        Nessun dato registrato.
-                    </span>
-
                 </div>
 
 
-                <div class="list-row">
+            </div>
 
-                    <strong>
-                        📏 Misure
-                    </strong>
+
+            <div class="section-heading">
+
+                <h2>
+                    Costanza
+                </h2>
+
+            </div>
+
+
+            <div class="stats-grid">
+
+
+                <div class="stat-card">
 
                     <span>
-                        Nessuna misura registrata.
+                        ALLENAMENTO
                     </span>
 
-                </div>
-
-
-                <div class="list-row">
-
-                    <strong>
-                        📸 Foto progressi
+                    <strong id="progressWorkoutAdherence">
+                        0%
                     </strong>
 
+                </div>
+
+
+                <div class="stat-card">
+
                     <span>
-                        Nessuna foto registrata.
+                        ALIMENTAZIONE
                     </span>
 
+                    <strong id="progressMealAdherence">
+                        0%
+                    </strong>
+
                 </div>
 
 
             </div>
 
 
-        </section>
+            <!-- REGISTRA PESO -->
 
+            <div class="info-card">
 
+                <h2>
+                    Registra il peso
+                </h2>
 
-        <!-- =================================================
-             COACH
-        ================================================== -->
+                <input
+                    id="newWeight"
+                    type="number"
+                    step="0.1"
+                    placeholder="es. 72.5"
+                >
 
-        <section
-            id="coach"
-            class="screen">
-
-
-            <div class="hero">
-
-                <div class="hero-label">
-                    Personal AI
-                </div>
-
-                <h1>
-                    Coach
-                </h1>
-
-                <p>
-                    Il tuo coach personale.
-                </p>
+                <button
+                    type="button"
+                    class="primary-button"
+                    onclick="
+                        recordWeight(
+                            Number(
+                                document.getElementById('newWeight').value
+                            )
+                        )
+                    "
+                >
+                    SALVA PESO
+                </button>
 
             </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         COACH
+    ================================================= -->
+
+    <section
+        id="coach"
+        class="screen"
+    >
+
+        <div class="page-container">
+
+
+            <header class="page-header">
+
+                <div>
+
+                    <div class="eyebrow">
+                        COACH
+                    </div>
+
+                    <h1>
+                        Il tuo coach.
+                    </h1>
+
+                </div>
+
+            </header>
 
 
             <div class="coach-card">
 
-                <div class="coach-label">
-                    COACH
+                <div class="coach-icon">
+                    🤖
                 </div>
 
-                <div
-                    id="coachMessage"
-                    class="coach-text">
+                <h2>
+                    Analisi del tuo percorso
+                </h2>
 
-                    "Non cerchiamo la giornata
-                    perfetta. Costruiamo una routine
-                    che riesci a rispettare."
-
-                </div>
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- =================================================
-             PROFILO
-        ================================================== -->
-
-        <section
-            id="profile"
-            class="screen">
-
-
-            <div class="hero">
-
-                <div class="hero-label">
-                    Impostazioni
-                </div>
-
-                <h1>
-                    Il tuo profilo.
-                </h1>
-
-                <p>
-                    Gestisci i dati del tuo percorso.
+                <p id="coachMessage">
+                    Analisi in preparazione...
                 </p>
 
             </div>
 
 
-            <div class="setup-card">
+            <div class="analysis-card">
+
+                <span>
+                    PESO
+                </span>
+
+                <p id="coachWeightAnalysis">
+                    —
+                </p>
+
+            </div>
 
 
-                <div
-                    id="profileSummary"
-                    class="profile-info">
+            <div class="analysis-card">
 
-                    Nessun profilo configurato.
+                <span>
+                    ALLENAMENTO
+                </span>
+
+                <p id="coachTrainingAnalysis">
+                    —
+                </p>
+
+            </div>
+
+
+            <div class="analysis-card">
+
+                <span>
+                    NUTRIZIONE
+                </span>
+
+                <p id="coachNutritionAnalysis">
+                    —
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         PROFILO
+    ================================================= -->
+
+    <section
+        id="profile"
+        class="screen"
+    >
+
+        <div class="page-container">
+
+
+            <header class="page-header">
+
+                <div>
+
+                    <div class="eyebrow">
+                        PROFILO
+                    </div>
+
+                    <h1>
+                        I tuoi dati.
+                    </h1>
+
+                </div>
+
+            </header>
+
+
+            <div class="stats-grid">
+
+
+                <div class="stat-card">
+
+                    <span>
+                        ETÀ
+                    </span>
+
+                    <strong id="profileAge">
+                        —
+                    </strong>
 
                 </div>
 
 
-                <button
-                    class="primary"
-                    onclick="editProfile()">
+                <div class="stat-card">
 
-                    MODIFICA PROFILO
+                    <span>
+                        ALTEZZA
+                    </span>
 
-                </button>
+                    <strong id="profileHeight">
+                        —
+                    </strong>
+
+                </div>
 
 
-                <button
-                    class="secondary danger"
-                    onclick="resetProfile()">
+                <div class="stat-card">
 
-                    CANCELLA PROFILO
+                    <span>
+                        PESO
+                    </span>
 
-                </button>
+                    <strong id="profileWeight">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span>
+                        ALLENAMENTI
+                    </span>
+
+                    <strong id="profileTrainingDays">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span>
+                        PASTI
+                    </span>
+
+                    <strong id="profileMeals">
+                        —
+                    </strong>
+
+                </div>
 
 
             </div>
 
 
-        </section>
+            <button
+                type="button"
+                class="primary-button"
+                onclick="editProfile()"
+            >
+                MODIFICA PROFILO
+            </button>
 
 
-    </main>
+            <button
+                type="button"
+                class="danger-button"
+                onclick="resetProfile()"
+            >
+                RESET COMPLETO
+            </button>
+
+        </div>
+
+    </section>
 
 
 
     <!-- =================================================
          NAVIGAZIONE
-    ================================================== -->
+    ================================================= -->
 
     <nav class="nav">
 
 
         <button
-            class="active"
+            type="button"
             data-screen="home"
-            onclick="showScreen('home', this)">
+            class="active"
+            onclick="
+                showScreen(
+                    'home',
+                    this
+                )
+            "
+        >
 
-            <span class="nav-icon">
-                ⌂
+            <span>
+                🏠
             </span>
 
             Home
@@ -1201,12 +1321,18 @@
         </button>
 
 
-
         <button
+            type="button"
             data-screen="diet"
-            onclick="showScreen('diet', this)">
+            onclick="
+                showScreen(
+                    'diet',
+                    this
+                )
+            "
+        >
 
-            <span class="nav-icon">
+            <span>
                 🥗
             </span>
 
@@ -1215,12 +1341,18 @@
         </button>
 
 
-
         <button
+            type="button"
             data-screen="workout"
-            onclick="showScreen('workout', this)">
+            onclick="
+                showScreen(
+                    'workout',
+                    this
+                )
+            "
+        >
 
-            <span class="nav-icon">
+            <span>
                 🏋️
             </span>
 
@@ -1229,12 +1361,18 @@
         </button>
 
 
-
         <button
+            type="button"
             data-screen="progress"
-            onclick="showScreen('progress', this)">
+            onclick="
+                showScreen(
+                    'progress',
+                    this
+                )
+            "
+        >
 
-            <span class="nav-icon">
+            <span>
                 📈
             </span>
 
@@ -1243,12 +1381,18 @@
         </button>
 
 
-
         <button
+            type="button"
             data-screen="coach"
-            onclick="showScreen('coach', this)">
+            onclick="
+                showScreen(
+                    'coach',
+                    this
+                )
+            "
+        >
 
-            <span class="nav-icon">
+            <span>
                 🤖
             </span>
 
@@ -1260,20 +1404,28 @@
     </nav>
 
 
-</div>
+</main>
 
 
 
 <!-- =====================================================
-     MOTORE NUTRIZIONALE
+     JAVASCRIPT
+     ORDINE DI CARICAMENTO IMPORTANTE
 ===================================================== -->
+
+<script src="storage.js"></script>
+
+<script src="database.js"></script>
 
 <script src="nutrition.js"></script>
 
+<script src="meals.js"></script>
 
-<!-- =====================================================
-     LOGICA APP
-===================================================== -->
+<script src="workout.js"></script>
+
+<script src="progress.js"></script>
+
+<script src="coach.js"></script>
 
 <script src="app.js"></script>
 
