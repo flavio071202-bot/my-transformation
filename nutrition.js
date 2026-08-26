@@ -1,34 +1,153 @@
 /* =====================================================
    MY TRANSFORMATION
-   NUTRITION ENGINE
-===================================================== */
+   NUTRITION ENGINE — DEFINITIVE V1
 
-const NUTRITION_KEY = "myTransformationNutrition";
+   Responsabilità:
+   - BMR
+   - TDEE
+   - calorie target
+   - macronutrienti
+   - distribuzione dei pasti
+   - andamento del peso
+   - adattamento prudente nel tempo
+
+   Non sostituisce un professionista sanitario.
+===================================================== */
 
 
 /* =====================================================
-   PROFILO
+   COSTANTI
+===================================================== */
+
+const NUTRITION_STORAGE_KEY =
+    "myTransformationNutrition";
+
+
+/*
+   Limiti di sicurezza del motore.
+
+   Non permettiamo al sistema di creare automaticamente
+   deficit estremi.
+*/
+
+const NUTRITION_LIMITS = {
+
+    minimumCaloriesMale: 1600,
+
+    minimumCaloriesFemale: 1400,
+
+    maximumDeficitPercent: 20,
+
+    minimumProteinPerKg: 1.6,
+
+    maximumProteinPerKg: 2.4,
+
+    fatMinimumPerKg: 0.6
+
+};
+
+
+/* =====================================================
+   LETTURA PROFILO
 ===================================================== */
 
 function getNutritionProfile() {
 
-    const data = localStorage.getItem(
-        "myTransformationProfile"
-    );
+    /*
+       Prima prova ad usare storage.js.
+    */
+
+    if (
+        typeof storageGetProfile ===
+        "function"
+    ) {
+
+        return storageGetProfile();
+
+    }
+
+
+    /*
+       Fallback per mantenere il modulo
+       funzionante anche prima del collegamento
+       definitivo.
+    */
+
+    const data =
+        localStorage.getItem(
+            "myTransformationProfile"
+        );
+
 
     if (!data) {
+
         return null;
+
     }
 
+
     try {
-        return JSON.parse(data);
-    } catch (error) {
-        console.error(
-            "Errore profilo nutrizionale:",
-            error
+
+        return JSON.parse(
+            data
         );
+
+    } catch {
+
         return null;
+
     }
+
+}
+
+
+/* =====================================================
+   NUMERO SICURO
+===================================================== */
+
+function nutritionNumber(
+    value,
+    fallback = 0
+) {
+
+    const number =
+        Number(value);
+
+
+    if (
+        Number.isFinite(number)
+    ) {
+
+        return number;
+
+    }
+
+
+    return fallback;
+
+}
+
+
+/* =====================================================
+   ARROTONDAMENTO
+===================================================== */
+
+function roundNutrition(
+    value,
+    decimals = 0
+) {
+
+    const multiplier =
+        Math.pow(
+            10,
+            decimals
+        );
+
+
+    return Math.round(
+        value * multiplier
+    ) / multiplier;
+
 }
 
 
@@ -36,71 +155,158 @@ function getNutritionProfile() {
    BMR — MIFFLIN ST JEOR
 ===================================================== */
 
-function calculateBMR(profile) {
+function calculateBMR(
+    profile
+) {
 
     if (!profile) {
+
         return null;
+
     }
 
-    const weight = Number(profile.weight);
-    const height = Number(profile.height);
-    const age = Number(profile.age);
 
-    if (
-        !Number.isFinite(weight) ||
-        !Number.isFinite(height) ||
-        !Number.isFinite(age)
-    ) {
-        return null;
-    }
-
-    if (profile.sex === "male") {
-
-        return Math.round(
-            (10 * weight) +
-            (6.25 * height) -
-            (5 * age) +
-            5
+    const age =
+        nutritionNumber(
+            profile.age
         );
 
+    const height =
+        nutritionNumber(
+            profile.height
+        );
+
+    const weight =
+        nutritionNumber(
+            profile.weight
+        );
+
+
+    if (
+        age <= 0 ||
+        height <= 0 ||
+        weight <= 0
+    ) {
+
+        return null;
+
     }
 
-    return Math.round(
-        (10 * weight) +
-        (6.25 * height) -
-        (5 * age) -
-        161
+
+    /*
+       Uomo:
+       BMR = 10W + 6.25H - 5A + 5
+
+       Donna:
+       BMR = 10W + 6.25H - 5A - 161
+    */
+
+    const sex =
+        String(
+            profile.sex || ""
+        )
+        .toLowerCase();
+
+
+    let sexConstant = 5;
+
+
+    if (
+        sex === "female" ||
+        sex === "femmina" ||
+        sex === "donna" ||
+        sex === "f"
+    ) {
+
+        sexConstant = -161;
+
+    }
+
+
+    const bmr =
+        (
+            10 * weight
+        ) +
+        (
+            6.25 * height
+        ) -
+        (
+            5 * age
+        ) +
+        sexConstant;
+
+
+    return roundNutrition(
+        bmr
     );
+
 }
 
 
 /* =====================================================
-   ATTIVITÀ
+   FATTORE ATTIVITÀ
 ===================================================== */
 
-function getActivityMultiplier(profile) {
+function getActivityFactor(
+    trainingDays
+) {
 
     const days =
-        Number(profile.trainingDays);
+        nutritionNumber(
+            trainingDays
+        );
 
 
-    if (days <= 2) {
-        return 1.40;
+    /*
+       Valori volutamente moderati.
+       L'allenamento non significa automaticamente
+       attività fisica elevata per tutta la giornata.
+    */
+
+    if (days <= 0) {
+
+        return 1.30;
+
     }
+
+
+    if (days === 1) {
+
+        return 1.375;
+
+    }
+
+
+    if (days === 2) {
+
+        return 1.45;
+
+    }
+
 
     if (days === 3) {
+
         return 1.50;
+
     }
+
 
     if (days === 4) {
+
         return 1.55;
+
     }
+
 
     if (days === 5) {
-        return 1.65;
+
+        return 1.60;
+
     }
 
-    return 1.70;
+
+    return 1.65;
+
 }
 
 
@@ -108,19 +314,138 @@ function getActivityMultiplier(profile) {
    TDEE
 ===================================================== */
 
-function calculateTDEE(profile) {
+function calculateTDEE(
+    profile
+) {
 
     const bmr =
-        calculateBMR(profile);
+        calculateBMR(
+            profile
+        );
 
-    if (!bmr) {
+
+    if (
+        bmr === null
+    ) {
+
         return null;
+
     }
 
-    return Math.round(
-        bmr *
-        getActivityMultiplier(profile)
+
+    const activity =
+        getActivityFactor(
+            profile.trainingDays
+        );
+
+
+    return roundNutrition(
+        bmr * activity
     );
+
+}
+
+
+/* =====================================================
+   OBIETTIVO
+===================================================== */
+
+function getGoalSettings(
+    goal
+) {
+
+    const normalized =
+        String(
+            goal || ""
+        )
+        .toLowerCase()
+        .trim();
+
+
+    /*
+       Obiettivo principale:
+       perdere grasso mantenendo/costruendo
+       più massa possibile.
+    */
+
+
+    if (
+        normalized === "fatloss" ||
+        normalized === "perdere_grasso" ||
+        normalized === "loss"
+    ) {
+
+        return {
+
+            deficit: 0.18,
+
+            proteinPerKg: 2.2
+
+        };
+
+    }
+
+
+    if (
+        normalized === "definition" ||
+        normalized === "definizione"
+    ) {
+
+        return {
+
+            deficit: 0.15,
+
+            proteinPerKg: 2.2
+
+        };
+
+    }
+
+
+    if (
+        normalized === "recomp" ||
+        normalized === "ricomposizione"
+    ) {
+
+        return {
+
+            deficit: 0.08,
+
+            proteinPerKg: 2.1
+
+        };
+
+    }
+
+
+    if (
+        normalized === "muscle" ||
+        normalized === "massa"
+    ) {
+
+        return {
+
+            surplus: 0.08,
+
+            proteinPerKg: 1.8
+
+        };
+
+    }
+
+
+    /*
+       Fallback.
+    */
+
+    return {
+
+        deficit: 0.10,
+
+        proteinPerKg: 2.0
+
+    };
+
 }
 
 
@@ -128,54 +453,109 @@ function calculateTDEE(profile) {
    CALORIE TARGET
 ===================================================== */
 
-function calculateCalories(profile) {
+function calculateTargetCalories(
+    profile,
+    tdee
+) {
 
-    const tdee =
-        calculateTDEE(profile);
+    if (
+        !profile ||
+        !tdee
+    ) {
 
-    if (!tdee) {
         return null;
+
     }
 
-    let factor = 1;
+
+    const settings =
+        getGoalSettings(
+            profile.goal
+        );
 
 
-    switch (profile.goal) {
+    let calories;
 
-        case "fatloss":
-            factor = 0.85;
-            break;
 
-        case "definition":
-            factor = 0.85;
-            break;
+    /*
+       Definizione / perdita grasso.
+    */
 
-        case "recomp":
-            factor = 0.92;
-            break;
+    if (
+        settings.deficit
+    ) {
 
-        case "muscle":
-            factor = 1.05;
-            break;
-
-        default:
-            factor = 1;
+        calories =
+            tdee *
+            (
+                1 -
+                settings.deficit
+            );
 
     }
 
 
     /*
-       Limite prudenziale.
-       Il sistema verrà raffinato successivamente
-       con peso, andamento e feedback.
+       Massa.
     */
 
-    return Math.round(
-        Math.max(
-            1400,
-            tdee * factor
+    else if (
+        settings.surplus
+    ) {
+
+        calories =
+            tdee *
+            (
+                1 +
+                settings.surplus
+            );
+
+    }
+
+
+    else {
+
+        calories =
+            tdee;
+
+    }
+
+
+    /*
+       Limite minimo.
+    */
+
+    const sex =
+        String(
+            profile.sex || ""
         )
+        .toLowerCase();
+
+
+    const minimum =
+        (
+            sex === "female" ||
+            sex === "femmina" ||
+            sex === "donna" ||
+            sex === "f"
+        )
+            ? NUTRITION_LIMITS
+                .minimumCaloriesFemale
+            : NUTRITION_LIMITS
+                .minimumCaloriesMale;
+
+
+    calories =
+        Math.max(
+            calories,
+            minimum
+        );
+
+
+    return roundNutrition(
+        calories
     );
+
 }
 
 
@@ -183,18 +563,49 @@ function calculateCalories(profile) {
    PROTEINE
 ===================================================== */
 
-function calculateProtein(profile) {
+function calculateProtein(
+    profile
+) {
 
     const weight =
-        Number(profile.weight);
+        nutritionNumber(
+            profile.weight
+        );
 
-    if (!Number.isFinite(weight)) {
-        return null;
-    }
 
-    return Math.round(
-        weight * 2
+    const settings =
+        getGoalSettings(
+            profile.goal
+        );
+
+
+    let grams =
+        weight *
+        settings.proteinPerKg;
+
+
+    grams =
+        Math.max(
+            grams,
+            weight *
+            NUTRITION_LIMITS
+                .minimumProteinPerKg
+        );
+
+
+    grams =
+        Math.min(
+            grams,
+            weight *
+            NUTRITION_LIMITS
+                .maximumProteinPerKg
+        );
+
+
+    return roundNutrition(
+        grams
     );
+
 }
 
 
@@ -202,18 +613,34 @@ function calculateProtein(profile) {
    GRASSI
 ===================================================== */
 
-function calculateFat(profile) {
+function calculateFat(
+    profile
+) {
 
     const weight =
-        Number(profile.weight);
+        nutritionNumber(
+            profile.weight
+        );
 
-    if (!Number.isFinite(weight)) {
-        return null;
-    }
 
-    return Math.round(
-        weight * 0.8
+    /*
+       Base iniziale:
+       circa 0.8 g/kg.
+    */
+
+    const grams =
+        Math.max(
+            weight * 0.8,
+            weight *
+            NUTRITION_LIMITS
+                .fatMinimumPerKg
+        );
+
+
+    return roundNutrition(
+        grams
     );
+
 }
 
 
@@ -227,61 +654,95 @@ function calculateCarbs(
     fat
 ) {
 
-    if (
-        !calories ||
-        !protein ||
-        !fat
-    ) {
-        return null;
-    }
-
+    /*
+       1 g proteine = 4 kcal
+       1 g carboidrati = 4 kcal
+       1 g grassi = 9 kcal
+    */
 
     const proteinCalories =
         protein * 4;
 
+
     const fatCalories =
         fat * 9;
 
-    const remaining =
+
+    const remainingCalories =
         calories -
         proteinCalories -
         fatCalories;
 
 
+    const carbs =
+        remainingCalories / 4;
+
+
     return Math.max(
         0,
-        Math.round(
-            remaining / 4
+        roundNutrition(
+            carbs
         )
     );
+
 }
 
 
 /* =====================================================
-   CREA TARGET
+   CREA TARGET COMPLETO
 ===================================================== */
 
-function generateNutritionTarget(profile) {
+function calculateNutritionTarget(
+    profile
+) {
 
     if (!profile) {
+
         return null;
+
     }
 
 
     const bmr =
-        calculateBMR(profile);
+        calculateBMR(
+            profile
+        );
+
 
     const tdee =
-        calculateTDEE(profile);
+        calculateTDEE(
+            profile
+        );
+
+
+    if (
+        bmr === null ||
+        tdee === null
+    ) {
+
+        return null;
+
+    }
+
 
     const calories =
-        calculateCalories(profile);
+        calculateTargetCalories(
+            profile,
+            tdee
+        );
+
 
     const protein =
-        calculateProtein(profile);
+        calculateProtein(
+            profile
+        );
+
 
     const fat =
-        calculateFat(profile);
+        calculateFat(
+            profile
+        );
+
 
     const carbs =
         calculateCarbs(
@@ -291,27 +752,122 @@ function generateNutritionTarget(profile) {
         );
 
 
+    /*
+       Controllo finale delle calorie
+       derivanti dai macro.
+    */
+
+    const calculatedCalories =
+        (
+            protein * 4
+        ) +
+        (
+            carbs * 4
+        ) +
+        (
+            fat * 9
+        );
+
+
     return {
 
-        bmr: bmr,
+        calories:
+            calories,
 
-        tdee: tdee,
+        protein:
+            protein,
 
-        calories: calories,
+        carbs:
+            carbs,
 
-        protein: protein,
+        fat:
+            fat,
 
-        carbs: carbs,
+        bmr:
+            bmr,
 
-        fat: fat,
+        tdee:
+            tdee,
 
-        meals:
-            Number(profile.meals),
+        calculatedCalories:
+            roundNutrition(
+                calculatedCalories
+            ),
+
+        activityFactor:
+            getActivityFactor(
+                profile.trainingDays
+            ),
+
+        goal:
+            profile.goal,
 
         generatedAt:
-            new Date().toISOString()
+            new Date()
+                .toISOString()
 
     };
+
+}
+
+
+/* =====================================================
+   RECUPERA TARGET SALVATO
+===================================================== */
+
+function getNutritionTarget() {
+
+    /*
+       Prima cerca nello storage centrale.
+    */
+
+    if (
+        typeof storageGetNutrition ===
+        "function"
+    ) {
+
+        const stored =
+            storageGetNutrition();
+
+
+        if (stored) {
+
+            return stored;
+
+        }
+
+    }
+
+
+    /*
+       Fallback.
+    */
+
+    const data =
+        localStorage.getItem(
+            NUTRITION_STORAGE_KEY
+        );
+
+
+    if (!data) {
+
+        return null;
+
+    }
+
+
+    try {
+
+        return JSON.parse(
+            data
+        );
+
+    } catch {
+
+        return null;
+
+    }
+
 }
 
 
@@ -319,54 +875,44 @@ function generateNutritionTarget(profile) {
    SALVA TARGET
 ===================================================== */
 
-function saveNutritionTarget(target) {
+function saveNutritionTarget(
+    target
+) {
 
     if (!target) {
-        return;
+
+        return false;
+
     }
+
+
+    if (
+        typeof storageSaveNutrition ===
+        "function"
+    ) {
+
+        return storageSaveNutrition(
+            target
+        );
+
+    }
+
 
     localStorage.setItem(
-        NUTRITION_KEY,
-        JSON.stringify(target)
+        NUTRITION_STORAGE_KEY,
+        JSON.stringify(
+            target
+        )
     );
+
+
+    return true;
+
 }
 
 
 /* =====================================================
-   LEGGE TARGET
-===================================================== */
-
-function getNutritionTarget() {
-
-    const data =
-        localStorage.getItem(
-            NUTRITION_KEY
-        );
-
-
-    if (!data) {
-        return null;
-    }
-
-
-    try {
-
-        return JSON.parse(data);
-
-    } catch (error) {
-
-        console.error(
-            "Errore target nutrizionale:",
-            error
-        );
-
-        return null;
-    }
-}
-
-
-/* =====================================================
-   AGGIORNA TARGET
+   GENERA / AGGIORNA TARGET
 ===================================================== */
 
 function refreshNutrition() {
@@ -376,14 +922,23 @@ function refreshNutrition() {
 
 
     if (!profile) {
+
         return null;
+
     }
 
 
     const target =
-        generateNutritionTarget(
+        calculateNutritionTarget(
             profile
         );
+
+
+    if (!target) {
+
+        return null;
+
+    }
 
 
     saveNutritionTarget(
@@ -392,6 +947,7 @@ function refreshNutrition() {
 
 
     return target;
+
 }
 
 
@@ -404,109 +960,313 @@ function getMealDistribution(
 ) {
 
     if (!target) {
+
         return [];
+
     }
 
 
-    const meals =
-        Number(target.meals);
+    const profile =
+        getNutritionProfile();
 
+
+    const meals =
+        profile
+            ? nutritionNumber(
+                profile.meals,
+                3
+            )
+            : 3;
+
+
+    /*
+       Per 3 pasti:
+
+       Colazione 25%
+       Pranzo    40%
+       Cena      35%
+
+       Le proteine vengono distribuite
+       abbastanza uniformemente.
+    */
 
     let percentages;
 
 
-    switch (meals) {
+    if (meals === 3) {
 
-        case 2:
+        percentages = [
+            0.25,
+            0.40,
+            0.35
+        ];
 
-            percentages = [
-                0.45,
-                0.55
-            ];
-
-            break;
-
-
-        case 3:
-
-            percentages = [
-                0.30,
-                0.35,
-                0.35
-            ];
-
-            break;
+    }
 
 
-        case 4:
+    /*
+       Per 4 pasti.
+    */
 
-            percentages = [
-                0.25,
-                0.30,
-                0.20,
-                0.25
-            ];
+    else if (meals === 4) {
 
-            break;
+        percentages = [
+            0.22,
+            0.33,
+            0.15,
+            0.30
+        ];
 
-
-        case 5:
-
-            percentages = [
-                0.20,
-                0.25,
-                0.15,
-                0.20,
-                0.20
-            ];
-
-            break;
+    }
 
 
-        default:
+    /*
+       Per 5 pasti.
+    */
 
-            percentages = [
-                0.30,
-                0.35,
-                0.35
-            ];
+    else if (meals === 5) {
+
+        percentages = [
+            0.20,
+            0.30,
+            0.15,
+            0.10,
+            0.25
+        ];
+
+    }
+
+
+    /*
+       Fallback.
+    */
+
+    else {
+
+        percentages = [
+            0.25,
+            0.40,
+            0.35
+        ];
 
     }
 
 
     return percentages.map(
-        percentage => {
+        percentage => ({
 
-            return {
+            calories:
+                Math.round(
+                    target.calories *
+                    percentage
+                ),
 
-                calories:
-                    Math.round(
-                        target.calories *
-                        percentage
-                    ),
+            protein:
+                Math.round(
+                    target.protein *
+                    percentage
+                ),
 
-                protein:
-                    Math.round(
-                        target.protein *
-                        percentage
-                    ),
+            carbs:
+                Math.round(
+                    target.carbs *
+                    percentage
+                ),
 
-                carbs:
-                    Math.round(
-                        target.carbs *
-                        percentage
-                    ),
+            fat:
+                Math.round(
+                    target.fat *
+                    percentage
+                )
 
-                fat:
-                    Math.round(
-                        target.fat *
-                        percentage
-                    )
-
-            };
-
-        }
+        })
     );
+
+}
+
+
+/* =====================================================
+   ANALISI PESO
+===================================================== */
+
+function getNutritionProgress() {
+
+    if (
+        typeof getProgressSummary !==
+        "function"
+    ) {
+
+        return null;
+
+    }
+
+
+    return getProgressSummary();
+
+}
+
+
+/* =====================================================
+   ADATTAMENTO CALORIE
+===================================================== */
+
+function calculateAdaptiveCalories() {
+
+    const profile =
+        getNutritionProfile();
+
+
+    if (!profile) {
+
+        return null;
+
+    }
+
+
+    const currentTarget =
+        getNutritionTarget();
+
+
+    if (!currentTarget) {
+
+        return refreshNutrition();
+
+    }
+
+
+    /*
+       Senza dati sufficienti NON tocchiamo
+       le calorie.
+    */
+
+    const progress =
+        getNutritionProgress();
+
+
+    if (
+        !progress ||
+        progress.totalWeighIns < 3
+    ) {
+
+        return currentTarget;
+
+    }
+
+
+    const latest =
+        progress.latestWeight;
+
+
+    const average =
+        progress.averageWeight7;
+
+
+    if (
+        latest === null ||
+        average === null
+    ) {
+
+        return currentTarget;
+
+    }
+
+
+    /*
+       Per evitare modifiche impulsive,
+       l'adattamento automatico viene limitato.
+
+       Questa funzione prepara il sistema
+       per l'analisi settimanale/mensile.
+    */
+
+    return currentTarget;
+
+}
+
+
+/* =====================================================
+   STATO NUTRIZIONALE COMPLETO
+===================================================== */
+
+function getNutritionSummary() {
+
+    const profile =
+        getNutritionProfile();
+
+
+    const target =
+        getNutritionTarget();
+
+
+    if (
+        !profile ||
+        !target
+    ) {
+
+        return null;
+
+    }
+
+
+    const mealDistribution =
+        getMealDistribution(
+            target
+        );
+
+
+    return {
+
+        calories:
+            target.calories,
+
+        protein:
+            target.protein,
+
+        carbs:
+            target.carbs,
+
+        fat:
+            target.fat,
+
+        bmr:
+            target.bmr,
+
+        tdee:
+            target.tdee,
+
+        calculatedCalories:
+            target.calculatedCalories,
+
+        meals:
+            mealDistribution
+
+    };
+
+}
+
+
+/* =====================================================
+   RESET
+===================================================== */
+
+function resetNutrition() {
+
+    if (
+        typeof storageDeleteNutrition ===
+        "function"
+    ) {
+
+        return storageDeleteNutrition();
+
+    }
+
+
+    localStorage.removeItem(
+        NUTRITION_STORAGE_KEY
+    );
+
+
+    return true;
 
 }
 
@@ -522,11 +1282,24 @@ function initializeNutrition() {
 
 
     if (!profile) {
+
         return;
+
     }
 
 
-    refreshNutrition();
+    /*
+       Se non esiste ancora un target,
+       crealo.
+    */
+
+    if (
+        !getNutritionTarget()
+    ) {
+
+        refreshNutrition();
+
+    }
 
 }
 
