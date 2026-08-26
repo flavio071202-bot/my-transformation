@@ -1,265 +1,95 @@
 /* =====================================================
    MY TRANSFORMATION
-   APP ENGINE
+   APP ENGINE — DEFINITIVE V1
 ===================================================== */
-
-const PROFILE_KEY = "myTransformationProfile";
 
 
 /* =====================================================
-   NOMI
+   COSTANTI
 ===================================================== */
 
-const GOAL_NAMES = {
-    fatloss: "Perdere grasso",
-    recomp: "Ricomposizione",
-    muscle: "Massa",
-    definition: "Definizione"
-};
+const APP_NAME = "MY TRANSFORMATION";
 
-const PLACE_NAMES = {
-    gym: "Palestra",
-    home: "Casa",
-    both: "Palestra + casa"
-};
+const APP_VERSION = "1.0.0";
 
 
 /* =====================================================
    PROFILO
 ===================================================== */
 
-function getProfile() {
+function appGetProfile() {
+
+    if (
+        typeof storageGetProfile ===
+        "function"
+    ) {
+
+        return storageGetProfile();
+
+    }
+
 
     const data =
         localStorage.getItem(
-            PROFILE_KEY
+            "myTransformationProfile"
         );
+
 
     if (!data) {
+
         return null;
+
     }
+
 
     try {
-        return JSON.parse(data);
-    } catch (error) {
 
-        console.error(
-            "Errore profilo:",
-            error
+        return JSON.parse(
+            data
         );
 
+    } catch {
+
         return null;
+
     }
-}
-
-
-function saveProfile(profile) {
-
-    localStorage.setItem(
-        PROFILE_KEY,
-        JSON.stringify(profile)
-    );
 
 }
 
 
 /* =====================================================
-   CONFIGURAZIONE
+   MOSTRA / NASCONDI SETUP
 ===================================================== */
 
-function completeSetup() {
+function showSetupScreen() {
 
-    const profile = {
-
-        age:
-            document
-                .getElementById("setupAge")
-                .value
-                .trim(),
-
-        sex:
-            document
-                .getElementById("setupSex")
-                .value,
-
-        height:
-            document
-                .getElementById("setupHeight")
-                .value
-                .trim(),
-
-        weight:
-            document
-                .getElementById("setupWeight")
-                .value
-                .trim(),
-
-        goal:
-            document
-                .getElementById("setupGoal")
-                .value,
-
-        trainingDays:
-            document
-                .getElementById("setupTrainingDays")
-                .value,
-
-        trainingDuration:
-            document
-                .getElementById("setupTrainingDuration")
-                .value,
-
-        trainingPlace:
-            document
-                .getElementById("setupTrainingPlace")
-                .value,
-
-        meals:
-            document
-                .getElementById("setupMeals")
-                .value,
-
-        likes:
-            document
-                .getElementById("setupLikes")
-                .value
-                .trim(),
-
-        dislikes:
-            document
-                .getElementById("setupDislikes")
-                .value
-                .trim(),
-
-        allergies:
-            document
-                .getElementById("setupAllergies")
-                .value
-                .trim(),
-
-        createdAt:
-            new Date().toISOString()
-
-    };
-
-
-    /* =================================================
-       CONTROLLO
-    ================================================= */
-
-    const required = [
-        profile.age,
-        profile.sex,
-        profile.height,
-        profile.weight,
-        profile.goal,
-        profile.trainingDays,
-        profile.trainingDuration,
-        profile.trainingPlace,
-        profile.meals
-    ];
-
-
-    if (
-        required.some(
-            value => !value
-        )
-    ) {
-
-        alert(
-            "Completa tutti i campi principali."
+    const setup =
+        document.getElementById(
+            "setupScreen"
         );
 
-        return;
-    }
-
-
-    const age =
-        Number(profile.age);
-
-    const height =
-        Number(profile.height);
-
-    const weight =
-        Number(profile.weight);
-
-
-    if (
-        !Number.isFinite(age) ||
-        age < 13 ||
-        age > 100
-    ) {
-
-        alert(
-            "Inserisci un'età valida."
+    const app =
+        document.getElementById(
+            "mainApp"
         );
 
-        return;
-    }
 
+    if (setup) {
 
-    if (
-        !Number.isFinite(height) ||
-        height < 100 ||
-        height > 250
-    ) {
-
-        alert(
-            "Inserisci un'altezza valida."
+        setup.classList.remove(
+            "hidden"
         );
 
-        return;
     }
 
 
-    if (
-        !Number.isFinite(weight) ||
-        weight < 30 ||
-        weight > 300
-    ) {
+    if (app) {
 
-        alert(
-            "Inserisci un peso valido."
+        app.classList.add(
+            "hidden"
         );
 
-        return;
     }
-
-
-    /* =================================================
-       SALVA
-    ================================================= */
-
-    saveProfile(profile);
-
-
-    /* =================================================
-       GENERA NUTRIZIONE
-    ================================================= */
-
-    if (
-        typeof refreshNutrition ===
-        "function"
-    ) {
-
-        refreshNutrition();
-
-    }
-
-
-    /* =================================================
-       MOSTRA APP
-    ================================================= */
-
-    showMainApp();
-
-    updateDashboard();
-
-    updateProfileSummary();
-
-    updateDietScreen();
-
-    showScreen("home");
 
 }
 
@@ -268,7 +98,7 @@ function completeSetup() {
    MOSTRA APP
 ===================================================== */
 
-function showMainApp() {
+function showMainApplication() {
 
     const setup =
         document.getElementById(
@@ -302,44 +132,347 @@ function showMainApp() {
 
 
 /* =====================================================
-   MOSTRA SETUP
+   SALVA PROFILO
 ===================================================== */
 
-function showSetup() {
+function saveUserProfile(
+    profile
+) {
 
-    const app =
-        document.getElementById(
-            "mainApp"
-        );
+    if (!profile) {
 
-    const setup =
-        document.getElementById(
-            "setupScreen"
-        );
+        return false;
+
+    }
 
 
-    if (app) {
+    if (
+        typeof storageSaveProfile ===
+        "function"
+    ) {
 
-        app.classList.add(
-            "hidden"
+        return storageSaveProfile(
+            profile
         );
 
     }
 
 
-    if (setup) {
-
-        setup.classList.remove(
-            "hidden"
-        );
-
-    }
-
-
-    window.scrollTo(
-        0,
-        0
+    localStorage.setItem(
+        "myTransformationProfile",
+        JSON.stringify(
+            profile
+        )
     );
+
+
+    return true;
+
+}
+
+
+/* =====================================================
+   LETTURA CAMPO
+===================================================== */
+
+function getInputValue(
+    id
+) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if (!element) {
+
+        return "";
+
+    }
+
+
+    return element.value.trim();
+
+}
+
+
+/* =====================================================
+   CONFIGURAZIONE PROFILO
+===================================================== */
+
+function completeSetup() {
+
+    const profile = {
+
+        age:
+            getInputValue(
+                "setupAge"
+            ),
+
+        sex:
+            getInputValue(
+                "setupSex"
+            ),
+
+        height:
+            getInputValue(
+                "setupHeight"
+            ),
+
+        weight:
+            getInputValue(
+                "setupWeight"
+            ),
+
+        goal:
+            getInputValue(
+                "setupGoal"
+            ),
+
+        trainingDays:
+            getInputValue(
+                "setupTrainingDays"
+            ),
+
+        trainingDuration:
+            getInputValue(
+                "setupTrainingDuration"
+            ),
+
+        trainingPlace:
+            getInputValue(
+                "setupTrainingPlace"
+            ),
+
+        meals:
+            getInputValue(
+                "setupMeals"
+            ),
+
+        likes:
+            getInputValue(
+                "setupLikes"
+            ),
+
+        dislikes:
+            getInputValue(
+                "setupDislikes"
+            ),
+
+        allergies:
+            getInputValue(
+                "setupAllergies"
+            ),
+
+        createdAt:
+            new Date().toISOString(),
+
+        updatedAt:
+            new Date().toISOString()
+
+    };
+
+
+    /* =================================================
+       VALIDAZIONE
+    ================================================= */
+
+    const age =
+        Number(profile.age);
+
+    const height =
+        Number(profile.height);
+
+    const weight =
+        Number(profile.weight);
+
+    const trainingDays =
+        Number(
+            profile.trainingDays
+        );
+
+    const meals =
+        Number(
+            profile.meals
+        );
+
+
+    if (
+        !profile.age ||
+        !profile.sex ||
+        !profile.height ||
+        !profile.weight ||
+        !profile.goal ||
+        !profile.trainingDays ||
+        !profile.trainingDuration ||
+        !profile.trainingPlace ||
+        !profile.meals
+    ) {
+
+        alert(
+            "Completa tutti i campi obbligatori."
+        );
+
+        return false;
+
+    }
+
+
+    if (
+        !Number.isFinite(age) ||
+        age < 13 ||
+        age > 100
+    ) {
+
+        alert(
+            "Inserisci un'età valida."
+        );
+
+        return false;
+
+    }
+
+
+    if (
+        !Number.isFinite(height) ||
+        height < 100 ||
+        height > 250
+    ) {
+
+        alert(
+            "Inserisci un'altezza valida."
+        );
+
+        return false;
+
+    }
+
+
+    if (
+        !Number.isFinite(weight) ||
+        weight < 30 ||
+        weight > 300
+    ) {
+
+        alert(
+            "Inserisci un peso valido."
+        );
+
+        return false;
+
+    }
+
+
+    if (
+        !Number.isFinite(
+            trainingDays
+        ) ||
+        trainingDays < 1 ||
+        trainingDays > 7
+    ) {
+
+        alert(
+            "Inserisci un numero di allenamenti valido."
+        );
+
+        return false;
+
+    }
+
+
+    if (
+        !Number.isFinite(
+            meals
+        ) ||
+        meals < 3 ||
+        meals > 5
+    ) {
+
+        alert(
+            "Il numero di pasti deve essere tra 3 e 5."
+        );
+
+        return false;
+
+    }
+
+
+    /* =================================================
+       SALVATAGGIO
+    ================================================= */
+
+    saveUserProfile(
+        profile
+    );
+
+
+    /*
+       Aggiorna il motore nutrizionale.
+    */
+
+    if (
+        typeof refreshNutrition ===
+        "function"
+    ) {
+
+        refreshNutrition();
+
+    }
+
+
+    /*
+       Genera il piano alimentare.
+    */
+
+    if (
+        typeof refreshDailyMeals ===
+        "function"
+    ) {
+
+        refreshDailyMeals();
+
+    }
+
+
+    /*
+       Genera la scheda.
+    */
+
+    if (
+        typeof refreshWorkout ===
+        "function"
+    ) {
+
+        refreshWorkout();
+
+    }
+
+
+    /*
+       Aggiorna Coach.
+    */
+
+    if (
+        typeof refreshCoach ===
+        "function"
+    ) {
+
+        refreshCoach();
+
+    }
+
+
+    showMainApplication();
+
+    updateAllScreens();
+
+    showScreen(
+        "home"
+    );
+
+
+    return true;
 
 }
 
@@ -351,14 +484,15 @@ function showSetup() {
 function editProfile() {
 
     const profile =
-        getProfile();
+        appGetProfile();
 
 
     if (!profile) {
 
-        showSetup();
+        showSetupScreen();
 
         return;
+
     }
 
 
@@ -403,56 +537,64 @@ function editProfile() {
     };
 
 
-    Object.entries(fields)
-        .forEach(
-            ([id, value]) => {
+    Object.entries(
+        fields
+    ).forEach(
+        ([id, value]) => {
 
-                const element =
-                    document.getElementById(
-                        id
-                    );
+            const element =
+                document.getElementById(
+                    id
+                );
 
-                if (element) {
 
-                    element.value =
-                        value;
+            if (element) {
 
-                }
+                element.value =
+                    value;
 
             }
-        );
+
+        }
+    );
 
 
-    showSetup();
+    showSetupScreen();
 
 }
 
 
 /* =====================================================
-   CANCELLA PROFILO
+   RESET PROFILO
 ===================================================== */
 
 function resetProfile() {
 
     const confirmation =
         confirm(
-            "Vuoi davvero cancellare il profilo?"
+            "Vuoi cancellare il profilo e tutti i dati della trasformazione?"
         );
 
 
     if (!confirmation) {
+
         return;
+
     }
 
 
-    localStorage.removeItem(
-        PROFILE_KEY
-    );
+    if (
+        typeof storageResetAll ===
+        "function"
+    ) {
 
+        storageResetAll();
 
-    localStorage.removeItem(
-        "myTransformationNutrition"
-    );
+    } else {
+
+        localStorage.clear();
+
+    }
 
 
     location.reload();
@@ -467,325 +609,218 @@ function resetProfile() {
 function updateDashboard() {
 
     const profile =
-        getProfile();
+        appGetProfile();
 
 
     if (!profile) {
-        return;
-    }
-
-
-    const weight =
-        document.getElementById(
-            "homeWeight"
-        );
-
-    const goal =
-        document.getElementById(
-            "homeGoal"
-        );
-
-    const training =
-        document.getElementById(
-            "homeTraining"
-        );
-
-    const meals =
-        document.getElementById(
-            "homeMeals"
-        );
-
-
-    if (weight) {
-
-        weight.textContent =
-            `${profile.weight} kg`;
-
-    }
-
-
-    if (goal) {
-
-        goal.textContent =
-            GOAL_NAMES[
-                profile.goal
-            ] || "—";
-
-    }
-
-
-    if (training) {
-
-        training.textContent =
-            profile.trainingDays;
-
-    }
-
-
-    if (meals) {
-
-        meals.textContent =
-            profile.meals;
-
-    }
-
-
-    updateProfileSummary();
-
-}
-
-
-/* =====================================================
-   RIEPILOGO PROFILO
-===================================================== */
-
-function updateProfileSummary() {
-
-    const profile =
-        getProfile();
-
-    const summary =
-        document.getElementById(
-            "profileSummary"
-        );
-
-
-    if (
-        !profile ||
-        !summary
-    ) {
 
         return;
 
     }
 
 
-    summary.innerHTML = `
+    const target =
+        typeof getNutritionTarget ===
+        "function"
+            ? getNutritionTarget()
+            : null;
 
-        <strong
-            style="
-                color:white;
-                font-size:17px;
-            "
-        >
-            Profilo configurato
-        </strong>
 
-        <br><br>
+    const progress =
+        typeof getProgressSummary ===
+        "function"
+            ? getProgressSummary()
+            : null;
 
-        Età:
-        ${escapeHTML(profile.age)}
 
-        <br>
+    /* ================================================
+       PESO
+    ================================================ */
 
-        Altezza:
-        ${escapeHTML(profile.height)}
-        cm
+    setText(
+        "homeWeight",
+        `${profile.weight} kg`
+    );
 
-        <br>
 
-        Peso:
-        ${escapeHTML(profile.weight)}
-        kg
+    /* ================================================
+       OBIETTIVO
+    ================================================ */
 
-        <br>
+    const goalNames = {
 
-        Obiettivo:
-        ${escapeHTML(
-            GOAL_NAMES[
-                profile.goal
-            ] || "—"
-        )}
+        fatloss:
+            "Perdita di grasso",
 
-        <br>
+        definition:
+            "Definizione",
 
-        Allenamenti:
-        ${escapeHTML(profile.trainingDays)}
-        giorni/settimana
+        recomp:
+            "Ricomposizione",
 
-        <br>
+        muscle:
+            "Massa"
 
-        Durata:
-        ${escapeHTML(profile.trainingDuration)}
-        minuti
+    };
 
-        <br>
 
-        Luogo:
-        ${escapeHTML(
-            PLACE_NAMES[
-                profile.trainingPlace
-            ] || "—"
-        )}
+    setText(
+        "homeGoal",
+        goalNames[
+            profile.goal
+        ] || profile.goal
+    );
 
-        <br>
 
-        Pasti:
-        ${escapeHTML(profile.meals)}
-        al giorno
+    /* ================================================
+       ALLENAMENTI
+    ================================================ */
 
-    `;
+    setText(
+        "homeTraining",
+        profile.trainingDays
+    );
+
+
+    /* ================================================
+       PASTI
+    ================================================ */
+
+    setText(
+        "homeMeals",
+        profile.meals
+    );
+
+
+    /* ================================================
+       CALORIE
+    ================================================ */
+
+    if (target) {
+
+        setText(
+            "homeCalories",
+            `${target.calories} kcal`
+        );
+
+    }
+
+
+    /* ================================================
+       PROGRESSO
+    ================================================ */
+
+    if (progress) {
+
+        setText(
+            "homeProgressWeight",
+            progress.latestWeight !== null
+                ? `${progress.latestWeight} kg`
+                : "—"
+        );
+
+
+        setText(
+            "homeWorkoutAdherence",
+            `${progress.workoutAdherence}%`
+        );
+
+
+        setText(
+            "homeMealAdherence",
+            `${progress.mealAdherence}%`
+        );
+
+    }
 
 }
 
 
 /* =====================================================
-   DIETA
+   SCHERMATA DIETA
 ===================================================== */
 
 function updateDietScreen() {
 
-    const profile =
-        getProfile();
-
-
-    if (!profile) {
-        return;
-    }
-
-
-    let target = null;
-
-
-    if (
+    const target =
         typeof getNutritionTarget ===
         "function"
-    ) {
-
-        target =
-            getNutritionTarget();
-
-    }
+            ? getNutritionTarget()
+            : null;
 
 
-    if (!target) {
+    if (target) {
 
-        if (
-            typeof refreshNutrition ===
-            "function"
-        ) {
-
-            target =
-                refreshNutrition();
-
-        }
-
-    }
-
-
-    if (!target) {
-
-        console.error(
-            "Target nutrizionale non disponibile."
+        setText(
+            "dietCalories",
+            `${target.calories}`
         );
+
+
+        setText(
+            "dietProtein",
+            `${target.protein} g`
+        );
+
+
+        setText(
+            "dietCarbs",
+            `${target.carbs} g`
+        );
+
+
+        setText(
+            "dietFat",
+            `${target.fat} g`
+        );
+
+    }
+
+
+    const plan =
+        typeof getSavedMealsPlan ===
+        "function"
+            ? getSavedMealsPlan()
+            : null;
+
+
+    if (!plan) {
 
         return;
-    }
-
-
-    const calories =
-        document.getElementById(
-            "dietCalories"
-        );
-
-    const protein =
-        document.getElementById(
-            "dietProtein"
-        );
-
-    const carbs =
-        document.getElementById(
-            "dietCarbs"
-        );
-
-    const fat =
-        document.getElementById(
-            "dietFat"
-        );
-
-
-    if (calories) {
-
-        calories.textContent =
-            `${target.calories}`;
 
     }
 
 
-    if (protein) {
-
-        protein.textContent =
-            `${target.protein}`;
-
-    }
-
-
-    if (carbs) {
-
-        carbs.textContent =
-            `${target.carbs}`;
-
-    }
-
-
-    if (fat) {
-
-        fat.textContent =
-            `${target.fat}`;
-
-    }
-
-
-    updateMealPlaceholders(
-        target
+    renderMealsPlan(
+        plan
     );
 
 }
 
 
 /* =====================================================
-   PASTI
+   RENDER PASTI
 ===================================================== */
 
-function updateMealPlaceholders(
-    target
+function renderMealsPlan(
+    plan
 ) {
 
-    const profile =
-        getProfile();
-
-
-    if (!profile) {
-        return;
-    }
-
-
     if (
-        typeof getMealDistribution !==
-        "function"
+        !plan ||
+        !plan.meals
     ) {
 
         return;
+
     }
 
 
-    const distribution =
-        getMealDistribution(
-            target
-        );
-
-
-    const names = [
-        "🥣 Colazione",
-        "🍝 Pranzo",
-        "🥩 Cena",
-        "🍎 Spuntino",
-        "🥛 Spuntino"
-    ];
-
-
-    distribution.forEach(
-        (meal, index) => {
+    plan.meals.forEach(
+        (
+            meal,
+            index
+        ) => {
 
             const element =
                 document.getElementById(
@@ -794,21 +829,210 @@ function updateMealPlaceholders(
 
 
             if (!element) {
+
                 return;
+
+            }
+
+
+            const foods =
+                meal.foods
+                    .map(
+                        food => `
+                            <div class="meal-food">
+                                <span>
+                                    ${escapeHTML(
+                                        food.name
+                                    )}
+                                    <small>
+                                        ${food.grams} g
+                                    </small>
+                                </span>
+
+                                <strong>
+                                    ${food.kcal} kcal
+                                </strong>
+                            </div>
+                        `
+                    )
+                    .join("");
+
+
+            element.innerHTML = `
+
+                <div class="meal-header">
+
+                    <strong>
+                        ${escapeHTML(
+                            meal.name
+                        )}
+                    </strong>
+
+                    <span>
+                        ${meal.totals.kcal} kcal
+                    </span>
+
+                </div>
+
+                <div class="meal-foods">
+
+                    ${foods}
+
+                </div>
+
+                <div class="meal-macros">
+
+                    P ${meal.totals.protein} g
+
+                    ·
+
+                    C ${meal.totals.carbs} g
+
+                    ·
+
+                    G ${meal.totals.fat} g
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    setText(
+        "dietTotalCalories",
+        `${plan.totals.kcal} kcal`
+    );
+
+
+    setText(
+        "dietTotalProtein",
+        `${plan.totals.protein} g`
+    );
+
+
+    setText(
+        "dietTotalCarbs",
+        `${plan.totals.carbs} g`
+    );
+
+
+    setText(
+        "dietTotalFat",
+        `${plan.totals.fat} g`
+    );
+
+}
+
+
+/* =====================================================
+   SCHERMATA ALLENAMENTO
+===================================================== */
+
+function updateWorkoutScreen() {
+
+    const workout =
+        typeof getStoredWorkout ===
+        "function"
+            ? getStoredWorkout()
+            : null;
+
+
+    if (!workout) {
+
+        return;
+
+    }
+
+
+    const todayIndex =
+        getTrainingDayIndex(
+            workout
+        );
+
+
+    const todayWorkout =
+        workout.workouts[
+            todayIndex
+        ];
+
+
+    if (!todayWorkout) {
+
+        return;
+
+    }
+
+
+    setText(
+        "workoutTitle",
+        todayWorkout.name
+    );
+
+
+    setText(
+        "workoutExerciseCount",
+        `${todayWorkout.exercises.length} esercizi`
+    );
+
+
+    todayWorkout.exercises.forEach(
+        (
+            exercise,
+            index
+        ) => {
+
+            const element =
+                document.getElementById(
+                    `exercise${index + 1}`
+                );
+
+
+            if (!element) {
+
+                return;
+
             }
 
 
             element.innerHTML = `
 
-                <strong>
-                    ${names[index]}
-                </strong>
+                <div class="exercise-name">
 
-                <span>
-                    ${meal.calories} kcal
-                    · ${meal.protein} g
-                    proteine
-                </span>
+                    <strong>
+                        ${escapeHTML(
+                            exercise.name
+                        )}
+                    </strong>
+
+                    <small>
+                        ${escapeHTML(
+                            exercise.muscle
+                        )}
+                    </small>
+
+                </div>
+
+                <div class="exercise-data">
+
+                    ${exercise.sets} ×
+                    ${escapeHTML(
+                        exercise.reps
+                    )}
+
+                    <span>
+                        RIR ${exercise.rir}
+                    </span>
+
+                </div>
+
+                <div class="exercise-rest">
+
+                    Recupero:
+                    ${exercise.rest}s
+
+                </div>
 
             `;
 
@@ -819,11 +1043,251 @@ function updateMealPlaceholders(
 
 
 /* =====================================================
+   GIORNO ALLENAMENTO
+===================================================== */
+
+function getTrainingDayIndex(
+    workout
+) {
+
+    if (
+        !workout ||
+        !workout.workouts ||
+        !workout.workouts.length
+    ) {
+
+        return 0;
+
+    }
+
+
+    /*
+       Usiamo il giorno della settimana.
+       Se oggi è domenica, utilizziamo l'ultimo
+       allenamento disponibile.
+    */
+
+    const day =
+        new Date()
+            .getDay();
+
+
+    if (day === 0) {
+
+        return (
+            workout.workouts.length -
+            1
+        );
+
+    }
+
+
+    return Math.min(
+        day - 1,
+        workout.workouts.length - 1
+    );
+
+}
+
+
+/* =====================================================
+   PROGRESSI
+===================================================== */
+
+function updateProgressScreen() {
+
+    if (
+        typeof getProgressSummary !==
+        "function"
+    ) {
+
+        return;
+
+    }
+
+
+    const progress =
+        getProgressSummary();
+
+
+    if (!progress) {
+
+        return;
+
+    }
+
+
+    setText(
+        "progressWeight",
+        progress.latestWeight !== null
+            ? `${progress.latestWeight} kg`
+            : "—"
+    );
+
+
+    setText(
+        "progressAverage",
+        progress.averageWeight7 !== null
+            ? `${progress.averageWeight7} kg`
+            : "—"
+    );
+
+
+    setText(
+        "progressChange",
+        progress.weightChange !== null
+            ? `${progress.weightChange > 0 ? "+" : ""}${progress.weightChange} kg`
+            : "—"
+    );
+
+
+    setText(
+        "progressWorkoutAdherence",
+        `${progress.workoutAdherence}%`
+    );
+
+
+    setText(
+        "progressMealAdherence",
+        `${progress.mealAdherence}%`
+    );
+
+}
+
+
+/* =====================================================
+   COACH
+===================================================== */
+
+function updateCoachScreen() {
+
+    const message =
+        typeof generateCoachMessage ===
+        "function"
+            ? generateCoachMessage()
+            : null;
+
+
+    if (message) {
+
+        setText(
+            "coachMessage",
+            message
+        );
+
+    }
+
+
+    const analysis =
+        typeof generateCoachAnalysis ===
+        "function"
+            ? generateCoachAnalysis()
+            : null;
+
+
+    if (!analysis) {
+
+        return;
+
+    }
+
+
+    setText(
+        "coachWeightAnalysis",
+        analysis.weight.message
+    );
+
+
+    setText(
+        "coachTrainingAnalysis",
+        analysis.training.message
+    );
+
+
+    setText(
+        "coachNutritionAnalysis",
+        analysis.nutrition.message
+    );
+
+}
+
+
+/* =====================================================
+   PROFILO
+===================================================== */
+
+function updateProfileScreen() {
+
+    const profile =
+        appGetProfile();
+
+
+    if (!profile) {
+
+        return;
+
+    }
+
+
+    setText(
+        "profileAge",
+        profile.age
+    );
+
+
+    setText(
+        "profileHeight",
+        `${profile.height} cm`
+    );
+
+
+    setText(
+        "profileWeight",
+        `${profile.weight} kg`
+    );
+
+
+    setText(
+        "profileTrainingDays",
+        profile.trainingDays
+    );
+
+
+    setText(
+        "profileMeals",
+        profile.meals
+    );
+
+}
+
+
+/* =====================================================
+   AGGIORNA TUTTE LE SCHERMATE
+===================================================== */
+
+function updateAllScreens() {
+
+    updateDashboard();
+
+    updateDietScreen();
+
+    updateWorkoutScreen();
+
+    updateProgressScreen();
+
+    updateCoachScreen();
+
+    updateProfileScreen();
+
+}
+
+
+/* =====================================================
    NAVIGAZIONE
 ===================================================== */
 
 function showScreen(
-    id,
+    screenId,
     button = null
 ) {
 
@@ -846,12 +1310,14 @@ function showScreen(
 
     const target =
         document.getElementById(
-            id
+            screenId
         );
 
 
     if (!target) {
+
         return;
+
     }
 
 
@@ -883,17 +1349,20 @@ function showScreen(
             "active"
         );
 
-    } else {
+    }
 
-        const matching =
+
+    else {
+
+        const matchingButton =
             document.querySelector(
-                `.nav button[data-screen="${id}"]`
+                `.nav button[data-screen="${screenId}"]`
             );
 
 
-        if (matching) {
+        if (matchingButton) {
 
-            matching.classList.add(
+            matchingButton.classList.add(
                 "active"
             );
 
@@ -902,23 +1371,66 @@ function showScreen(
     }
 
 
-    if (id === "home") {
+    /*
+       Aggiorna la schermata appena aperta.
+    */
+
+    if (
+        screenId ===
+        "home"
+    ) {
 
         updateDashboard();
 
     }
 
 
-    if (id === "diet") {
+    if (
+        screenId ===
+        "diet"
+    ) {
 
         updateDietScreen();
 
     }
 
 
-    if (id === "profile") {
+    if (
+        screenId ===
+        "workout"
+    ) {
 
-        updateProfileSummary();
+        updateWorkoutScreen();
+
+    }
+
+
+    if (
+        screenId ===
+        "progress"
+    ) {
+
+        updateProgressScreen();
+
+    }
+
+
+    if (
+        screenId ===
+        "coach"
+    ) {
+
+        updateCoachScreen();
+
+    }
+
+
+    if (
+        screenId ===
+        "profile"
+    ) {
+
+        updateProfileScreen();
 
     }
 
@@ -932,34 +1444,243 @@ function showScreen(
 
 
 /* =====================================================
-   CHECKLIST
+   COMPLETA ALLENAMENTO
 ===================================================== */
 
-function toggleCheck(
-    button
+function completeWorkout(
+    workoutIndex,
+    exerciseIndex
 ) {
 
-    if (!button) {
+    if (
+        typeof completeExercise !==
+        "function"
+    ) {
+
         return;
+
     }
 
 
-    button.classList.toggle(
-        "done"
-    );
+    const result =
+        completeExercise(
+            workoutIndex,
+            exerciseIndex
+        );
+
+
+    if (result) {
+
+        updateWorkoutScreen();
+
+    }
 
 }
 
 
 /* =====================================================
-   ESCAPE HTML
+   COMPLETA PASTO
+===================================================== */
+
+function completeMeal(
+    mealId
+) {
+
+    if (
+        typeof toggleMealCompleted !==
+        "function"
+    ) {
+
+        return;
+
+    }
+
+
+    toggleMealCompleted(
+        mealId
+    );
+
+
+    updateDietScreen();
+
+    updateDashboard();
+
+}
+
+
+/* =====================================================
+   REGISTRA PESO
+===================================================== */
+
+function recordWeight(
+    weight
+) {
+
+    if (
+        typeof addWeightEntry !==
+        "function"
+    ) {
+
+        return false;
+
+    }
+
+
+    const result =
+        addWeightEntry(
+            weight
+        );
+
+
+    if (result) {
+
+        updateProgressScreen();
+
+        updateDashboard();
+
+        updateCoachScreen();
+
+    }
+
+
+    return result;
+
+}
+
+
+/* =====================================================
+   REGISTRA MISURE
+===================================================== */
+
+function recordMeasurements(
+    measurements
+) {
+
+    if (
+        typeof addMeasurementEntry !==
+        "function"
+    ) {
+
+        return false;
+
+    }
+
+
+    const result =
+        addMeasurementEntry(
+            measurements
+        );
+
+
+    if (result) {
+
+        updateProgressScreen();
+
+        updateCoachScreen();
+
+    }
+
+
+    return result;
+
+}
+
+
+/* =====================================================
+   RIGENERA DIETA
+===================================================== */
+
+function regenerateDailyMeals() {
+
+    if (
+        typeof refreshDailyMeals !==
+        "function"
+    ) {
+
+        return null;
+
+    }
+
+
+    const plan =
+        refreshDailyMeals();
+
+
+    updateDietScreen();
+
+
+    return plan;
+
+}
+
+
+/* =====================================================
+   RIGENERA ALLENAMENTO
+===================================================== */
+
+function regenerateWorkout() {
+
+    if (
+        typeof refreshWorkout !==
+        "function"
+    ) {
+
+        return null;
+
+    }
+
+
+    const workout =
+        refreshWorkout();
+
+
+    updateWorkoutScreen();
+
+
+    return workout;
+
+}
+
+
+/* =====================================================
+   UTILITY TESTO
+===================================================== */
+
+function setText(
+    id,
+    value
+) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if (!element) {
+
+        return;
+
+    }
+
+
+    element.textContent =
+        value ?? "";
+
+}
+
+
+/* =====================================================
+   SICUREZZA HTML
 ===================================================== */
 
 function escapeHTML(
     value
 ) {
 
-    return String(value)
+    return String(
+        value ?? ""
+    )
         .replaceAll(
             "&",
             "&amp;"
@@ -985,58 +1706,137 @@ function escapeHTML(
 
 
 /* =====================================================
-   INIZIALIZZAZIONE
+   DATA
+===================================================== */
+
+function getCurrentDateString() {
+
+    return new Date()
+        .toISOString()
+        .split("T")[0];
+
+}
+
+
+/* =====================================================
+   INIZIALIZZAZIONE APP
 ===================================================== */
 
 function initializeApp() {
 
+    console.log(
+        `${APP_NAME} v${APP_VERSION}`
+    );
+
+
     const profile =
-        getProfile();
+        appGetProfile();
 
 
-    if (profile) {
+    /*
+       Se il profilo non esiste,
+       mostra la configurazione.
+    */
 
-        showMainApp();
+    if (!profile) {
 
-        updateDashboard();
-
-        updateDietScreen();
-
-        showScreen(
-            "home"
-        );
+        showSetupScreen();
 
         return;
-    }
-
-
-    const app =
-        document.getElementById(
-            "mainApp"
-        );
-
-    const setup =
-        document.getElementById(
-            "setupScreen"
-        );
-
-
-    if (app) {
-
-        app.classList.add(
-            "hidden"
-        );
 
     }
 
 
-    if (setup) {
+    /*
+       Se il profilo esiste,
+       entra direttamente nell'app.
+    */
 
-        setup.classList.remove(
-            "hidden"
-        );
+    showMainApplication();
+
+
+    /*
+       Assicuriamoci che esista
+       il target nutrizionale.
+    */
+
+    if (
+        typeof getNutritionTarget ===
+        "function"
+    ) {
+
+        if (
+            !getNutritionTarget()
+        ) {
+
+            refreshNutrition();
+
+        }
 
     }
+
+
+    /*
+       Assicuriamoci che esista
+       un piano alimentare.
+    */
+
+    if (
+        typeof getSavedMealsPlan ===
+        "function"
+    ) {
+
+        if (
+            !getSavedMealsPlan()
+        ) {
+
+            refreshDailyMeals();
+
+        }
+
+    }
+
+
+    /*
+       Assicuriamoci che esista
+       la scheda.
+    */
+
+    if (
+        typeof getStoredWorkout ===
+        "function"
+    ) {
+
+        if (
+            !getStoredWorkout()
+        ) {
+
+            refreshWorkout();
+
+        }
+
+    }
+
+
+    /*
+       Coach.
+    */
+
+    if (
+        typeof refreshCoach ===
+        "function"
+    ) {
+
+        refreshCoach();
+
+    }
+
+
+    updateAllScreens();
+
+    showScreen(
+        "home"
+    );
 
 }
 
