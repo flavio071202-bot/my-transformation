@@ -548,24 +548,30 @@
             <button
                 type="button"
                 class="icon-button"
-                onclick="regenerateDailyMeals()"
-                aria-label="Rigenera dieta"
+                onclick="importWeeklyCoachDiet()"
+                aria-label="Importa settimana del Coach"
             >
-                ↻
+                📥
             </button>
 
         </header>
 
 
         <p class="subtitle">
-            Un piano costruito sui tuoi dati,
-            sui tuoi obiettivi e sulle tue preferenze.
+            Il tuo piano alimentare viene deciso
+            dal Coach IA in base al tuo percorso.
         </p>
 
 
-        <!-- COACH IA -->
+        <!-- =================================================
+             COACH IA
+        ================================================= -->
 
-        <div class="card" style="margin-top:24px;">
+        <div
+            id="coachDietCard"
+            class="card"
+            style="margin-top:24px;"
+        >
 
             <div class="eyebrow">
                 COACH IA
@@ -581,20 +587,35 @@
                 agli allenamenti e alla tua aderenza.
             </p>
 
+
             <button
                 type="button"
                 class="primary-button"
-                onclick="openChatGPTWithCoachPrompt('weekly_diet')"
+                onclick="openCoachWeeklyPlan()"
             >
                 🤖 GENERA LA MIA SETTIMANA
+            </button>
+
+
+            <button
+                type="button"
+                class="primary-button"
+                onclick="importWeeklyCoachDiet()"
+            >
+                📥 IMPORTA SETTIMANA DEL COACH
             </button>
 
         </div>
 
 
-        <!-- MACRO -->
+        <!-- =================================================
+             MACRO
+        ================================================= -->
 
-        <div class="macro-grid">
+        <div
+            id="dietMacros"
+            class="macro-grid"
+        >
 
             <div class="macro-card">
 
@@ -666,89 +687,105 @@
         </div>
 
 
-        <div class="section-heading">
-
-            <h2>
-                Oggi
-            </h2>
-
-        </div>
-
+        <!-- =================================================
+             STATO IMPORTAZIONE
+        ================================================= -->
 
         <div
-            id="meal1"
-            class="meal-card"
+            id="dietCoachStatus"
+            class="info-card"
+            style="margin-top:24px;"
         >
-
-            <div class="loading">
-                In preparazione...
-            </div>
-
-        </div>
-
-
-        <div
-            id="meal2"
-            class="meal-card"
-        >
-
-            <div class="loading">
-                In preparazione...
-            </div>
-
-        </div>
-
-
-        <div
-            id="meal3"
-            class="meal-card"
-        >
-
-            <div class="loading">
-                In preparazione...
-            </div>
-
-        </div>
-
-
-        <div
-            id="meal4"
-            class="meal-card"
-        ></div>
-
-
-        <div
-            id="meal5"
-            class="meal-card"
-        ></div>
-
-
-        <div class="info-card">
 
             <span>
-                TOTALE GIORNALIERO
+                STATO PIANO
             </span>
 
-            <strong id="dietTotalCalories">
-                —
+            <strong>
+                Nessuna settimana del Coach importata.
             </strong>
 
             <div class="meal-macros">
+                Premi "Genera la mia settimana",
+                poi copia la risposta di ChatGPT
+                e torna qui per importarla.
+            </div>
 
-                Proteine:
-                <b id="dietTotalProtein">
-                    —
-                </b>
+        </div>
 
-                · Carboidrati:
-                <b id="dietTotalCarbs">
-                    —
-                </b>
 
-                · Grassi:
-                <b id="dietTotalFat">
+        <div
+            id="dietTodaySection"
+            style="display:none;"
+        >
+
+            <div class="section-heading">
+
+                <h2>
+                    Oggi
+                </h2>
+
+            </div>
+
+
+            <div
+                id="meal1"
+                class="meal-card"
+            ></div>
+
+
+            <div
+                id="meal2"
+                class="meal-card"
+            ></div>
+
+
+            <div
+                id="meal3"
+                class="meal-card"
+            ></div>
+
+
+            <div
+                id="meal4"
+                class="meal-card"
+            ></div>
+
+
+            <div
+                id="meal5"
+                class="meal-card"
+            ></div>
+
+
+            <div class="info-card">
+
+                <span>
+                    TOTALE GIORNALIERO
+                </span>
+
+                <strong id="dietTotalCalories">
                     —
-                </b>
+                </strong>
+
+                <div class="meal-macros">
+
+                    Proteine:
+                    <b id="dietTotalProtein">
+                        —
+                    </b>
+
+                    · Carboidrati:
+                    <b id="dietTotalCarbs">
+                        —
+                    </b>
+
+                    · Grassi:
+                    <b id="dietTotalFat">
+                        —
+                    </b>
+
+                </div>
 
             </div>
 
@@ -1026,9 +1063,18 @@
             <button
                 type="button"
                 class="primary-button"
-                onclick="openChatGPTWithCoachPrompt('weekly_diet')"
+                onclick="openCoachWeeklyPlan()"
             >
                 🤖 GENERA LA MIA SETTIMANA
+            </button>
+
+
+            <button
+                type="button"
+                class="primary-button"
+                onclick="importWeeklyCoachDiet()"
+            >
+                📥 IMPORTA SETTIMANA DEL COACH
             </button>
 
 
@@ -1331,6 +1377,491 @@
 <script src="coach.js"></script>
 
 <script src="app.js"></script>
+
+
+
+<!-- =====================================================
+     COACH IA — IMPORTAZIONE SETTIMANA
+===================================================== -->
+
+<script>
+
+async function importWeeklyCoachDiet() {
+
+    try {
+
+        if (
+            typeof importCoachDietFromClipboard !==
+            "function"
+        ) {
+
+            alert(
+                "Sistema di importazione non disponibile."
+            );
+
+            return;
+
+        }
+
+
+        const result =
+            await importCoachDietFromClipboard();
+
+
+        if (
+            !result ||
+            !result.success
+        ) {
+
+            alert(
+                result &&
+                result.message
+                    ? result.message
+                    : "Non è stato possibile importare la settimana."
+            );
+
+            return;
+
+        }
+
+
+        alert(
+            "✅ Settimana del Coach importata correttamente!"
+        );
+
+
+        updateDietScreen();
+
+        updateDashboard();
+
+
+        showScreen(
+            "diet"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        alert(
+            "Errore durante l'importazione della settimana."
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
+   RENDER DIETA COACH
+===================================================== */
+
+function renderCoachImportedDiet() {
+
+    const plan =
+        typeof getSavedMealsPlan ===
+        "function"
+            ? getSavedMealsPlan()
+            : null;
+
+
+    const status =
+        document.getElementById(
+            "dietCoachStatus"
+        );
+
+
+    const todaySection =
+        document.getElementById(
+            "dietTodaySection"
+        );
+
+
+    if (
+        !plan ||
+        plan.imported !== true ||
+        plan.source !== "coach_ai" ||
+        !Array.isArray(plan.days) ||
+        plan.days.length !== 7
+    ) {
+
+        if (status) {
+
+            status.innerHTML = `
+
+                <span>
+                    STATO PIANO
+                </span>
+
+                <strong>
+                    Nessuna settimana del Coach importata.
+                </strong>
+
+                <div class="meal-macros">
+                    Premi "Genera la mia settimana",
+                    poi copia la risposta di ChatGPT
+                    e torna qui per importarla.
+                </div>
+
+            `;
+
+        }
+
+
+        if (todaySection) {
+
+            todaySection.style.display =
+                "none";
+
+        }
+
+
+        return;
+
+    }
+
+
+    const today =
+        typeof getMealsDay ===
+        "function"
+            ? getMealsDay(
+                new Date()
+            )
+            : null;
+
+
+    if (!today) {
+
+        return;
+
+    }
+
+
+    if (status) {
+
+        status.innerHTML = `
+
+            <span>
+                STATO PIANO
+            </span>
+
+            <strong>
+                ✅ Settimana del Coach attiva
+            </strong>
+
+            <div class="meal-macros">
+                ${today.day || "Oggi"} ·
+                ${today.meals.length} pasti
+            </div>
+
+        `;
+
+    }
+
+
+    if (todaySection) {
+
+        todaySection.style.display =
+            "block";
+
+    }
+
+
+    const target =
+        today.target ||
+        null;
+
+
+    if (target) {
+
+        setText(
+            "dietCalories",
+            target.calories
+                ? `${target.calories}`
+                : "—"
+        );
+
+        setText(
+            "dietProtein",
+            target.protein
+                ? `${target.protein} g`
+                : "—"
+        );
+
+        setText(
+            "dietCarbs",
+            target.carbs
+                ? `${target.carbs} g`
+                : "—"
+        );
+
+        setText(
+            "dietFat",
+            target.fat
+                ? `${target.fat} g`
+                : "—"
+        );
+
+    }
+
+
+    const slots = [
+
+        "meal1",
+        "meal2",
+        "meal3",
+        "meal4",
+        "meal5"
+
+    ];
+
+
+    slots.forEach(
+        id => {
+
+            const element =
+                document.getElementById(
+                    id
+                );
+
+
+            if (element) {
+
+                element.innerHTML =
+                    "";
+
+            }
+
+        }
+    );
+
+
+    today.meals.forEach(
+        (
+            meal,
+            index
+        ) => {
+
+            const element =
+                document.getElementById(
+                    `meal${index + 1}`
+                );
+
+
+            if (!element) {
+
+                return;
+
+            }
+
+
+            const foods =
+                Array.isArray(
+                    meal.foods
+                )
+                    ? meal.foods
+                    : [];
+
+
+            const foodsHTML =
+                foods.map(
+                    food => `
+
+                        <div class="meal-food">
+
+                            <span>
+
+                                ${escapeHTML(
+                                    food.name
+                                )}
+
+                                <small>
+                                    ${food.grams} g
+                                </small>
+
+                            </span>
+
+                            <strong>
+                                ${food.kcal || 0} kcal
+                            </strong>
+
+                        </div>
+
+                    `
+                ).join("");
+
+
+            element.innerHTML = `
+
+                <div class="meal-header">
+
+                    <strong>
+                        ${escapeHTML(
+                            meal.name ||
+                            `Pasto ${index + 1}`
+                        )}
+                    </strong>
+
+                    <span>
+                        ${meal.totals &&
+                          meal.totals.kcal
+                            ? meal.totals.kcal
+                            : 0}
+                        kcal
+                    </span>
+
+                </div>
+
+
+                <div class="meal-foods">
+
+                    ${foodsHTML}
+
+                </div>
+
+
+                <div class="meal-macros">
+
+                    P
+                    ${meal.totals &&
+                      meal.totals.protein
+                        ? meal.totals.protein
+                        : 0}
+                    g
+
+                    ·
+
+                    C
+                    ${meal.totals &&
+                      meal.totals.carbs
+                        ? meal.totals.carbs
+                        : 0}
+                    g
+
+                    ·
+
+                    G
+                    ${meal.totals &&
+                      meal.totals.fat
+                        ? meal.totals.fat
+                        : 0}
+                    g
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="primary-button"
+                    onclick="completeMeal('${meal.id}')"
+                >
+                    ${meal.completed
+                        ? "✓ PASTO COMPLETATO"
+                        : "SEGNA COME COMPLETATO"}
+                </button>
+
+            `;
+
+        }
+    );
+
+
+    const totals =
+        today.totals ||
+        {
+            kcal: 0,
+            protein: 0,
+            carbs: 0,
+            fat: 0
+        };
+
+
+    setText(
+        "dietTotalCalories",
+        `${totals.kcal || 0} kcal`
+    );
+
+
+    setText(
+        "dietTotalProtein",
+        `${totals.protein || 0} g`
+    );
+
+
+    setText(
+        "dietTotalCarbs",
+        `${totals.carbs || 0} g`
+    );
+
+
+    setText(
+        "dietTotalFat",
+        `${totals.fat || 0} g`
+    );
+
+}
+
+
+
+/* =====================================================
+   OVERRIDE SCHERMATA DIETA
+===================================================== */
+
+const originalUpdateDietScreen =
+    typeof updateDietScreen ===
+    "function"
+        ? updateDietScreen
+        : null;
+
+
+function updateDietScreen() {
+
+    renderCoachImportedDiet();
+
+}
+
+
+
+/* =====================================================
+   AGGIORNA DOPO IMPORTAZIONE
+===================================================== */
+
+const originalCompleteMeal =
+    typeof completeMeal ===
+    "function"
+        ? completeMeal
+        : null;
+
+
+function completeMeal(
+    mealId
+) {
+
+    if (
+        typeof toggleMealCompleted ===
+        "function"
+    ) {
+
+        toggleMealCompleted(
+            mealId,
+            new Date()
+        );
+
+    }
+
+
+    renderCoachImportedDiet();
+
+    updateDashboard();
+
+}
+
+</script>
 
 
 </body>
