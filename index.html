@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#09090b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>MY TRANSFORMATION</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #09090b;
+    --card: #151518;
+    --card2: #1d1d21;
+    --border: #29292f;
+    --text: #f5f5f5;
+    --muted: #92929a;
+    --accent: #ffffff;
+    --success: #35d07f;
+    --danger: #ff5c5c;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+                 "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh;
+    padding-bottom: 90px;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.app {
+    max-width: 600px;
+    margin: auto;
+    padding: 24px 18px 100px;
+}
+
+/* HEADER */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.logo span {
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.settings {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: white;
+    font-size: 18px;
+}
+
+/* HERO */
+
+.hero {
+    margin-bottom: 24px;
+}
+
+.hero-label {
+    color: var(--muted);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    margin-bottom: 7px;
+}
+
+.hero h1 {
+    font-size: 36px;
+    line-height: 1;
+    letter-spacing: -1.5px;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* PROGRESS */
+
+.progress-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 20px;
+    margin-bottom: 14px;
+}
+
+.progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin-bottom: 14px;
+}
+
+.progress-title {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.progress-value {
+    font-size: 27px;
+    font-weight: 800;
+}
+
+.progress-bar {
+    height: 7px;
+    background: #29292d;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 8%;
+    background: white;
+    border-radius: 20px;
+}
+
+/* GRID */
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.stat {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 18px;
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.stat-value {
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.stat-sub {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+/* SECTION */
+
+.section {
+    margin-top: 26px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.section-title {
+    font-size: 19px;
+    font-weight: 750;
+}
+
+.section-link {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* TODAY */
+
+.today-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    overflow: hidden;
+}
+
+.today-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 17px;
+    border-bottom: 1px solid var(--border);
+}
+
+.today-item:last-child {
+    border-bottom: none;
+}
+
+.today-icon {
+    width: 43px;
+    height: 43px;
+    border-radius: 14px;
+    background: var(--card2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 19px;
+}
+
+.today-info {
+    flex: 1;
+}
+
+.today-name {
+    font-weight: 650;
+    font-size: 14px;
+}
+
+.today-detail {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.check {
+    width: 26px;
+    height: 26px;
+    border: 1px solid #44444a;
+    border-radius: 50%;
+    background: transparent;
+    color: transparent;
+}
+
+.check.done {
+    background: var(--success);
+    border-color: var(--success);
+    color: #07130c;
+}
+
+/* COACH */
+
+.coach-card {
+    background: linear-gradient(145deg, #19191d, #101012);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 20px;
+}
+
+.coach-label {
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 11px;
+    margin-bottom: 10px;
+}
+
+.coach-text {
+    font-size: 16px;
+    line-height: 1.45;
+    font-weight: 600;
+}
+
+/* NAV */
+
+.nav {
+    position: fixed;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 24px);
+    max-width: 580px;
+    background: rgba(25,25,29,.94);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+    z-index: 100;
+}
+
+.nav button {
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    padding: 9px 2px;
+    border-radius: 17px;
+    font-size: 10px;
+}
+
+.nav button.active {
+    background: #2a2a2f;
+    color: white;
+}
+
+.nav-icon {
+    display: block;
+    font-size: 18px;
+    margin-bottom: 3px;
+}
+
+/* SCREENS */
+
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+}
+
+/* FORM */
+
+.form-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 20px;
+    margin-bottom: 14px;
+}
+
+.form-group {
+    margin-bottom: 17px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 7px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    color: white;
+    border-radius: 13px;
+    padding: 13px;
+    outline: none;
+}
+
+.primary {
+    width: 100%;
+    border: none;
+    background: white;
+    color: black;
+    border-radius: 14px;
+    padding: 14px;
+    font-weight: 750;
+    margin-top: 10px;
+}
+
+/* LIST */
+
+.list-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    overflow: hidden;
+}
+
+.list-row {
+    padding: 17px;
+    border-bottom: 1px solid var(--border);
+}
+
+.list-row:last-child {
+    border-bottom: none;
+}
+
+.list-row strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.list-row span {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* DESKTOP */
+
+@media (min-width: 700px) {
+    .app {
+        padding-top: 40px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="header">
+    <div class="logo">MY <span>TRANSFORMATION</span></div>
+    <button class="settings" onclick="showScreen('profile')">⚙︎</button>
+</header>
+
+<!-- HOME -->
+
+<section id="home" class="screen active">
+
+    <div class="hero">
+        <div class="hero-label">Il tuo percorso</div>
+        <h1>Costruisci il tuo fisico.</h1>
+        <p>Un giorno alla volta. Nessuna scorciatoia.</p>
+    </div>
+
+    <div class="progress-card">
+        <div class="progress-top">
+            <div>
+                <div class="progress-title">FASE ATTUALE</div>
+                <div class="progress-value">Preparazione</div>
+            </div>
+            <div class="progress-title">0%</div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+    </div>
+
+    <div class="grid">
+
+        <div class="stat">
+            <div class="stat-label">PESO</div>
+            <div class="stat-value" id="weightHome">—</div>
+            <div class="stat-sub">inseriscilo nel profilo</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">DISCIPLINA</div>
+            <div class="stat-value">—</div>
+            <div class="stat-sub">inizia oggi</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">ALLENAMENTI</div>
+            <div class="stat-value">0</div>
+            <div class="stat-sub">questo mese</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">STREAK</div>
+            <div class="stat-value">0 🔥</div>
+            <div class="stat-sub">giorni consecutivi</div>
+        </div>
+
+    </div>
+
+    <div class="section">
+
+        <div class="section-header">
+            <div class="section-title">Oggi</div>
+            <div class="section-link">Obiettivi</div>
+        </div>
+
+        <div class="today-card">
+
+            <div class="today-item">
+                <div class="today-icon">🥩</div>
+                <div class="today-info">
+                    <div class="today-name">Alimentazione</div>
+                    <div class="today-detail">Configura il tuo piano</div>
+                </div>
+                <button class="check" onclick="toggleCheck(this)">✓</button>
+            </div>
+
+            <div class="today-item">
+                <div class="today-icon">🏋️</div>
+                <div class="today-info">
+                    <div class="today-name">Allenamento</div>
+                    <div class="today-detail">Nessuna scheda configurata</div>
+                </div>
+                <button class="check" onclick="toggleCheck(this)">✓</button>
+            </div>
+
+            <div class="today-item">
+                <div class="today-icon">💧</div>
+                <div class="today-info">
+                    <div class="today-name">Acqua</div>
+                    <div class="today-detail">Obiettivo giornaliero</div>
+                </div>
+                <button class="check" onclick="toggleCheck(this)">✓</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="section">
+
+        <div class="section-header">
+            <div class="section-title">Coach</div>
+        </div>
+
+        <div class="coach-card">
+            <div class="coach-label">Messaggio del giorno</div>
+            <div class="coach-text">
+                Prima costruiamo il sistema. Poi iniziamo a spingere.
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- DIETA -->
+
+<section id="diet" class="screen">
+
+    <div class="hero">
+        <div class="hero-label">Nutrizione</div>
+        <h1>Dieta</h1>
+        <p>Il piano alimentare verrà costruito in base al tuo profilo.</p>
+    </div>
+
+    <div class="grid">
+        <div class="stat">
+            <div class="stat-label">CALORIE</div>
+            <div class="stat-value">—</div>
+            <div class="stat-sub">kcal / giorno</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">PROTEINE</div>
+            <div class="stat-value">—</div>
+            <div class="stat-sub">g / giorno</div>
+        </div>
+    </div>
+
+    <div class="list-card">
+
+        <div class="list-row">
+            <strong>🥣 Colazione</strong>
+            <span>Il tuo piano verrà generato dopo la configurazione.</span>
+        </div>
+
+        <div class="list-row">
+            <strong>🍝 Pranzo</strong>
+            <span>Quantità e alimenti saranno personalizzati.</span>
+        </div>
+
+        <div class="list-row">
+            <strong>🥩 Cena</strong>
+            <span>Il piano sarà adattato al tuo obiettivo.</span>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- WORKOUT -->
+
+<section id="workout" class="screen">
+
+    <div class="hero">
+        <div class="hero-label">Training</div>
+        <h1>Allenamento</h1>
+        <p>La tua programmazione mensile.</p>
+    </div>
+
+    <div class="progress-card">
+        <div class="progress-title">PROGRAMMA</div>
+        <div class="progress-value" style="margin-top:7px;">
+            Nessuna scheda
+        </div>
+        <p style="color:var(--muted);font-size:12px;margin-top:8px;">
+            Configura prima il tuo profilo.
+        </p>
+    </div>
+
+</section>
+
+<!-- PROGRESS -->
+
+<section id="progress" class="screen">
+
+    <div class="hero">
+        <div class="hero-label">Tracking</div>
+        <h1>Progressi</h1>
+        <p>Qui vedrai la trasformazione nel tempo.</p>
+    </div>
+
+    <div class="list-card">
+
+        <div class="list-row">
+            <strong>⚖️ Peso</strong>
+            <span>Nessun dato registrato.</span>
+        </div>
+
+        <div class="list-row">
+            <strong>📏 Misure</strong>
+            <span>Nessuna misura registrata.</span>
+        </div>
+
+        <div class="list-row">
+            <strong>📸 Foto progressi</strong>
+            <span>Nessuna foto registrata.</span>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- COACH -->
+
+<section id="coach" class="screen">
+
+    <div class="hero">
+        <div class="hero-label">Personal AI</div>
+        <h1>Coach</h1>
+        <p>Il tuo coach personale sarà collegato al tuo percorso.</p>
+    </div>
+
+    <div class="coach-card">
+        <div class="coach-label">Coach AI</div>
+
+        <div class="coach-text">
+            "Non iniziamo con le scuse. Prima configuriamo il tuo percorso,
+            poi ogni giorno avrai qualcosa da fare."
+        </div>
+
+        <button class="primary" onclick="alert('Il Coach AI verrà collegato nella prossima fase.')">
+            PARLA CON IL COACH
+        </button>
+    </div>
+
+</section>
+
+<!-- PROFILE -->
+
+<section id="profile" class="screen">
+
+    <div class="hero">
+        <div class="hero-label">Configurazione</div>
+        <h1>Il tuo profilo.</h1>
+        <p>Inserisci i tuoi dati quando sei pronto.</p>
+    </div>
+
+    <div class="form-card">
+
+        <div class="form-group">
+            <label>ETÀ</label>
+            <input id="age" type="number" placeholder="es. 23">
+        </div>
+
+        <div class="form-group">
+            <label>ALTEZZA (CM)</label>
+            <input id="height" type="number" placeholder="es. 173">
+        </div>
+
+        <div class="form-group">
+            <label>PESO (KG)</label>
+            <input id="weight" type="number" step="0.1" placeholder="es. 67">
+        </div>
+
+        <div class="form-group">
+            <label>ALLENAMENTI A SETTIMANA</label>
+            <select id="trainingDays">
+                <option value="">Seleziona</option>
+                <option>3</option>
+                <option>4</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>PASTI AL GIORNO</label>
+            <select id="meals">
+                <option value="">Seleziona</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>OBIETTIVO</label>
+            <select id="goal">
+                <option value="">Seleziona</option>
+                <option>Perdere grasso</option>
+                <option>Ricomporsi</option>
+                <option>Aumentare massa muscolare</option>
+                <option>Definizione</option>
+            </select>
+        </div>
+
+        <button class="primary" onclick="saveProfile()">
+            SALVA PROFILO
+        </button>
+
+    </div>
+
+</section>
+
+</div>
+
+<!-- NAVIGATION -->
+
+<nav class="nav">
+
+    <button class="active" onclick="showScreen('home', this)">
+        <span class="nav-icon">⌂</span>
+        Home
+    </button>
+
+    <button onclick="showScreen('diet', this)">
+        <span class="nav-icon">🥗</span>
+        Dieta
+    </button>
+
+    <button onclick="showScreen('workout', this)">
+        <span class="nav-icon">🏋️</span>
+        Allenamento
+    </button>
+
+    <button onclick="showScreen('progress', this)">
+        <span class="nav-icon">📈</span>
+        Progressi
+    </button>
+
+    <button onclick="showScreen('coach', this)">
+        <span class="nav-icon">🤖</span>
+        Coach
+    </button>
+
+</nav>
+
+<script>
+
+function showScreen(id, button) {
+
+    document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+    });
+
+    document.getElementById(id).classList.add('active');
+
+    document.querySelectorAll('.nav button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    if (button) {
+        button.classList.add('active');
+    }
+
+    window.scrollTo(0,0);
+}
+
+function toggleCheck(button) {
+    button.classList.toggle('done');
+}
+
+function saveProfile() {
+
+    const profile = {
+        age: document.getElementById('age').value,
+        height: document.getElementById('height').value,
+        weight: document.getElementById('weight').value,
+        trainingDays: document.getElementById('trainingDays').value,
+        meals: document.getElementById('meals').value,
+        goal: document.getElementById('goal').value
+    };
+
+    localStorage.setItem('myTransformationProfile', JSON.stringify(profile));
+
+    if (profile.weight) {
+        document.getElementById('weightHome').textContent =
+            profile.weight + ' kg';
+    }
+
+    alert('Profilo salvato. Il prossimo passo sarà costruire il motore della tua trasformazione.');
+}
+
+function loadProfile() {
+
+    const saved = localStorage.getItem('myTransformationProfile');
+
+    if (!saved) return;
+
+    const profile = JSON.parse(saved);
+
+    document.getElementById('age').value = profile.age || '';
+    document.getElementById('height').value = profile.height || '';
+    document.getElementById('weight').value = profile.weight || '';
+    document.getElementById('trainingDays').value = profile.trainingDays || '';
+    document.getElementById('meals').value = profile.meals || '';
+    document.getElementById('goal').value = profile.goal || '';
+
+    if (profile.weight) {
+        document.getElementById('weightHome').textContent =
+            profile.weight + ' kg';
+    }
+}
+
+loadProfile();
+
+</script>
+
+</body>
+</html>
