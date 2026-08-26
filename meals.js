@@ -1,6 +1,7 @@
 /* =====================================================
    MY TRANSFORMATION
-   MEALS ENGINE — COACH IA + WEEKLY IMPORT
+   MEALS ENGINE — COACH IA ONLY
+   VERSIONE DEFINITIVA
 ===================================================== */
 
 const MEALS_STORAGE_KEY = "myTransformationMeals";
@@ -109,264 +110,13 @@ function getMealsTarget() {
 
     }
 
-    if (
-        typeof refreshNutrition ===
-        "function"
-    ) {
-
-        return refreshNutrition();
-
-    }
-
     return null;
 
 }
 
 
 /* =====================================================
-   DATABASE
-===================================================== */
-
-function getMealsDatabase() {
-
-    if (
-        typeof FOOD_DATABASE !==
-        "undefined"
-    ) {
-
-        return FOOD_DATABASE;
-
-    }
-
-    return [];
-
-}
-
-
-/* =====================================================
-   PREFERENZE
-===================================================== */
-
-function parsePreferenceList(value) {
-
-    return String(value || "")
-        .split(/[,;\n]+/)
-        .map(
-            item =>
-                mealsNormalize(item)
-        )
-        .filter(Boolean);
-
-}
-
-
-function foodMatchesText(food, searchText) {
-
-    const searchable = [
-
-        food.name,
-
-        ...(food.tags || [])
-
-    ]
-        .map(
-            item =>
-                mealsNormalize(item)
-        )
-        .join(" ");
-
-    return searchable.includes(
-        searchText
-    );
-
-}
-
-
-/* =====================================================
-   ESCLUSIONI
-===================================================== */
-
-function isFoodExcluded(food, profile) {
-
-    if (!profile) {
-
-        return false;
-
-    }
-
-    const dislikes =
-        parsePreferenceList(
-            profile.dislikes
-        );
-
-    const allergies =
-        parsePreferenceList(
-            profile.allergies
-        );
-
-    return [
-        ...dislikes,
-        ...allergies
-    ].some(
-        item =>
-            foodMatchesText(
-                food,
-                item
-            )
-    );
-
-}
-
-
-/* =====================================================
-   PREFERITI
-===================================================== */
-
-function isFoodPreferred(food, profile) {
-
-    if (!profile) {
-
-        return false;
-
-    }
-
-    const likes =
-        parsePreferenceList(
-            profile.likes
-        );
-
-    if (!likes.length) {
-
-        return false;
-
-    }
-
-    return likes.some(
-        item =>
-            foodMatchesText(
-                food,
-                item
-            )
-    );
-
-}
-
-
-/* =====================================================
-   ALIMENTI DISPONIBILI
-===================================================== */
-
-function getAvailableMealFoods(
-    profile,
-    category
-) {
-
-    return getMealsDatabase()
-        .filter(food => {
-
-            if (
-                category &&
-                food.category !== category
-            ) {
-
-                return false;
-
-            }
-
-            if (
-                isFoodExcluded(
-                    food,
-                    profile
-                )
-            ) {
-
-                return false;
-
-            }
-
-            return true;
-
-        });
-
-}
-
-
-/* =====================================================
-   SCELTA ALIMENTO
-===================================================== */
-
-function chooseMealFood(
-    profile,
-    category,
-    usedIds = []
-) {
-
-    const foods =
-        getAvailableMealFoods(
-            profile,
-            category
-        );
-
-    if (!foods.length) {
-
-        return null;
-
-    }
-
-    const preferred =
-        foods.filter(
-            food =>
-                isFoodPreferred(
-                    food,
-                    profile
-                ) &&
-                !usedIds.includes(
-                    food.id
-                )
-        );
-
-    if (preferred.length) {
-
-        return preferred[
-            Math.floor(
-                Math.random() *
-                preferred.length
-            )
-        ];
-
-    }
-
-    const unused =
-        foods.filter(
-            food =>
-                !usedIds.includes(
-                    food.id
-                )
-        );
-
-    if (unused.length) {
-
-        return unused[
-            Math.floor(
-                Math.random() *
-                unused.length
-            )
-        ];
-
-    }
-
-    return foods[
-        Math.floor(
-            Math.random() *
-            foods.length
-        )
-    ];
-
-}
-
-
-/* =====================================================
-   NUTRIZIONE ALIMENTO
+   TOTALI ALIMENTO
 ===================================================== */
 
 function calculateMealFoodNutrition(
@@ -419,67 +169,12 @@ function calculateMealFoodNutrition(
 
 
 /* =====================================================
-   CREA INGREDIENTE
-===================================================== */
-
-function createMealIngredient(
-    food,
-    grams
-) {
-
-    if (!food) {
-
-        return null;
-
-    }
-
-    const nutrition =
-        calculateMealFoodNutrition(
-            food,
-            grams
-        );
-
-    return {
-
-        id:
-            food.id,
-
-        name:
-            food.name,
-
-        category:
-            food.category,
-
-        grams:
-            mealsRound(
-                grams
-            ),
-
-        kcal:
-            nutrition.kcal,
-
-        protein:
-            nutrition.protein,
-
-        carbs:
-            nutrition.carbs,
-
-        fat:
-            nutrition.fat,
-
-        fiber:
-            nutrition.fiber
-
-    };
-
-}
-
-
-/* =====================================================
    TOTALI PASTO
 ===================================================== */
 
-function calculateMealTotals(foods = []) {
+function calculateMealTotals(
+    foods = []
+) {
 
     const totals = {
 
@@ -557,752 +252,12 @@ function calculateMealTotals(foods = []) {
 
 
 /* =====================================================
-   AGGIUNGI INGREDIENTE
+   TOTALI GIORNATA
 ===================================================== */
 
-function addMealIngredient(
-    foods,
-    food,
-    grams
+function calculateDailyTotals(
+    meals = []
 ) {
-
-    if (
-        !food ||
-        mealsNumber(grams) <= 0
-    ) {
-
-        return;
-
-    }
-
-    const ingredient =
-        createMealIngredient(
-            food,
-            grams
-        );
-
-    if (ingredient) {
-
-        foods.push(
-            ingredient
-        );
-
-    }
-
-}
-
-
-/* =====================================================
-   TARGET PASTI
-===================================================== */
-
-function getMealTargets(
-    target,
-    numberOfMeals
-) {
-
-    let percentages;
-
-    if (numberOfMeals === 3) {
-
-        percentages = [
-            0.25,
-            0.40,
-            0.35
-        ];
-
-    }
-
-    else if (numberOfMeals === 4) {
-
-        percentages = [
-            0.22,
-            0.33,
-            0.15,
-            0.30
-        ];
-
-    }
-
-    else if (numberOfMeals === 5) {
-
-        percentages = [
-            0.20,
-            0.30,
-            0.15,
-            0.10,
-            0.25
-        ];
-
-    }
-
-    else {
-
-        percentages = [
-            0.25,
-            0.40,
-            0.35
-        ];
-
-    }
-
-    return percentages.map(
-        percentage => ({
-
-            calories:
-                mealsRound(
-                    mealsNumber(
-                        target.calories
-                    ) * percentage
-                ),
-
-            protein:
-                mealsRound(
-                    mealsNumber(
-                        target.protein
-                    ) * percentage
-                ),
-
-            carbs:
-                mealsRound(
-                    mealsNumber(
-                        target.carbs
-                    ) * percentage
-                ),
-
-            fat:
-                mealsRound(
-                    mealsNumber(
-                        target.fat
-                    ) * percentage
-                )
-
-        })
-    );
-
-}
-
-
-/* =====================================================
-   COLAZIONE
-===================================================== */
-
-function buildBreakfast(
-    profile,
-    target,
-    usedIds
-) {
-
-    const foods = [];
-
-    const dairy =
-        chooseMealFood(
-            profile,
-            "dairy_protein",
-            usedIds
-        );
-
-    const carb =
-        chooseMealFood(
-            profile,
-            "carb",
-            usedIds
-        );
-
-    const fruit =
-        chooseMealFood(
-            profile,
-            "fruit",
-            usedIds
-        );
-
-    const fat =
-        chooseMealFood(
-            profile,
-            "fat",
-            usedIds
-        );
-
-    if (dairy) {
-
-        addMealIngredient(
-            foods,
-            dairy,
-            250
-        );
-
-        usedIds.push(
-            dairy.id
-        );
-
-    }
-
-    if (carb) {
-
-        let grams = 60;
-
-        if (
-            carb.id === "pane_comune" ||
-            carb.id === "pane_integrale"
-        ) {
-
-            grams = 80;
-
-        }
-
-        addMealIngredient(
-            foods,
-            carb,
-            grams
-        );
-
-        usedIds.push(
-            carb.id
-        );
-
-    }
-
-    if (fruit) {
-
-        addMealIngredient(
-            foods,
-            fruit,
-            150
-        );
-
-        usedIds.push(
-            fruit.id
-        );
-
-    }
-
-    if (fat) {
-
-        addMealIngredient(
-            foods,
-            fat,
-            15
-        );
-
-        usedIds.push(
-            fat.id
-        );
-
-    }
-
-    return {
-
-        id:
-            "breakfast",
-
-        type:
-            "breakfast",
-
-        name:
-            "Colazione",
-
-        foods:
-            foods,
-
-        target:
-            target,
-
-        totals:
-            calculateMealTotals(
-                foods
-            ),
-
-        completed:
-            false
-
-    };
-
-}
-
-
-/* =====================================================
-   PRANZO
-===================================================== */
-
-function buildLunch(
-    profile,
-    target,
-    usedIds
-) {
-
-    const foods = [];
-
-    const protein =
-        chooseMealFood(
-            profile,
-            "protein",
-            usedIds
-        );
-
-    const carb =
-        chooseMealFood(
-            profile,
-            "carb",
-            usedIds
-        );
-
-    const vegetable =
-        chooseMealFood(
-            profile,
-            "vegetable",
-            usedIds
-        );
-
-    const oil =
-        chooseMealFood(
-            profile,
-            "fat",
-            usedIds
-        );
-
-    if (protein) {
-
-        addMealIngredient(
-            foods,
-            protein,
-            180
-        );
-
-        usedIds.push(
-            protein.id
-        );
-
-    }
-
-    if (carb) {
-
-        addMealIngredient(
-            foods,
-            carb,
-            100
-        );
-
-        usedIds.push(
-            carb.id
-        );
-
-    }
-
-    if (vegetable) {
-
-        addMealIngredient(
-            foods,
-            vegetable,
-            250
-        );
-
-        usedIds.push(
-            vegetable.id
-        );
-
-    }
-
-    if (oil) {
-
-        addMealIngredient(
-            foods,
-            oil,
-            10
-        );
-
-        usedIds.push(
-            oil.id
-        );
-
-    }
-
-    return {
-
-        id:
-            "lunch",
-
-        type:
-            "lunch",
-
-        name:
-            "Pranzo",
-
-        foods:
-            foods,
-
-        target:
-            target,
-
-        totals:
-            calculateMealTotals(
-                foods
-            ),
-
-        completed:
-            false
-
-    };
-
-}
-
-
-/* =====================================================
-   CENA
-===================================================== */
-
-function buildDinner(
-    profile,
-    target,
-    usedIds
-) {
-
-    const foods = [];
-
-    const protein =
-        chooseMealFood(
-            profile,
-            "protein",
-            usedIds
-        );
-
-    const carb =
-        chooseMealFood(
-            profile,
-            "carb",
-            usedIds
-        );
-
-    const vegetable =
-        chooseMealFood(
-            profile,
-            "vegetable",
-            usedIds
-        );
-
-    const oil =
-        chooseMealFood(
-            profile,
-            "fat",
-            usedIds
-        );
-
-    if (protein) {
-
-        addMealIngredient(
-            foods,
-            protein,
-            180
-        );
-
-        usedIds.push(
-            protein.id
-        );
-
-    }
-
-    if (carb) {
-
-        addMealIngredient(
-            foods,
-            carb,
-            100
-        );
-
-        usedIds.push(
-            carb.id
-        );
-
-    }
-
-    if (vegetable) {
-
-        addMealIngredient(
-            foods,
-            vegetable,
-            250
-        );
-
-        usedIds.push(
-            vegetable.id
-        );
-
-    }
-
-    if (oil) {
-
-        addMealIngredient(
-            foods,
-            oil,
-            10
-        );
-
-        usedIds.push(
-            oil.id
-        );
-
-    }
-
-    return {
-
-        id:
-            "dinner",
-
-        type:
-            "dinner",
-
-        name:
-            "Cena",
-
-        foods:
-            foods,
-
-        target:
-            target,
-
-        totals:
-            calculateMealTotals(
-                foods
-            ),
-
-        completed:
-            false
-
-    };
-
-}
-
-
-/* =====================================================
-   SPUNTINO
-===================================================== */
-
-function buildSnack(
-    profile,
-    target,
-    usedIds,
-    index
-) {
-
-    const foods = [];
-
-    const dairy =
-        chooseMealFood(
-            profile,
-            "dairy_protein",
-            usedIds
-        );
-
-    const fruit =
-        chooseMealFood(
-            profile,
-            "fruit",
-            usedIds
-        );
-
-    if (dairy) {
-
-        addMealIngredient(
-            foods,
-            dairy,
-            170
-        );
-
-        usedIds.push(
-            dairy.id
-        );
-
-    }
-
-    if (fruit) {
-
-        addMealIngredient(
-            foods,
-            fruit,
-            120
-        );
-
-        usedIds.push(
-            fruit.id
-        );
-
-    }
-
-    return {
-
-        id:
-            `snack_${index}`,
-
-        type:
-            "snack",
-
-        name:
-            `Spuntino ${index}`,
-
-        foods:
-            foods,
-
-        target:
-            target,
-
-        totals:
-            calculateMealTotals(
-                foods
-            ),
-
-        completed:
-            false
-
-    };
-
-}
-
-
-/* =====================================================
-   GIORNATA BASE
-===================================================== */
-
-function createBaseDailyPlan(
-    profile,
-    target
-) {
-
-    const numberOfMeals =
-        mealsNumber(
-            profile.meals,
-            3
-        );
-
-    const targets =
-        getMealTargets(
-            target,
-            numberOfMeals
-        );
-
-    const usedIds = [];
-
-    const meals = [];
-
-    if (numberOfMeals === 3) {
-
-        meals.push(
-            buildBreakfast(
-                profile,
-                targets[0],
-                usedIds
-            )
-        );
-
-        meals.push(
-            buildLunch(
-                profile,
-                targets[1],
-                usedIds
-            )
-        );
-
-        meals.push(
-            buildDinner(
-                profile,
-                targets[2],
-                usedIds
-            )
-        );
-
-    }
-
-    else if (numberOfMeals === 4) {
-
-        meals.push(
-            buildBreakfast(
-                profile,
-                targets[0],
-                usedIds
-            )
-        );
-
-        meals.push(
-            buildLunch(
-                profile,
-                targets[1],
-                usedIds
-            )
-        );
-
-        meals.push(
-            buildSnack(
-                profile,
-                targets[2],
-                usedIds,
-                1
-            )
-        );
-
-        meals.push(
-            buildDinner(
-                profile,
-                targets[3],
-                usedIds
-            )
-        );
-
-    }
-
-    else if (numberOfMeals === 5) {
-
-        meals.push(
-            buildBreakfast(
-                profile,
-                targets[0],
-                usedIds
-            )
-        );
-
-        meals.push(
-            buildLunch(
-                profile,
-                targets[1],
-                usedIds
-            )
-        );
-
-        meals.push(
-            buildSnack(
-                profile,
-                targets[2],
-                usedIds,
-                1
-            )
-        );
-
-        meals.push(
-            buildSnack(
-                profile,
-                targets[3],
-                usedIds,
-                2
-            )
-        );
-
-        meals.push(
-            buildDinner(
-                profile,
-                targets[4],
-                usedIds
-            )
-        );
-
-    }
-
-    return meals;
-
-}
-
-
-/* =====================================================
-   TOTALI GIORNALI
-===================================================== */
-
-function calculateDailyTotals(meals = []) {
 
     const total = {
 
@@ -1316,7 +271,10 @@ function calculateDailyTotals(meals = []) {
 
     meals.forEach(meal => {
 
-        if (!meal || !meal.totals) {
+        if (
+            !meal ||
+            !meal.totals
+        ) {
 
             return;
 
@@ -1386,309 +344,7 @@ function calculateDailyTotals(meals = []) {
 
 
 /* =====================================================
-   GENERAZIONE GIORNATA
-===================================================== */
-
-function generateDailyMealPlan(
-    date = new Date()
-) {
-
-    const profile =
-        getMealsProfile();
-
-    if (!profile) {
-
-        return null;
-
-    }
-
-    const target =
-        getMealsTarget();
-
-    if (!target) {
-
-        return null;
-
-    }
-
-    const meals =
-        createBaseDailyPlan(
-            profile,
-            target
-        );
-
-    return {
-
-        id:
-            `day_${date
-                .toISOString()
-                .split("T")[0]}`,
-
-        date:
-            date
-                .toISOString()
-                .split("T")[0],
-
-        dayType:
-            date.getDay() === 0
-                ? "rest"
-                : "training",
-
-        target: {
-
-            calories:
-                target.calories,
-
-            protein:
-                target.protein,
-
-            carbs:
-                target.carbs,
-
-            fat:
-                target.fat
-
-        },
-
-        meals:
-            meals,
-
-        totals:
-            calculateDailyTotals(
-                meals
-            ),
-
-        generatedAt:
-            new Date().toISOString(),
-
-        source:
-            "local"
-
-    };
-
-}
-
-
-/* =====================================================
-   GENERAZIONE SETTIMANA LOCALE
-===================================================== */
-
-function generateWeeklyMealPlan(
-    startDate = new Date()
-) {
-
-    const days = [];
-
-    for (
-        let i = 0;
-        i < 7;
-        i++
-    ) {
-
-        const date =
-            new Date(startDate);
-
-        date.setDate(
-            date.getDate() + i
-        );
-
-        days.push(
-            generateDailyMealPlan(
-                date
-            )
-        );
-
-    }
-
-    return {
-
-        version:
-            "1.0",
-
-        type:
-            "weekly",
-
-        startDate:
-            days[0]
-                ? days[0].date
-                : null,
-
-        endDate:
-            days[6]
-                ? days[6].date
-                : null,
-
-        days:
-            days,
-
-        generatedAt:
-            new Date().toISOString(),
-
-        source:
-            "local"
-
-    };
-
-}
-
-
-/* =====================================================
-   SALVATAGGIO
-===================================================== */
-
-function saveMealsPlan(plan) {
-
-    if (!plan) {
-
-        return false;
-
-    }
-
-    if (
-        typeof storageSaveMeals ===
-        "function"
-    ) {
-
-        storageSaveMeals(
-            plan
-        );
-
-        return true;
-
-    }
-
-    localStorage.setItem(
-        MEALS_STORAGE_KEY,
-        JSON.stringify(
-            plan
-        )
-    );
-
-    return true;
-
-}
-
-
-/* =====================================================
-   LETTURA
-===================================================== */
-
-function getSavedMealsPlan() {
-
-    if (
-        typeof storageGetMeals ===
-        "function"
-    ) {
-
-        const stored =
-            storageGetMeals();
-
-        if (stored) {
-
-            return stored;
-
-        }
-
-    }
-
-    const data =
-        localStorage.getItem(
-            MEALS_STORAGE_KEY
-        );
-
-    if (!data) {
-
-        return null;
-
-    }
-
-    try {
-
-        return JSON.parse(
-            data
-        );
-
-    } catch {
-
-        return null;
-
-    }
-
-}
-
-
-/* =====================================================
-   TROVA GIORNO ATTIVO
-===================================================== */
-
-function getMealsDay(
-    date = new Date()
-) {
-
-    const plan =
-        getSavedMealsPlan();
-
-    if (!plan) {
-
-        return null;
-
-    }
-
-    const dateKey =
-        date
-            .toISOString()
-            .split("T")[0];
-
-    if (
-        Array.isArray(plan.days)
-    ) {
-
-        const found =
-            plan.days.find(
-                day =>
-                    day &&
-                    day.date ===
-                    dateKey
-            );
-
-        if (found) {
-
-            return found;
-
-        }
-
-        /*
-           Se il piano importato usa
-           solo il nome del giorno,
-           usiamo l'indice corretto.
-        */
-
-        const index =
-            date.getDay() === 0
-                ? 6
-                : date.getDay() - 1;
-
-        return plan.days[index] || null;
-
-    }
-
-    /*
-       Compatibilità con vecchio formato.
-    */
-
-    if (plan.date === dateKey) {
-
-        return plan;
-
-    }
-
-    return null;
-
-}
-
-
-/* =====================================================
-   GIORNO DELLA SETTIMANA
+   GIORNI
 ===================================================== */
 
 function getItalianDayName(
@@ -1710,11 +366,48 @@ function getItalianDayName(
 }
 
 
+function getImportedDate(
+    dayIndex
+) {
+
+    const now =
+        new Date();
+
+    const date =
+        new Date(now);
+
+    /*
+       La settimana del Coach viene
+       associata ai prossimi 7 giorni
+       partendo da oggi.
+    */
+
+    date.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+    date.setDate(
+        date.getDate() +
+        dayIndex
+    );
+
+    return date
+        .toISOString()
+        .split("T")[0];
+
+}
+
+
 /* =====================================================
-   IMPORTAZIONE JSON
+   PARSER COACH
 ===================================================== */
 
-function parseCoachDietText(text) {
+function parseCoachDietText(
+    text
+) {
 
     if (!text) {
 
@@ -1752,13 +445,22 @@ function parseCoachDietText(text) {
 
     }
 
-    const jsonText =
-        text
-            .substring(
-                start + startMarker.length,
-                end
-            )
-            .trim()
+    let jsonText =
+        text.substring(
+            start +
+            startMarker.length,
+            end
+        )
+        .trim();
+
+
+    /*
+       Rimuove eventuali blocchi
+       Markdown ```json
+    */
+
+    jsonText =
+        jsonText
             .replace(
                 /^```json\s*/i,
                 ""
@@ -1773,6 +475,34 @@ function parseCoachDietText(text) {
             )
             .trim();
 
+
+    /*
+       Se ChatGPT ha inserito testo
+       prima/dopo il JSON, proviamo
+       comunque a recuperare l'oggetto.
+    */
+
+    const firstBrace =
+        jsonText.indexOf("{");
+
+    const lastBrace =
+        jsonText.lastIndexOf("}");
+
+    if (
+        firstBrace !== -1 &&
+        lastBrace !== -1 &&
+        lastBrace > firstBrace
+    ) {
+
+        jsonText =
+            jsonText.substring(
+                firstBrace,
+                lastBrace + 1
+            );
+
+    }
+
+
     let data;
 
     try {
@@ -1782,7 +512,7 @@ function parseCoachDietText(text) {
                 jsonText
             );
 
-    } catch (error) {
+    } catch {
 
         throw new Error(
             "Il JSON della dieta non è valido."
@@ -1796,7 +526,353 @@ function parseCoachDietText(text) {
 
 
 /* =====================================================
-   NORMALIZZA DIETA IMPORTATA
+   NORMALIZZA ALIMENTO COACH
+===================================================== */
+
+function normalizeCoachFood(
+    food,
+    dayIndex,
+    mealIndex,
+    foodIndex
+) {
+
+    if (!food) {
+
+        return {
+
+            id:
+                `coach_food_${dayIndex}_${mealIndex}_${foodIndex}`,
+
+            name:
+                "Alimento",
+
+            grams:
+                0,
+
+            kcal:
+                0,
+
+            protein:
+                0,
+
+            carbs:
+                0,
+
+            fat:
+                0,
+
+            fiber:
+                0
+
+        };
+
+    }
+
+    return {
+
+        id:
+            `coach_food_${dayIndex}_${mealIndex}_${foodIndex}`,
+
+        name:
+            String(
+                food.name ||
+                "Alimento"
+            ),
+
+        grams:
+            mealsRound(
+                mealsNumber(
+                    food.grams
+                )
+            ),
+
+        kcal:
+            mealsRound(
+                mealsNumber(
+                    food.kcal
+                ),
+                1
+            ),
+
+        protein:
+            mealsRound(
+                mealsNumber(
+                    food.protein
+                ),
+                1
+            ),
+
+        carbs:
+            mealsRound(
+                mealsNumber(
+                    food.carbs
+                ),
+                1
+            ),
+
+        fat:
+            mealsRound(
+                mealsNumber(
+                    food.fat
+                ),
+                1
+            ),
+
+        fiber:
+            mealsRound(
+                mealsNumber(
+                    food.fiber
+                ),
+                1
+            )
+
+    };
+
+}
+
+
+/* =====================================================
+   NORMALIZZA PASTO COACH
+===================================================== */
+
+function normalizeCoachMeal(
+    meal,
+    dayIndex,
+    mealIndex
+) {
+
+    const foods =
+        Array.isArray(
+            meal &&
+            meal.foods
+        )
+            ? meal.foods
+            : [];
+
+
+    const normalizedFoods =
+        foods.map(
+            (
+                food,
+                foodIndex
+            ) =>
+                normalizeCoachFood(
+                    food,
+                    dayIndex,
+                    mealIndex,
+                    foodIndex
+                )
+        );
+
+
+    const calculatedTotals =
+        calculateMealTotals(
+            normalizedFoods
+        );
+
+
+    const coachTotals =
+        meal &&
+        meal.totals
+            ? {
+
+                kcal:
+                    mealsNumber(
+                        meal.totals.kcal,
+                        calculatedTotals.kcal
+                    ),
+
+                protein:
+                    mealsNumber(
+                        meal.totals.protein,
+                        calculatedTotals.protein
+                    ),
+
+                carbs:
+                    mealsNumber(
+                        meal.totals.carbs,
+                        calculatedTotals.carbs
+                    ),
+
+                fat:
+                    mealsNumber(
+                        meal.totals.fat,
+                        calculatedTotals.fat
+                    ),
+
+                fiber:
+                    mealsNumber(
+                        meal.totals.fiber,
+                        calculatedTotals.fiber
+                    )
+
+            }
+            : calculatedTotals;
+
+
+    return {
+
+        id:
+            `coach_meal_${dayIndex}_${mealIndex}`,
+
+        type:
+            mealsNormalize(
+                meal &&
+                meal.name
+            )
+            .replace(
+                /\s+/g,
+                "_"
+            ),
+
+        name:
+            String(
+                meal &&
+                meal.name
+                    ? meal.name
+                    : `Pasto ${mealIndex + 1}`
+            ),
+
+        foods:
+            normalizedFoods,
+
+        totals:
+            coachTotals,
+
+        completed:
+            false
+
+    };
+
+}
+
+
+/* =====================================================
+   NORMALIZZA GIORNO COACH
+===================================================== */
+
+function normalizeCoachDay(
+    day,
+    dayIndex
+) {
+
+    const meals =
+        Array.isArray(
+            day &&
+            day.meals
+        )
+            ? day.meals
+            : [];
+
+
+    const normalizedMeals =
+        meals.map(
+            (
+                meal,
+                mealIndex
+            ) =>
+                normalizeCoachMeal(
+                    meal,
+                    dayIndex,
+                    mealIndex
+                )
+        );
+
+
+    const calculatedTotals =
+        calculateDailyTotals(
+            normalizedMeals
+        );
+
+
+    const coachTotals =
+        day &&
+        day.totals
+            ? {
+
+                kcal:
+                    mealsNumber(
+                        day.totals.kcal,
+                        calculatedTotals.kcal
+                    ),
+
+                protein:
+                    mealsNumber(
+                        day.totals.protein,
+                        calculatedTotals.protein
+                    ),
+
+                carbs:
+                    mealsNumber(
+                        day.totals.carbs,
+                        calculatedTotals.carbs
+                    ),
+
+                fat:
+                    mealsNumber(
+                        day.totals.fat,
+                        calculatedTotals.fat
+                    ),
+
+                fiber:
+                    mealsNumber(
+                        day.totals.fiber,
+                        calculatedTotals.fiber
+                    )
+
+            }
+            : calculatedTotals;
+
+
+    return {
+
+        id:
+            `coach_day_${dayIndex}`,
+
+        date:
+            getImportedDate(
+                dayIndex
+            ),
+
+        day:
+            String(
+                day &&
+                day.day
+                    ? day.day
+                    : getItalianDayName(
+                        dayIndex
+                    )
+            ),
+
+        dayType:
+            day &&
+            day.dayType
+                ? day.dayType
+                : (
+                    dayIndex === 6
+                        ? "rest"
+                        : "training"
+                ),
+
+        meals:
+            normalizedMeals,
+
+        totals:
+            coachTotals,
+
+        target:
+            getMealsTarget() || null,
+
+        completed:
+            false
+
+    };
+
+}
+
+
+/* =====================================================
+   NORMALIZZA SETTIMANA
 ===================================================== */
 
 function normalizeImportedDiet(
@@ -1805,7 +881,9 @@ function normalizeImportedDiet(
 
     if (
         !data ||
-        !Array.isArray(data.week)
+        !Array.isArray(
+            data.week
+        )
     ) {
 
         throw new Error(
@@ -1813,6 +891,7 @@ function normalizeImportedDiet(
         );
 
     }
+
 
     if (
         data.week.length !== 7
@@ -1824,216 +903,25 @@ function normalizeImportedDiet(
 
     }
 
+
     const days =
         data.week.map(
-            (day, dayIndex) => {
-
-                const dayName =
-                    day.day ||
-                    getItalianDayName(
-                        dayIndex
-                    );
-
-                const meals =
-                    Array.isArray(day.meals)
-                        ? day.meals
-                        : [];
-
-                const normalizedMeals =
-                    meals.map(
-                        (
-                            meal,
-                            mealIndex
-                        ) => {
-
-                            const foods =
-                                Array.isArray(
-                                    meal.foods
-                                )
-                                    ? meal.foods
-                                    : [];
-
-                            const normalizedFoods =
-                                foods.map(
-                                    food => ({
-
-                                        id:
-                                            "coach_" +
-                                            mealsNormalize(
-                                                food.name
-                                            )
-                                                .replace(
-                                                    /[^a-z0-9]+/g,
-                                                    "_"
-                                                ),
-
-                                        name:
-                                            String(
-                                                food.name ||
-                                                "Alimento"
-                                            ),
-
-                                        grams:
-                                            mealsRound(
-                                                mealsNumber(
-                                                    food.grams
-                                                )
-                                            ),
-
-                                        kcal:
-                                            mealsNumber(
-                                                food.kcal
-                                            ),
-
-                                        protein:
-                                            mealsNumber(
-                                                food.protein
-                                            ),
-
-                                        carbs:
-                                            mealsNumber(
-                                                food.carbs
-                                            ),
-
-                                        fat:
-                                            mealsNumber(
-                                                food.fat
-                                            )
-
-                                    })
-                                );
-
-                            const calculatedTotals =
-                                calculateMealTotals(
-                                    normalizedFoods
-                                );
-
-                            return {
-
-                                id:
-                                    `coach_meal_${dayIndex}_${mealIndex}`,
-
-                                type:
-                                    mealsNormalize(
-                                        meal.name
-                                    )
-                                        .replace(
-                                            /\s+/g,
-                                            "_"
-                                        ),
-
-                                name:
-                                    meal.name ||
-                                    `Pasto ${mealIndex + 1}`,
-
-                                foods:
-                                    normalizedFoods,
-
-                                totals:
-                                    meal.totals
-                                        ? {
-
-                                            kcal:
-                                                mealsNumber(
-                                                    meal.totals.kcal,
-                                                    calculatedTotals.kcal
-                                                ),
-
-                                            protein:
-                                                mealsNumber(
-                                                    meal.totals.protein,
-                                                    calculatedTotals.protein
-                                                ),
-
-                                            carbs:
-                                                mealsNumber(
-                                                    meal.totals.carbs,
-                                                    calculatedTotals.carbs
-                                                ),
-
-                                            fat:
-                                                mealsNumber(
-                                                    meal.totals.fat,
-                                                    calculatedTotals.fat
-                                                )
-
-                                        }
-                                        : calculatedTotals,
-
-                                completed:
-                                    false
-
-                            };
-
-                        }
-                    );
-
-                return {
-
-                    id:
-                        `coach_day_${dayIndex}`,
-
-                    date:
-                        getImportedDate(
-                            dayIndex
-                        ),
-
-                    day:
-                        dayName,
-
-                    dayType:
-                        dayIndex < 6
-                            ? "training"
-                            : "rest",
-
-                    meals:
-                        normalizedMeals,
-
-                    totals:
-                        day.totals
-                            ? {
-
-                                kcal:
-                                    mealsNumber(
-                                        day.totals.kcal
-                                    ),
-
-                                protein:
-                                    mealsNumber(
-                                        day.totals.protein
-                                    ),
-
-                                carbs:
-                                    mealsNumber(
-                                        day.totals.carbs
-                                    ),
-
-                                fat:
-                                    mealsNumber(
-                                        day.totals.fat
-                                    )
-
-                            }
-                            : calculateDailyTotals(
-                                normalizedMeals
-                            ),
-
-                    target:
-                        getMealsTarget() || null,
-
-                    completed:
-                        false
-
-                };
-
-            }
+            (
+                day,
+                dayIndex
+            ) =>
+                normalizeCoachDay(
+                    day,
+                    dayIndex
+                )
         );
+
 
     const plan = {
 
         version:
             data.version ||
-            "1.0",
+            "2.0",
 
         type:
             "weekly",
@@ -2058,46 +946,274 @@ function normalizeImportedDiet(
 
     };
 
+
     return plan;
 
 }
 
 
 /* =====================================================
-   DATA IMPORTATA
+   LETTURA PIANO
 ===================================================== */
 
-function getImportedDate(
-    dayIndex
-) {
-
-    const now =
-        new Date();
+function getSavedMealsPlan() {
 
     /*
-       La settimana importata parte
-       dal giorno corrente.
-
-       Manteniamo comunque i 7 giorni
-       nell'ordine generato dal Coach.
+       Prima controlliamo il piano Coach.
     */
 
-    const date =
-        new Date(now);
+    let data =
+        localStorage.getItem(
+            MEALS_IMPORTED_WEEK_KEY
+        );
 
-    date.setDate(
-        date.getDate() + dayIndex
-    );
+    if (data) {
 
-    return date
-        .toISOString()
-        .split("T")[0];
+        try {
+
+            const plan =
+                JSON.parse(
+                    data
+                );
+
+            if (
+                plan &&
+                plan.source === "coach_ai" &&
+                plan.imported === true &&
+                Array.isArray(plan.days)
+            ) {
+
+                return plan;
+
+            }
+
+        } catch {
+
+            localStorage.removeItem(
+                MEALS_IMPORTED_WEEK_KEY
+            );
+
+        }
+
+    }
+
+
+    /*
+       Compatibilità con il vecchio storage.
+       Accettiamo SOLO piani Coach.
+    */
+
+    if (
+        typeof storageGetMeals ===
+        "function"
+    ) {
+
+        const stored =
+            storageGetMeals();
+
+        if (
+            stored &&
+            stored.source === "coach_ai" &&
+            stored.imported === true &&
+            Array.isArray(stored.days)
+        ) {
+
+            return stored;
+
+        }
+
+    }
+
+
+    data =
+        localStorage.getItem(
+            MEALS_STORAGE_KEY
+        );
+
+    if (!data) {
+
+        return null;
+
+    }
+
+
+    try {
+
+        const plan =
+            JSON.parse(
+                data
+            );
+
+        /*
+           BLOCCO FONDAMENTALE:
+           le vecchie diete locali
+           NON vengono più utilizzate.
+        */
+
+        if (
+            !plan ||
+            plan.source !== "coach_ai" ||
+            plan.imported !== true
+        ) {
+
+            return null;
+
+        }
+
+        return plan;
+
+    } catch {
+
+        return null;
+
+    }
 
 }
 
 
 /* =====================================================
-   IMPORTA DIETA
+   SALVATAGGIO
+===================================================== */
+
+function saveMealsPlan(
+    plan
+) {
+
+    if (!plan) {
+
+        return false;
+
+    }
+
+
+    /*
+       L'app può salvare solamente
+       una dieta proveniente dal Coach.
+    */
+
+    if (
+        plan.source !== "coach_ai" ||
+        plan.imported !== true ||
+        !Array.isArray(plan.days)
+    ) {
+
+        return false;
+
+    }
+
+
+    const serialized =
+        JSON.stringify(
+            plan
+        );
+
+
+    localStorage.setItem(
+        MEALS_STORAGE_KEY,
+        serialized
+    );
+
+    localStorage.setItem(
+        MEALS_IMPORTED_WEEK_KEY,
+        serialized
+    );
+
+
+    if (
+        typeof storageSaveMeals ===
+        "function"
+    ) {
+
+        try {
+
+            storageSaveMeals(
+                plan
+            );
+
+        } catch {
+
+            /*
+               Il localStorage rimane
+               comunque la fonte principale.
+            */
+
+        }
+
+    }
+
+
+    return true;
+
+}
+
+
+/* =====================================================
+   TROVA GIORNO
+===================================================== */
+
+function getMealsDay(
+    date = new Date()
+) {
+
+    const plan =
+        getSavedMealsPlan();
+
+    if (
+        !plan ||
+        !Array.isArray(
+            plan.days
+        )
+    ) {
+
+        return null;
+
+    }
+
+
+    const dateKey =
+        date
+            .toISOString()
+            .split("T")[0];
+
+
+    const found =
+        plan.days.find(
+            day =>
+                day &&
+                day.date ===
+                dateKey
+        );
+
+
+    if (found) {
+
+        return found;
+
+    }
+
+
+    /*
+       Fallback:
+       usa l'indice del giorno
+       all'interno della settimana.
+    */
+
+    const index =
+        date.getDay() === 0
+            ? 6
+            : date.getDay() - 1;
+
+
+    return (
+        plan.days[index] ||
+        null
+    );
+
+}
+
+
+/* =====================================================
+   IMPORTAZIONE COACH
 ===================================================== */
 
 function importCoachDiet(
@@ -2111,21 +1227,75 @@ function importCoachDiet(
                 text
             );
 
+
         const plan =
             normalizeImportedDiet(
                 data
             );
 
-        saveMealsPlan(
-            plan
-        );
 
-        localStorage.setItem(
-            MEALS_IMPORTED_WEEK_KEY,
-            JSON.stringify(
+        const saved =
+            saveMealsPlan(
                 plan
-            )
-        );
+            );
+
+
+        if (!saved) {
+
+            throw new Error(
+                "Non è stato possibile salvare la settimana."
+            );
+
+        }
+
+
+        /*
+           Aggiorniamo immediatamente
+           l'interfaccia se la funzione
+           esiste nell'app.
+        */
+
+        if (
+            typeof updateAllScreens ===
+            "function"
+        ) {
+
+            try {
+
+                updateAllScreens();
+
+            } catch {}
+
+        }
+
+
+        if (
+            typeof updateDietScreen ===
+            "function"
+        ) {
+
+            try {
+
+                updateDietScreen();
+
+            } catch {}
+
+        }
+
+
+        if (
+            typeof refreshDietUI ===
+            "function"
+        ) {
+
+            try {
+
+                refreshDietUI();
+
+            } catch {}
+
+        }
+
 
         return {
 
@@ -2136,7 +1306,7 @@ function importCoachDiet(
                 plan,
 
             message:
-                "La settimana alimentare è stata importata correttamente."
+                "La settimana alimentare del Coach è stata importata correttamente."
 
         };
 
@@ -2151,8 +1321,10 @@ function importCoachDiet(
                 null,
 
             message:
-                error.message ||
-                "Errore durante l'importazione."
+                error &&
+                error.message
+                    ? error.message
+                    : "Errore durante l'importazione."
 
         };
 
@@ -2162,7 +1334,7 @@ function importCoachDiet(
 
 
 /* =====================================================
-   IMPORTA DAGLI APPUNTI
+   IMPORTAZIONE APPUNTI
 ===================================================== */
 
 async function importCoachDietFromClipboard() {
@@ -2184,10 +1356,12 @@ async function importCoachDietFromClipboard() {
 
     }
 
+
     try {
 
         const text =
             await navigator.clipboard.readText();
+
 
         return importCoachDiet(
             text
@@ -2221,6 +1395,7 @@ function importCoachDietFromTextArea() {
             "Incolla qui la risposta completa di ChatGPT:"
         );
 
+
     if (!text) {
 
         return {
@@ -2234,6 +1409,7 @@ function importCoachDietFromTextArea() {
         };
 
     }
+
 
     return importCoachDiet(
         text
@@ -2253,9 +1429,14 @@ function resetMealsPlan() {
         "function"
     ) {
 
-        storageDeleteMeals();
+        try {
+
+            storageDeleteMeals();
+
+        } catch {}
 
     }
+
 
     localStorage.removeItem(
         MEALS_STORAGE_KEY
@@ -2265,7 +1446,124 @@ function resetMealsPlan() {
         MEALS_IMPORTED_WEEK_KEY
     );
 
+
     return true;
+
+}
+
+
+/* =====================================================
+   ELIMINA VECCHIA DIETA LOCALE
+===================================================== */
+
+function removeLegacyLocalDiet() {
+
+    let changed =
+        false;
+
+
+    const keys = [
+
+        MEALS_STORAGE_KEY,
+        MEALS_IMPORTED_WEEK_KEY
+
+    ];
+
+
+    keys.forEach(
+        key => {
+
+            const data =
+                localStorage.getItem(
+                    key
+                );
+
+            if (!data) {
+
+                return;
+
+            }
+
+
+            try {
+
+                const plan =
+                    JSON.parse(
+                        data
+                    );
+
+
+                if (
+                    !plan ||
+                    plan.source !== "coach_ai" ||
+                    plan.imported !== true
+                ) {
+
+                    localStorage.removeItem(
+                        key
+                    );
+
+                    changed =
+                        true;
+
+                }
+
+            } catch {
+
+                localStorage.removeItem(
+                    key
+                );
+
+                changed =
+                    true;
+
+            }
+
+        }
+    );
+
+
+    /*
+       Elimina anche eventuali
+       vecchie diete gestite da storage.js.
+    */
+
+    if (
+        typeof storageDeleteMeals ===
+        "function"
+    ) {
+
+        const current =
+            typeof storageGetMeals ===
+            "function"
+                ? storageGetMeals()
+                : null;
+
+
+        if (
+            current &&
+            (
+                current.source !==
+                "coach_ai" ||
+                current.imported !== true
+            )
+        ) {
+
+            try {
+
+                storageDeleteMeals();
+
+                changed =
+                    true;
+
+            } catch {}
+
+        }
+
+    }
+
+
+    return changed;
 
 }
 
@@ -2288,22 +1586,32 @@ function toggleMealCompleted(
 
     }
 
+
     const day =
         getMealsDay(
             date
         );
 
-    if (!day || !day.meals) {
+
+    if (
+        !day ||
+        !Array.isArray(
+            day.meals
+        )
+    ) {
 
         return false;
 
     }
 
+
     const meal =
         day.meals.find(
             item =>
-                item.id === mealId
+                item.id ===
+                mealId
         );
+
 
     if (!meal) {
 
@@ -2311,12 +1619,15 @@ function toggleMealCompleted(
 
     }
 
+
     meal.completed =
         !meal.completed;
+
 
     saveMealsPlan(
         plan
     );
+
 
     if (
         meal.completed &&
@@ -2324,12 +1635,17 @@ function toggleMealCompleted(
         "function"
     ) {
 
-        logMealCompletion(
-            meal.name,
-            meal.totals.kcal
-        );
+        try {
+
+            logMealCompletion(
+                meal.name,
+                meal.totals.kcal
+            );
+
+        } catch {}
 
     }
+
 
     return meal.completed;
 
@@ -2337,7 +1653,7 @@ function toggleMealCompleted(
 
 
 /* =====================================================
-   STATISTICHE COMPLETAMENTO
+   STATISTICHE
 ===================================================== */
 
 function getMealCompletionStats(
@@ -2347,6 +1663,7 @@ function getMealCompletionStats(
     const currentPlan =
         plan ||
         getSavedMealsPlan();
+
 
     if (!currentPlan) {
 
@@ -2365,38 +1682,49 @@ function getMealCompletionStats(
 
     }
 
+
     const days =
         Array.isArray(
             currentPlan.days
         )
             ? currentPlan.days
-            : [currentPlan];
+            : [];
+
 
     const meals = [];
 
-    days.forEach(day => {
 
-        if (
-            day &&
-            Array.isArray(day.meals)
-        ) {
+    days.forEach(
+        day => {
 
-            meals.push(
-                ...day.meals
-            );
+            if (
+                day &&
+                Array.isArray(
+                    day.meals
+                )
+            ) {
+
+                meals.push(
+                    ...day.meals
+                );
+
+            }
 
         }
+    );
 
-    });
 
     const total =
         meals.length;
 
+
     const completed =
         meals.filter(
             meal =>
-                meal.completed
+                meal &&
+                meal.completed === true
         ).length;
+
 
     return {
 
@@ -2422,7 +1750,7 @@ function getMealCompletionStats(
 
 
 /* =====================================================
-   SETTIMANA IMPORTATA?
+   SETTIMANA COACH PRESENTE?
 ===================================================== */
 
 function hasImportedCoachWeek() {
@@ -2430,10 +1758,11 @@ function hasImportedCoachWeek() {
     const plan =
         getSavedMealsPlan();
 
+
     return !!(
         plan &&
-        plan.imported === true &&
         plan.source === "coach_ai" &&
+        plan.imported === true &&
         Array.isArray(plan.days) &&
         plan.days.length === 7
     );
@@ -2442,13 +1771,14 @@ function hasImportedCoachWeek() {
 
 
 /* =====================================================
-   INFO DIETA
+   STATO DIETA
 ===================================================== */
 
 function getMealsStatus() {
 
     const plan =
         getSavedMealsPlan();
+
 
     if (!plan) {
 
@@ -2461,11 +1791,18 @@ function getMealsStatus() {
                 null,
 
             days:
-                0
+                0,
+
+            imported:
+                false,
+
+            waitingForCoach:
+                true
 
         };
 
     }
+
 
     return {
 
@@ -2473,16 +1810,20 @@ function getMealsStatus() {
             true,
 
         source:
-            plan.source ||
-            "local",
+            "coach_ai",
 
         days:
-            Array.isArray(plan.days)
+            Array.isArray(
+                plan.days
+            )
                 ? plan.days.length
-                : 1,
+                : 0,
 
         imported:
-            plan.imported === true
+            true,
+
+        waitingForCoach:
+            false
 
     };
 
@@ -2490,73 +1831,124 @@ function getMealsStatus() {
 
 
 /* =====================================================
-   RIGENERA DIETA LOCALE
+   NESSUNA GENERAZIONE LOCALE
 ===================================================== */
+
+/*
+   Queste funzioni vengono mantenute
+   per compatibilità con il resto dell'app.
+
+   IMPORTANTE:
+   NON generano più nessuna dieta.
+
+   La dieta può arrivare SOLO dal Coach IA.
+*/
+
 
 function refreshDailyMeals(
     date = new Date()
 ) {
 
-    const plan =
-        generateDailyMealPlan(
+    const day =
+        getMealsDay(
             date
         );
 
-    if (!plan) {
 
-        return null;
+    /*
+       Se esiste una dieta Coach,
+       restituiamo il giorno corrente.
 
-    }
+       Se non esiste, restituiamo null.
+    */
 
-    saveMealsPlan(
-        plan
-    );
-
-    return plan;
+    return day || null;
 
 }
 
 
-/* =====================================================
-   RIGENERA SETTIMANA LOCALE
-===================================================== */
-
-function refreshWeeklyMeals(
-    startDate = new Date()
-) {
+function refreshWeeklyMeals() {
 
     const plan =
-        generateWeeklyMealPlan(
-            startDate
-        );
+        getSavedMealsPlan();
 
-    if (!plan) {
 
-        return null;
-
-    }
-
-    saveMealsPlan(
-        plan
+    return (
+        hasImportedCoachWeek()
+            ? plan
+            : null
     );
-
-    return plan;
 
 }
 
 
 /* =====================================================
-   INIZIALIZZAZIONE
+   RIGENERA PASTI
+===================================================== */
+
+/*
+   Il pulsante ↻ della vecchia dieta
+   non deve più creare una dieta locale.
+
+   Se esiste una settimana Coach,
+   semplicemente ricarica quella.
+*/
+
+function regenerateDailyMeals(
+    date = new Date()
+) {
+
+    const day =
+        getMealsDay(
+            date
+        );
+
+
+    if (!day) {
+
+        return null;
+
+    }
+
+
+    if (
+        typeof updateAllScreens ===
+        "function"
+    ) {
+
+        try {
+
+            updateAllScreens();
+
+        } catch {}
+
+    }
+
+
+    return day;
+
+}
+
+
+/* =====================================================
+   INIZIALIZZAZIONE DEFINITIVA
 ===================================================== */
 
 function initializeMeals() {
 
     /*
-       IMPORTANTE:
+       1.
+       Eliminiamo eventuali vecchie
+       diete generate dal vecchio sistema.
+    */
 
-       Se esiste una settimana generata
-       dal Coach IA NON la sostituiamo
-       automaticamente con una dieta locale.
+    removeLegacyLocalDiet();
+
+
+    /*
+       2.
+       Se esiste una settimana Coach,
+       NON generiamo nient'altro.
     */
 
     if (
@@ -2567,20 +1959,16 @@ function initializeMeals() {
 
     }
 
-    const profile =
-        getMealsProfile();
 
-    if (!profile) {
+    /*
+       3.
+       Se non esiste una settimana Coach,
+       NON creiamo nessuna dieta.
 
-        return;
+       L'app deve rimanere vuota/in attesa.
+    */
 
-    }
-
-    if (!getSavedMealsPlan()) {
-
-        refreshDailyMeals();
-
-    }
+    return;
 
 }
 
@@ -2601,9 +1989,6 @@ document.addEventListener(
 
 window.MY_TRANSFORMATION_MEALS = {
 
-    generateDailyMealPlan,
-    generateWeeklyMealPlan,
-
     getSavedMealsPlan,
     getMealsDay,
     getMealsStatus,
@@ -2622,6 +2007,10 @@ window.MY_TRANSFORMATION_MEALS = {
     resetMealsPlan,
 
     refreshDailyMeals,
-    refreshWeeklyMeals
+    refreshWeeklyMeals,
+    regenerateDailyMeals,
+
+    calculateMealTotals,
+    calculateDailyTotals
 
 };
