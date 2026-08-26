@@ -775,12 +775,95 @@ function initializeApp() {
 
 function updateDietScreen() {
 
-    const target =
-        getNutritionTarget();
+    const profile = getNutritionProfile();
 
-    if (!target) {
+    if (!profile) {
         return;
     }
+
+    let target = getNutritionTarget();
+
+    /*
+       Se non esiste ancora un target,
+       lo generiamo automaticamente.
+    */
+    if (!target) {
+
+        target = generateNutritionTarget(profile);
+
+        if (target) {
+            saveNutritionTarget(target);
+        }
+    }
+
+    if (!target) {
+        console.log("Target nutrizionale non disponibile.");
+        return;
+    }
+
+
+    /* ================================
+       CALORIE E PROTEINE
+    ================================= */
+
+    const dietScreen =
+        document.getElementById("diet");
+
+    if (!dietScreen) {
+        return;
+    }
+
+    const stats =
+        dietScreen.querySelectorAll(".stat-value");
+
+    if (stats.length >= 2) {
+
+        stats[0].textContent =
+            `${target.calories} kcal`;
+
+        stats[1].textContent =
+            `${target.protein} g`;
+
+    }
+
+
+    /* ================================
+       MACRO AGGIUNTIVI
+    ================================= */
+
+    const existingMacro =
+        document.getElementById(
+            "macroSummary"
+        );
+
+    if (existingMacro) {
+
+        existingMacro.innerHTML = `
+
+            <strong>
+                Macronutrienti giornalieri
+            </strong>
+
+            <br><br>
+
+            Proteine:
+            ${target.protein} g
+
+            <br>
+
+            Carboidrati:
+            ${target.carbs} g
+
+            <br>
+
+            Grassi:
+            ${target.fat} g
+
+        `;
+
+    }
+
+}
 
     const dietScreen =
         document.getElementById("diet");
