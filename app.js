@@ -1849,3 +1849,131 @@ document.addEventListener(
     "DOMContentLoaded",
     initializeApp
 );
+/* =====================================================
+   COACH IA — GENERA SETTIMANA
+===================================================== */
+
+function openCoachWeeklyPlan() {
+
+    const profile =
+        typeof storageGetProfile === "function"
+            ? storageGetProfile()
+            : JSON.parse(
+                localStorage.getItem(
+                    "myTransformationProfile"
+                ) || "{}"
+            );
+
+    const target =
+        typeof getNutritionTarget === "function"
+            ? getNutritionTarget()
+            : null;
+
+    const prompt = `
+Sei il Coach IA di MY TRANSFORMATION.
+
+Devi creare il piano alimentare PERSONALIZZATO
+per i prossimi 7 giorni.
+
+IMPORTANTE:
+- Non usare una dieta fissa.
+- Non usare una dieta hard-coded.
+- Non chiedere all'utente di scegliere i pasti.
+- Devi decidere tu il piano in base ai dati ricevuti.
+- La settimana deve essere VARIATA.
+- I pasti devono cambiare durante i 7 giorni.
+- Rispetta preferenze, alimenti esclusi e allergie.
+- Considera allenamento e giorni di riposo.
+- Mantieni le calorie e i macronutrienti coerenti
+  con l'obiettivo dell'utente.
+- Usa grammature realistiche.
+- Ogni giorno deve avere pasti completi.
+- Alla settimana successiva devi poter modificare
+  il piano in base ai progressi dell'utente.
+
+PROFILO UTENTE:
+${JSON.stringify(profile, null, 2)}
+
+TARGET NUTRIZIONALE:
+${JSON.stringify(target, null, 2)}
+
+DATI DELLA SETTIMANA:
+- Genera 7 giorni.
+- Indica per ogni giorno:
+  colazione
+  pranzo
+  cena
+  eventuali spuntini
+- Per ogni alimento indica i grammi.
+- Calcola calorie e macronutrienti di ogni pasto.
+- Calcola il totale giornaliero.
+
+Alla fine restituisci il risultato in questo formato:
+
+=== MY_TRANSFORMATION_DIET_START ===
+
+{
+  "type": "weekly",
+  "days": [
+    {
+      "day": 1,
+      "meals": [
+        {
+          "name": "Colazione",
+          "foods": [
+            {
+              "name": "Alimento",
+              "grams": 100
+            }
+          ],
+          "totals": {
+            "kcal": 0,
+            "protein": 0,
+            "carbs": 0,
+            "fat": 0
+          }
+        }
+      ],
+      "totals": {
+        "kcal": 0,
+        "protein": 0,
+        "carbs": 0,
+        "fat": 0
+      }
+    }
+  ]
+}
+
+=== MY_TRANSFORMATION_DIET_END ===
+
+Non aggiungere spiegazioni fuori dal formato.
+`;
+
+    /* Copia automaticamente il prompt */
+
+    if (
+        navigator.clipboard &&
+        navigator.clipboard.writeText
+    ) {
+
+        navigator.clipboard.writeText(
+            prompt.trim()
+        );
+
+    }
+
+    /* Prova ad aprire direttamente l'app ChatGPT */
+
+    window.location.href =
+        "chatgpt://";
+
+    /* Fallback se l'app non viene aperta */
+
+    setTimeout(() => {
+
+        window.location.href =
+            "https://chatgpt.com/";
+
+    }, 1200);
+
+}
