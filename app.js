@@ -673,7 +673,11 @@ function showScreen(
         updateDashboard();
 
     }
+if (id === "diet") {
 
+    updateDietScreen();
+
+}
 
     window.scrollTo({
         top: 0,
