@@ -1,34 +1,47 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
+
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width,
-                   initial-scale=1.0,
-                   viewport-fit=cover">
+    <meta
+        name="viewport"
+        content="width=device-width,
+        initial-scale=1.0,
+        viewport-fit=cover">
 
-    <meta name="theme-color" content="#09090b">
+    <meta
+        name="theme-color"
+        content="#09090b">
 
-    <meta name="apple-mobile-web-app-capable"
-          content="yes">
+    <meta
+        name="apple-mobile-web-app-capable"
+        content="yes">
 
-    <meta name="apple-mobile-web-app-status-bar-style"
-          content="black-translucent">
+    <meta
+        name="apple-mobile-web-app-status-bar-style"
+        content="black-translucent">
 
     <title>MY TRANSFORMATION</title>
 
-    <!-- GRAFICA -->
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css">
+
 </head>
+
 
 <body>
 
-<!-- ==================================================
-     CONFIGURAZIONE INIZIALE
-================================================== -->
 
-<div id="setupScreen" class="setup hidden">
+<!-- =====================================================
+     CONFIGURAZIONE INIZIALE
+===================================================== -->
+
+<div
+    id="setupScreen"
+    class="setup hidden">
 
     <div class="setup-logo">
         MY <span>TRANSFORMATION</span>
@@ -43,62 +56,115 @@
     </h1>
 
     <p class="setup-intro">
-        Prima di iniziare dobbiamo conoscere il tuo punto
-        di partenza. Inserisci i tuoi dati reali.
+        Prima di iniziare dobbiamo conoscere
+        il tuo punto di partenza.
+        Inserisci i tuoi dati reali.
+        Il piano verrà costruito sulla base
+        del tuo profilo.
     </p>
+
 
     <div class="setup-card">
 
+
+        <!-- ETÀ -->
+
         <div class="form-group">
+
             <label>ETÀ</label>
+
             <input
                 id="setupAge"
                 type="number"
                 min="13"
                 max="100"
-                placeholder="es. 25">
+                placeholder="es. 23">
+
         </div>
 
+
+        <!-- SESSO -->
+
         <div class="form-group">
+
             <label>SESSO</label>
 
             <select id="setupSex">
-                <option value="">Seleziona</option>
-                <option value="male">Uomo</option>
-                <option value="female">Donna</option>
+
+                <option value="">
+                    Seleziona
+                </option>
+
+                <option value="male">
+                    Uomo
+                </option>
+
+                <option value="female">
+                    Donna
+                </option>
+
             </select>
+
         </div>
 
+
+        <!-- ALTEZZA -->
+
         <div class="form-group">
-            <label>ALTEZZA (CM)</label>
+
+            <label>
+                ALTEZZA (CM)
+            </label>
 
             <input
                 id="setupHeight"
                 type="number"
-                placeholder="es. 175">
+                min="100"
+                max="250"
+                placeholder="es. 173">
+
         </div>
 
+
+        <!-- PESO -->
+
         <div class="form-group">
-            <label>PESO ATTUALE (KG)</label>
+
+            <label>
+                PESO ATTUALE (KG)
+            </label>
 
             <input
                 id="setupWeight"
                 type="number"
                 step="0.1"
-                placeholder="es. 70">
+                min="30"
+                max="300"
+                placeholder="es. 67">
+
         </div>
 
+
+        <!-- OBIETTIVO -->
+
         <div class="form-group">
-            <label>OBIETTIVO PRINCIPALE</label>
+
+            <label>
+                OBIETTIVO PRINCIPALE
+            </label>
 
             <select id="setupGoal">
-                <option value="">Seleziona</option>
+
+                <option value="">
+                    Seleziona
+                </option>
+
                 <option value="fatloss">
                     Perdere grasso
                 </option>
 
                 <option value="recomp">
-                    Ricomposizione
+                    Ricomposizione corporea
                 </option>
 
                 <option value="muscle">
@@ -108,27 +174,65 @@
                 <option value="definition">
                     Definizione
                 </option>
+
             </select>
+
         </div>
 
+
+        <!-- ALLENAMENTI -->
+
         <div class="form-group">
-            <label>ALLENAMENTI A SETTIMANA</label>
+
+            <label>
+                ALLENAMENTI A SETTIMANA
+            </label>
 
             <select id="setupTrainingDays">
-                <option value="">Seleziona</option>
-                <option value="2">2 giorni</option>
-                <option value="3">3 giorni</option>
-                <option value="4">4 giorni</option>
-                <option value="5">5 giorni</option>
-                <option value="6">6 giorni</option>
+
+                <option value="">
+                    Seleziona
+                </option>
+
+                <option value="2">
+                    2 giorni
+                </option>
+
+                <option value="3">
+                    3 giorni
+                </option>
+
+                <option value="4">
+                    4 giorni
+                </option>
+
+                <option value="5">
+                    5 giorni
+                </option>
+
+                <option value="6">
+                    6 giorni
+                </option>
+
             </select>
+
         </div>
 
+
+        <!-- DURATA -->
+
         <div class="form-group">
-            <label>DURATA DELL'ALLENAMENTO</label>
+
+            <label>
+                DURATA DELL'ALLENAMENTO
+            </label>
 
             <select id="setupTrainingDuration">
-                <option value="">Seleziona</option>
+
+                <option value="">
+                    Seleziona
+                </option>
+
                 <option value="45">
                     30–45 minuti
                 </option>
@@ -144,14 +248,25 @@
                 <option value="120">
                     90–120 minuti
                 </option>
+
             </select>
+
         </div>
 
+
+        <!-- LUOGO -->
+
         <div class="form-group">
-            <label>DOVE TI ALLENI?</label>
+
+            <label>
+                DOVE TI ALLENI?
+            </label>
 
             <select id="setupTrainingPlace">
-                <option value="">Seleziona</option>
+
+                <option value="">
+                    Seleziona
+                </option>
 
                 <option value="gym">
                     Palestra
@@ -164,47 +279,94 @@
                 <option value="both">
                     Palestra + casa
                 </option>
+
             </select>
+
         </div>
 
+
+        <!-- PASTI -->
+
         <div class="form-group">
-            <label>QUANTI PASTI VUOI FARE?</label>
+
+            <label>
+                QUANTI PASTI VUOI FARE?
+            </label>
 
             <select id="setupMeals">
-                <option value="">Seleziona</option>
-                <option value="2">2 pasti</option>
-                <option value="3">3 pasti</option>
-                <option value="4">4 pasti</option>
-                <option value="5">5 pasti</option>
+
+                <option value="">
+                    Seleziona
+                </option>
+
+                <option value="2">
+                    2 pasti
+                </option>
+
+                <option value="3">
+                    3 pasti
+                </option>
+
+                <option value="4">
+                    4 pasti
+                </option>
+
+                <option value="5">
+                    5 pasti
+                </option>
+
             </select>
+
         </div>
 
+
+        <!-- CIBI PREFERITI -->
+
         <div class="form-group">
-            <label>ALIMENTI CHE TI PIACCIONO</label>
+
+            <label>
+                ALIMENTI CHE TI PIACCIONO
+            </label>
 
             <textarea
                 id="setupLikes"
                 placeholder="Es. pollo, riso, pasta, uova, yogurt greco...">
             </textarea>
+
         </div>
 
+
+        <!-- CIBI ESCLUSI -->
+
         <div class="form-group">
-            <label>ALIMENTI CHE NON VUOI MANGIARE</label>
+
+            <label>
+                ALIMENTI CHE NON VUOI MANGIARE
+            </label>
 
             <textarea
                 id="setupDislikes"
                 placeholder="Scrivi gli alimenti che non gradisci...">
             </textarea>
+
         </div>
 
+
+        <!-- ALLERGIE -->
+
         <div class="form-group">
-            <label>ALLERGIE / INTOLLERANZE</label>
+
+            <label>
+                ALLERGIE / INTOLLERANZE
+            </label>
 
             <textarea
                 id="setupAllergies"
                 placeholder="Se non ne hai, scrivi: nessuna">
             </textarea>
+
         </div>
+
 
         <button
             class="primary"
@@ -214,18 +376,24 @@
 
         </button>
 
+
     </div>
 
 </div>
 
 
-<!-- ==================================================
-     APP PRINCIPALE
-================================================== -->
 
-<div id="mainApp" class="hidden">
+<!-- =====================================================
+     APP PRINCIPALE
+===================================================== -->
+
+<div
+    id="mainApp"
+    class="hidden">
+
 
     <main class="app">
+
 
         <!-- HEADER -->
 
@@ -239,20 +407,22 @@
                 class="settings"
                 onclick="showScreen('profile')">
 
-                ⚙︎
+                ⚙️
 
             </button>
 
         </header>
 
 
-        <!-- ==================================================
+
+        <!-- =================================================
              HOME
         ================================================== -->
 
         <section
             id="home"
             class="screen active">
+
 
             <div class="hero">
 
@@ -272,7 +442,7 @@
             </div>
 
 
-            <!-- PROGRESSO -->
+            <!-- FASE -->
 
             <div class="progress-card">
 
@@ -284,30 +454,45 @@
                             FASE ATTUALE
                         </div>
 
-                        <div class="progress-value">
+                        <div
+                            id="phaseName"
+                            class="progress-value">
+
                             Preparazione
+
                         </div>
 
                     </div>
 
-                    <div class="progress-title">
+                    <div
+                        id="phasePercent"
+                        class="progress-title">
+
                         0%
+
                     </div>
 
                 </div>
 
+
                 <div class="progress-bar">
 
-                    <div class="progress-fill"></div>
+                    <div
+                        id="progressFill"
+                        class="progress-fill">
+
+                    </div>
 
                 </div>
 
             </div>
 
 
+
             <!-- STATISTICHE -->
 
             <div class="grid">
+
 
                 <div class="stat">
 
@@ -392,7 +577,9 @@
 
                 </div>
 
+
             </div>
+
 
 
             <!-- OGGI -->
@@ -410,6 +597,7 @@
 
                 <div class="today-card">
 
+
                     <div class="today-item">
 
                         <div class="today-icon">
@@ -422,8 +610,13 @@
                                 Alimentazione
                             </div>
 
-                            <div class="today-detail">
-                                Piano alimentare in preparazione.
+                            <div
+                                id="todayDiet"
+                                class="today-detail">
+
+                                Piano alimentare
+                                in preparazione.
+
                             </div>
 
                         </div>
@@ -437,6 +630,7 @@
                         </button>
 
                     </div>
+
 
 
                     <div class="today-item">
@@ -451,8 +645,13 @@
                                 Allenamento
                             </div>
 
-                            <div class="today-detail">
-                                Programmazione in preparazione.
+                            <div
+                                id="todayWorkout"
+                                class="today-detail">
+
+                                Programmazione
+                                in preparazione.
+
                             </div>
 
                         </div>
@@ -466,6 +665,7 @@
                         </button>
 
                     </div>
+
 
 
                     <div class="today-item">
@@ -480,8 +680,13 @@
                                 Idratazione
                             </div>
 
-                            <div class="today-detail">
-                                Tracking in preparazione.
+                            <div
+                                id="todayWater"
+                                class="today-detail">
+
+                                Obiettivo acqua
+                                in preparazione.
+
                             </div>
 
                         </div>
@@ -496,9 +701,11 @@
 
                     </div>
 
+
                 </div>
 
             </div>
+
 
 
             <!-- COACH -->
@@ -513,13 +720,16 @@
 
                 </div>
 
+
                 <div class="coach-card">
 
                     <div class="coach-label">
                         Messaggio del giorno
                     </div>
 
-                    <div class="coach-text">
+                    <div
+                        id="dailyCoachMessage"
+                        class="coach-text">
 
                         Il percorso è appena iniziato.
                         Prima costruiamo le fondamenta.
@@ -531,16 +741,19 @@
 
             </div>
 
+
         </section>
 
 
-        <!-- ==================================================
+
+        <!-- =================================================
              DIETA
         ================================================== -->
 
         <section
             id="diet"
             class="screen">
+
 
             <div class="hero">
 
@@ -553,14 +766,18 @@
                 </h1>
 
                 <p>
-                    Il tuo piano alimentare verrà
+                    Il tuo piano alimentare viene
                     costruito sulla base del tuo profilo.
                 </p>
 
             </div>
 
 
+
+            <!-- CALORIE E MACRO -->
+
             <div class="grid">
+
 
                 <div class="stat">
 
@@ -568,8 +785,12 @@
                         CALORIE
                     </div>
 
-                    <div class="stat-value">
+                    <div
+                        id="dietCalories"
+                        class="stat-value">
+
                         —
+
                     </div>
 
                     <div class="stat-sub">
@@ -579,14 +800,19 @@
                 </div>
 
 
+
                 <div class="stat">
 
                     <div class="stat-label">
                         PROTEINE
                     </div>
 
-                    <div class="stat-value">
+                    <div
+                        id="dietProtein"
+                        class="stat-value">
+
                         —
+
                     </div>
 
                     <div class="stat-sub">
@@ -595,12 +821,63 @@
 
                 </div>
 
+
+
+                <div class="stat">
+
+                    <div class="stat-label">
+                        CARBOIDRATI
+                    </div>
+
+                    <div
+                        id="dietCarbs"
+                        class="stat-value">
+
+                        —
+
+                    </div>
+
+                    <div class="stat-sub">
+                        g / giorno
+                    </div>
+
+                </div>
+
+
+
+                <div class="stat">
+
+                    <div class="stat-label">
+                        GRASSI
+                    </div>
+
+                    <div
+                        id="dietFat"
+                        class="stat-value">
+
+                        —
+
+                    </div>
+
+                    <div class="stat-sub">
+                        g / giorno
+                    </div>
+
+                </div>
+
+
             </div>
 
 
+
+            <!-- PASTI -->
+
             <div class="list-card">
 
-                <div class="list-row">
+
+                <div
+                    id="meal1"
+                    class="list-row">
 
                     <strong>
                         🥣 Colazione
@@ -613,7 +890,10 @@
                 </div>
 
 
-                <div class="list-row">
+
+                <div
+                    id="meal2"
+                    class="list-row">
 
                     <strong>
                         🍝 Pranzo
@@ -626,7 +906,10 @@
                 </div>
 
 
-                <div class="list-row">
+
+                <div
+                    id="meal3"
+                    class="list-row">
 
                     <strong>
                         🥩 Cena
@@ -638,18 +921,22 @@
 
                 </div>
 
+
             </div>
+
 
         </section>
 
 
-        <!-- ==================================================
+
+        <!-- =================================================
              ALLENAMENTO
         ================================================== -->
 
         <section
             id="workout"
             class="screen">
+
 
             <div class="hero">
 
@@ -672,10 +959,11 @@
             <div class="progress-card">
 
                 <div class="progress-title">
-                    PROGRAMMA
+                    PROGRAMMA ATTUALE
                 </div>
 
                 <div
+                    id="workoutStatus"
                     class="progress-value"
                     style="margin-top:7px;">
 
@@ -696,16 +984,19 @@
 
             </div>
 
+
         </section>
 
 
-        <!-- ==================================================
+
+        <!-- =================================================
              PROGRESSI
         ================================================== -->
 
         <section
             id="progress"
             class="screen">
+
 
             <div class="hero">
 
@@ -718,7 +1009,7 @@
                 </h1>
 
                 <p>
-                    Qui registreremo la tua trasformazione
+                    Registreremo la tua trasformazione
                     nel tempo.
                 </p>
 
@@ -727,13 +1018,14 @@
 
             <div class="list-card">
 
+
                 <div class="list-row">
 
                     <strong>
                         ⚖️ Peso
                     </strong>
 
-                    <span>
+                    <span id="progressWeight">
                         Nessun dato registrato.
                     </span>
 
@@ -765,18 +1057,22 @@
 
                 </div>
 
+
             </div>
+
 
         </section>
 
 
-        <!-- ==================================================
+
+        <!-- =================================================
              COACH
         ================================================== -->
 
         <section
             id="coach"
             class="screen">
+
 
             <div class="hero">
 
@@ -789,8 +1085,7 @@
                 </h1>
 
                 <p>
-                    Il tuo coach personale verrà
-                    collegato al percorso.
+                    Il tuo coach personale.
                 </p>
 
             </div>
@@ -802,26 +1097,31 @@
                     COACH
                 </div>
 
-                <div class="coach-text">
+                <div
+                    id="coachMessage"
+                    class="coach-text">
 
-                    "Non cerchiamo la giornata perfetta.
-                    Costruiamo una routine che riesci
-                    a rispettare."
+                    "Non cerchiamo la giornata
+                    perfetta. Costruiamo una routine
+                    che riesci a rispettare."
 
                 </div>
 
             </div>
 
+
         </section>
 
 
-        <!-- ==================================================
+
+        <!-- =================================================
              PROFILO
         ================================================== -->
 
         <section
             id="profile"
             class="screen">
+
 
             <div class="hero">
 
@@ -841,6 +1141,7 @@
 
 
             <div class="setup-card">
+
 
                 <div
                     id="profileSummary"
@@ -868,21 +1169,27 @@
 
                 </button>
 
+
             </div>
 
+
         </section>
+
 
     </main>
 
 
-    <!-- ==================================================
+
+    <!-- =================================================
          NAVIGAZIONE
     ================================================== -->
 
     <nav class="nav">
 
+
         <button
             class="active"
+            data-screen="home"
             onclick="showScreen('home', this)">
 
             <span class="nav-icon">
@@ -894,7 +1201,9 @@
         </button>
 
 
+
         <button
+            data-screen="diet"
             onclick="showScreen('diet', this)">
 
             <span class="nav-icon">
@@ -906,7 +1215,9 @@
         </button>
 
 
+
         <button
+            data-screen="workout"
             onclick="showScreen('workout', this)">
 
             <span class="nav-icon">
@@ -918,7 +1229,9 @@
         </button>
 
 
+
         <button
+            data-screen="progress"
             onclick="showScreen('progress', this)">
 
             <span class="nav-icon">
@@ -930,7 +1243,9 @@
         </button>
 
 
+
         <button
+            data-screen="coach"
             onclick="showScreen('coach', this)">
 
             <span class="nav-icon">
@@ -941,14 +1256,28 @@
 
         </button>
 
+
     </nav>
+
 
 </div>
 
 
-<!-- LOGICA DELL'APP -->
+
+<!-- =====================================================
+     MOTORE NUTRIZIONALE
+===================================================== -->
+
 <script src="nutrition.js"></script>
+
+
+<!-- =====================================================
+     LOGICA APP
+===================================================== -->
+
 <script src="app.js"></script>
 
+
 </body>
+
 </html>
