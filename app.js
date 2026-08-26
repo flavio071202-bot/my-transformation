@@ -765,7 +765,51 @@ function initializeApp() {
 
 }
 
+/* =====================================================
+   AGGIORNAMENTO SCHERMATA DIETA
+===================================================== */
 
+function updateDietScreen() {
+
+    const target =
+        getNutritionTarget();
+
+    if (!target) {
+        return;
+    }
+
+    const dietScreen =
+        document.getElementById("diet");
+
+    if (!dietScreen) {
+        return;
+    }
+
+    const stats =
+        dietScreen.querySelectorAll(".stat-value");
+
+    if (stats.length >= 2) {
+
+        stats[0].textContent =
+            target.calories + " kcal";
+
+        stats[1].textContent =
+            target.protein + " g";
+
+    }
+
+}
+
+
+/* =====================================================
+   AGGIORNA DIETA QUANDO SI APRE
+===================================================== */
+
+function initializeDietScreen() {
+
+    updateDietScreen();
+
+}
 /* =====================================================
    AVVIO
 ===================================================== */
