@@ -168,33 +168,13 @@
                     Seleziona
                 </option>
 
-                <option value="1">
-                    1 giorno
-                </option>
-
-                <option value="2">
-                    2 giorni
-                </option>
-
-                <option value="3">
-                    3 giorni
-                </option>
-
-                <option value="4">
-                    4 giorni
-                </option>
-
-                <option value="5">
-                    5 giorni
-                </option>
-
-                <option value="6">
-                    6 giorni
-                </option>
-
-                <option value="7">
-                    7 giorni
-                </option>
+                <option value="1">1 giorno</option>
+                <option value="2">2 giorni</option>
+                <option value="3">3 giorni</option>
+                <option value="4">4 giorni</option>
+                <option value="5">5 giorni</option>
+                <option value="6">6 giorni</option>
+                <option value="7">7 giorni</option>
 
             </select>
 
@@ -209,25 +189,11 @@
                     Seleziona
                 </option>
 
-                <option value="30">
-                    30 minuti
-                </option>
-
-                <option value="45">
-                    45 minuti
-                </option>
-
-                <option value="60">
-                    60 minuti
-                </option>
-
-                <option value="75">
-                    75 minuti
-                </option>
-
-                <option value="90">
-                    90 minuti
-                </option>
+                <option value="30">30 minuti</option>
+                <option value="45">45 minuti</option>
+                <option value="60">60 minuti</option>
+                <option value="75">75 minuti</option>
+                <option value="90">90 minuti</option>
 
             </select>
 
@@ -267,17 +233,9 @@
                     Seleziona
                 </option>
 
-                <option value="3">
-                    3 pasti
-                </option>
-
-                <option value="4">
-                    4 pasti
-                </option>
-
-                <option value="5">
-                    5 pasti
-                </option>
+                <option value="3">3 pasti</option>
+                <option value="4">4 pasti</option>
+                <option value="5">5 pasti</option>
 
             </select>
 
@@ -756,12 +714,9 @@
         </div>
 
 
-        <!-- =================================================
-             DIETA DEL GIORNO
-        ================================================= -->
-
         <div
             id="dietTodaySection"
+            style="display:none;"
         >
 
             <div class="section-heading">
@@ -897,55 +852,16 @@
         </div>
 
 
-        <div
-            id="exercise1"
-            class="exercise-card"
-        ></div>
-
-        <div
-            id="exercise2"
-            class="exercise-card"
-        ></div>
-
-        <div
-            id="exercise3"
-            class="exercise-card"
-        ></div>
-
-        <div
-            id="exercise4"
-            class="exercise-card"
-        ></div>
-
-        <div
-            id="exercise5"
-            class="exercise-card"
-        ></div>
-
-        <div
-            id="exercise6"
-            class="exercise-card"
-        ></div>
-
-        <div
-            id="exercise7"
-            class="exercise-card"
-        ></div>
-
-        <div
-            id="exercise8"
-            class="exercise-card"
-        ></div>
-
-        <div
-            id="exercise9"
-            class="exercise-card"
-        ></div>
-
-        <div
-            id="exercise10"
-            class="exercise-card"
-        ></div>
+        <div id="exercise1" class="exercise-card"></div>
+        <div id="exercise2" class="exercise-card"></div>
+        <div id="exercise3" class="exercise-card"></div>
+        <div id="exercise4" class="exercise-card"></div>
+        <div id="exercise5" class="exercise-card"></div>
+        <div id="exercise6" class="exercise-card"></div>
+        <div id="exercise7" class="exercise-card"></div>
+        <div id="exercise8" class="exercise-card"></div>
+        <div id="exercise9" class="exercise-card"></div>
+        <div id="exercise10" class="exercise-card"></div>
 
     </div>
 
@@ -1461,6 +1377,1124 @@
 <script src="coach.js"></script>
 
 <script src="app.js"></script>
+
+
+
+<!-- =====================================================
+     MY TRANSFORMATION
+     PATCH FINALE INDEX
+===================================================== -->
+
+<script>
+
+/* =====================================================
+   GIORNI ITALIANI
+===================================================== */
+
+function getRealItalianDayName(
+    date = new Date()
+) {
+
+    const days = [
+
+        "Domenica",
+        "Lunedì",
+        "Martedì",
+        "Mercoledì",
+        "Giovedì",
+        "Venerdì",
+        "Sabato"
+
+    ];
+
+    return days[
+        date.getDay()
+    ] || "Oggi";
+
+}
+
+
+/* =====================================================
+   INDICE GIORNO SETTIMANA
+   Lunedì = 0
+   Domenica = 6
+===================================================== */
+
+function getCurrentWeekDayIndex(
+    date = new Date()
+) {
+
+    const day =
+        date.getDay();
+
+    return day === 0
+        ? 6
+        : day - 1;
+
+}
+
+
+/* =====================================================
+   GIORNO CORRENTE COACH
+===================================================== */
+
+function getCoachTodayDay(
+    date = new Date()
+) {
+
+    const plan =
+        typeof getSavedMealsPlan ===
+        "function"
+            ? getSavedMealsPlan()
+            : null;
+
+
+    if (
+        !plan ||
+        !Array.isArray(plan.days) ||
+        plan.days.length !== 7
+    ) {
+
+        return null;
+
+    }
+
+
+    const index =
+        getCurrentWeekDayIndex(
+            date
+        );
+
+
+    return (
+        plan.days[index] ||
+        null
+    );
+
+}
+
+
+/* =====================================================
+   DATA REALE DELLA SETTIMANA
+===================================================== */
+
+function getMondayOfCurrentWeek(
+    date = new Date()
+) {
+
+    const monday =
+        new Date(
+            date
+        );
+
+
+    monday.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+
+    const day =
+        monday.getDay();
+
+
+    const difference =
+        day === 0
+            ? -6
+            : 1 - day;
+
+
+    monday.setDate(
+        monday.getDate() +
+        difference
+    );
+
+
+    return monday;
+
+}
+
+
+function formatLocalDate(
+    date
+) {
+
+    const year =
+        date.getFullYear();
+
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    return (
+        `${year}-${month}-${day}`
+    );
+
+}
+
+
+/* =====================================================
+   SISTEMA LE DATE DELLA SETTIMANA
+===================================================== */
+
+function synchronizeCoachWeekDates() {
+
+    if (
+        typeof getSavedMealsPlan !==
+        "function"
+    ) {
+
+        return false;
+
+    }
+
+
+    const plan =
+        getSavedMealsPlan();
+
+
+    if (
+        !plan ||
+        !Array.isArray(plan.days) ||
+        plan.days.length !== 7
+    ) {
+
+        return false;
+
+    }
+
+
+    const monday =
+        getMondayOfCurrentWeek(
+            new Date()
+        );
+
+
+    plan.days.forEach(
+        (
+            day,
+            index
+        ) => {
+
+            if (!day) {
+                return;
+            }
+
+
+            const realDate =
+                new Date(
+                    monday
+                );
+
+
+            realDate.setDate(
+                monday.getDate() +
+                index
+            );
+
+
+            day.date =
+                formatLocalDate(
+                    realDate
+                );
+
+
+            day.day =
+                getRealItalianDayName(
+                    realDate
+                );
+
+        }
+    );
+
+
+    plan.startDate =
+        plan.days[0].date;
+
+
+    plan.endDate =
+        plan.days[6].date;
+
+
+    if (
+        typeof saveMealsPlan ===
+        "function"
+    ) {
+
+        saveMealsPlan(
+            plan
+        );
+
+    }
+
+
+    return true;
+
+}
+
+
+/* =====================================================
+   OVERRIDE GET MEALS DAY
+   USA IL CALENDARIO REALE
+===================================================== */
+
+const originalGetMealsDay =
+    typeof getMealsDay ===
+    "function"
+        ? getMealsDay
+        : null;
+
+
+function getMealsDay(
+    date = new Date()
+) {
+
+    const plan =
+        typeof getSavedMealsPlan ===
+        "function"
+            ? getSavedMealsPlan()
+            : null;
+
+
+    if (
+        !plan ||
+        !Array.isArray(plan.days) ||
+        plan.days.length !== 7
+    ) {
+
+        return null;
+
+    }
+
+
+    const index =
+        getCurrentWeekDayIndex(
+            date
+        );
+
+
+    const day =
+        plan.days[index] ||
+        null;
+
+
+    if (!day) {
+
+        return null;
+
+    }
+
+
+    /*
+       Aggiorna sempre il nome
+       in base al calendario reale.
+    */
+
+    const realDate =
+        new Date(
+            date
+        );
+
+
+    day.day =
+        getRealItalianDayName(
+            realDate
+        );
+
+
+    return day;
+
+}
+
+
+/* =====================================================
+   RENDER DIETA COACH
+===================================================== */
+
+function renderCoachImportedDiet() {
+
+    synchronizeCoachWeekDates();
+
+
+    const plan =
+        typeof getSavedMealsPlan ===
+        "function"
+            ? getSavedMealsPlan()
+            : null;
+
+
+    const status =
+        document.getElementById(
+            "dietCoachStatus"
+        );
+
+
+    const todaySection =
+        document.getElementById(
+            "dietTodaySection"
+        );
+
+
+    if (
+        !plan ||
+        plan.imported !== true ||
+        plan.source !== "coach_ai" ||
+        !Array.isArray(plan.days) ||
+        plan.days.length !== 7
+    ) {
+
+        if (status) {
+
+            status.innerHTML = `
+
+                <span>
+                    STATO PIANO
+                </span>
+
+                <strong>
+                    Nessuna settimana del Coach importata.
+                </strong>
+
+                <div class="meal-macros">
+                    Premi "Genera la mia settimana",
+                    poi copia la risposta di ChatGPT
+                    e torna qui per importarla.
+                </div>
+
+            `;
+
+        }
+
+
+        if (todaySection) {
+
+            todaySection.style.display =
+                "none";
+
+        }
+
+
+        return;
+
+    }
+
+
+    const today =
+        getMealsDay(
+            new Date()
+        );
+
+
+    if (!today) {
+
+        if (todaySection) {
+
+            todaySection.style.display =
+                "none";
+
+        }
+
+        return;
+
+    }
+
+
+    const todayName =
+        getRealItalianDayName(
+            new Date()
+        );
+
+
+    if (status) {
+
+        status.innerHTML = `
+
+            <span>
+                STATO PIANO
+            </span>
+
+            <strong>
+                ✅ Settimana del Coach attiva
+            </strong>
+
+            <div class="meal-macros">
+                ${todayName} ·
+                ${Array.isArray(today.meals)
+                    ? today.meals.length
+                    : 0}
+                pasti
+            </div>
+
+        `;
+
+    }
+
+
+    if (todaySection) {
+
+        todaySection.style.display =
+            "block";
+
+    }
+
+
+    const todayTitle =
+        document.getElementById(
+            "dietTodayTitle"
+        );
+
+
+    if (todayTitle) {
+
+        todayTitle.textContent =
+            todayName;
+
+    }
+
+
+    const target =
+        today.target ||
+        null;
+
+
+    if (target) {
+
+        setText(
+            "dietCalories",
+            target.calories
+                ? `${target.calories}`
+                : "—"
+        );
+
+
+        setText(
+            "dietProtein",
+            target.protein
+                ? `${target.protein} g`
+                : "—"
+        );
+
+
+        setText(
+            "dietCarbs",
+            target.carbs
+                ? `${target.carbs} g`
+                : "—"
+        );
+
+
+        setText(
+            "dietFat",
+            target.fat
+                ? `${target.fat} g`
+                : "—"
+        );
+
+    }
+
+
+    const slots = [
+
+        "meal1",
+        "meal2",
+        "meal3",
+        "meal4",
+        "meal5"
+
+    ];
+
+
+    slots.forEach(
+        id => {
+
+            const element =
+                document.getElementById(
+                    id
+                );
+
+
+            if (element) {
+
+                element.innerHTML =
+                    "";
+
+            }
+
+        }
+    );
+
+
+    const meals =
+        Array.isArray(
+            today.meals
+        )
+            ? today.meals
+            : [];
+
+
+    meals.forEach(
+        (
+            meal,
+            index
+        ) => {
+
+            if (
+                index >= 5
+            ) {
+
+                return;
+
+            }
+
+
+            const element =
+                document.getElementById(
+                    `meal${index + 1}`
+                );
+
+
+            if (!element) {
+
+                return;
+
+            }
+
+
+            const foods =
+                Array.isArray(
+                    meal.foods
+                )
+                    ? meal.foods
+                    : [];
+
+
+            const foodsHTML =
+                foods.map(
+                    food => {
+
+                        return `
+
+                            <div class="meal-food">
+
+                                <span>
+
+                                    ${escapeHTML(
+                                        food.name
+                                    )}
+
+                                    <small>
+                                        ${food.grams} g
+                                    </small>
+
+                                </span>
+
+                                <strong>
+                                    ${food.kcal || 0} kcal
+                                </strong>
+
+                            </div>
+
+                        `;
+
+                    }
+                ).join("");
+
+
+            const totals =
+                meal.totals || {
+
+                    kcal: 0,
+                    protein: 0,
+                    carbs: 0,
+                    fat: 0
+
+                };
+
+
+            const safeMealId =
+                String(
+                    meal.id || ""
+                )
+                .replace(
+                    /\\/g,
+                    "\\\\"
+                )
+                .replace(
+                    /'/g,
+                    "\\'"
+                );
+
+
+            element.innerHTML = `
+
+                <div class="meal-header">
+
+                    <strong>
+                        ${escapeHTML(
+                            meal.name ||
+                            `Pasto ${index + 1}`
+                        )}
+                    </strong>
+
+                    <span>
+                        ${totals.kcal || 0} kcal
+                    </span>
+
+                </div>
+
+
+                <div class="meal-foods">
+
+                    ${foodsHTML}
+
+                </div>
+
+
+                <div class="meal-macros">
+
+                    P
+                    ${totals.protein || 0}
+                    g
+
+                    ·
+
+                    C
+                    ${totals.carbs || 0}
+                    g
+
+                    ·
+
+                    G
+                    ${totals.fat || 0}
+                    g
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="primary-button meal-complete-button"
+                    data-meal-id="${escapeHTML(safeMealId)}"
+                    onclick="completeMeal(this)"
+                >
+
+                    ${
+                        meal.completed === true
+                            ? "✅ PASTO COMPLETATO"
+                            : "SEGNA COME COMPLETATO"
+                    }
+
+                </button>
+
+            `;
+
+        }
+    );
+
+
+    const totals =
+        today.totals || {
+
+            kcal: 0,
+            protein: 0,
+            carbs: 0,
+            fat: 0
+
+        };
+
+
+    setText(
+        "dietTotalCalories",
+        `${totals.kcal || 0} kcal`
+    );
+
+
+    setText(
+        "dietTotalProtein",
+        `${totals.protein || 0} g`
+    );
+
+
+    setText(
+        "dietTotalCarbs",
+        `${totals.carbs || 0} g`
+    );
+
+
+    setText(
+        "dietTotalFat",
+        `${totals.fat || 0} g`
+    );
+
+}
+
+
+/* =====================================================
+   AGGIORNA SCHERMATA DIETA
+===================================================== */
+
+function updateDietScreen() {
+
+    renderCoachImportedDiet();
+
+}
+
+
+/* =====================================================
+   COMPLETAMENTO PASTO
+===================================================== */
+
+function completeMeal(
+    button
+) {
+
+    if (!button) {
+
+        return false;
+
+    }
+
+
+    const mealId =
+        button.getAttribute(
+            "data-meal-id"
+        );
+
+
+    if (!mealId) {
+
+        return false;
+
+    }
+
+
+    /*
+       Usa direttamente il motore
+       meals.js.
+    */
+
+    if (
+        typeof toggleMealCompleted !==
+        "function"
+    ) {
+
+        alert(
+            "Motore completamento pasto non disponibile."
+        );
+
+        return false;
+
+    }
+
+
+    const result =
+        toggleMealCompleted(
+            mealId,
+            new Date()
+        );
+
+
+    /*
+       Aggiorna immediatamente
+       il pulsante.
+    */
+
+    if (result === true) {
+
+        button.textContent =
+            "✅ PASTO COMPLETATO";
+
+    } else {
+
+        button.textContent =
+            "SEGNA COME COMPLETATO";
+
+    }
+
+
+    /*
+       Ridisegna la schermata
+       per mantenere lo stato.
+    */
+
+    renderCoachImportedDiet();
+
+
+    if (
+        typeof updateDashboard ===
+        "function"
+    ) {
+
+        updateDashboard();
+
+    }
+
+
+    if (
+        typeof updateProgressScreen ===
+        "function"
+    ) {
+
+        updateProgressScreen();
+
+    }
+
+
+    return result;
+
+}
+
+
+/* =====================================================
+   IMPORTAZIONE SETTIMANA COACH
+===================================================== */
+
+async function importWeeklyCoachDiet() {
+
+    if (
+        typeof importCoachDietFromClipboard !==
+        "function"
+    ) {
+
+        alert(
+            "Motore di importazione non disponibile."
+        );
+
+        return false;
+
+    }
+
+
+    try {
+
+        const result =
+            await importCoachDietFromClipboard();
+
+
+        if (
+            !result ||
+            !result.success
+        ) {
+
+            alert(
+                result?.message ||
+                "La dieta non è stata importata."
+            );
+
+            return false;
+
+        }
+
+
+        /*
+           Dopo l'importazione,
+           trasformiamo i 7 giorni
+           nella settimana reale
+           Lunedì → Domenica.
+        */
+
+        synchronizeCoachWeekDates();
+
+
+        updateAllScreens();
+
+
+        renderCoachImportedDiet();
+
+
+        alert(
+            "✅ Settimana alimentare importata correttamente!"
+        );
+
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        alert(
+            error?.message ||
+            "Errore durante l'importazione."
+        );
+
+
+        return false;
+
+    }
+
+}
+
+
+/* =====================================================
+   GENERAZIONE SETTIMANA
+===================================================== */
+
+async function openCoachWeeklyPlan() {
+
+    if (
+        typeof appGetProfile ===
+        "function" &&
+        !appGetProfile()
+    ) {
+
+        alert(
+            "Prima devi completare il profilo."
+        );
+
+        showSetupScreen();
+
+        return false;
+
+    }
+
+
+    if (
+        typeof copyCoachPrompt !==
+        "function"
+    ) {
+
+        alert(
+            "Sistema Coach non disponibile."
+        );
+
+        return false;
+
+    }
+
+
+    const copied =
+        await copyCoachPrompt();
+
+
+    if (!copied) {
+
+        alert(
+            "Non sono riuscito a copiare il prompt. Riprova."
+        );
+
+        return false;
+
+    }
+
+
+    alert(
+        "✅ Prompt copiato!\n\n" +
+        "Si aprirà ChatGPT nel browser.\n\n" +
+        "Incolla il prompt e invialo.\n\n" +
+        "Quando ChatGPT ha finito:\n" +
+        "1. Copia tutta la risposta.\n" +
+        "2. Torna in MY TRANSFORMATION.\n" +
+        "3. Premi IMPORTA SETTIMANA DEL COACH."
+    );
+
+
+    if (
+        typeof openChatGPT ===
+        "function"
+    ) {
+
+        openChatGPT();
+
+    } else {
+
+        window.open(
+            "https://chatgpt.com/",
+            "_blank"
+        );
+
+    }
+
+
+    return true;
+
+}
+
+
+/* =====================================================
+   INIZIALIZZAZIONE FINALE
+===================================================== */
+
+function initializeCoachIndexPatch() {
+
+    synchronizeCoachWeekDates();
+
+
+    const plan =
+        typeof getSavedMealsPlan ===
+        "function"
+            ? getSavedMealsPlan()
+            : null;
+
+
+    if (
+        plan &&
+        plan.imported === true &&
+        plan.source === "coach_ai" &&
+        Array.isArray(plan.days) &&
+        plan.days.length === 7
+    ) {
+
+        renderCoachImportedDiet();
+
+    }
+
+}
+
+
+/* =====================================================
+   AVVIO PATCH
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    initializeCoachIndexPatch
+);
+
+
+/* =====================================================
+   API GLOBALE
+===================================================== */
+
+window.MY_TRANSFORMATION_INDEX = {
+
+    getCoachTodayDay,
+
+    getCurrentWeekDayIndex,
+
+    getRealItalianDayName,
+
+    synchronizeCoachWeekDates,
+
+    renderCoachImportedDiet,
+
+    completeMeal,
+
+    importWeeklyCoachDiet
+
+};
+
+</script>
 
 
 </body>
