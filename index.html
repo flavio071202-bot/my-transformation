@@ -563,10 +563,6 @@
         </p>
 
 
-        <!-- =================================================
-             COACH IA
-        ================================================= -->
-
         <div
             id="coachDietCard"
             class="card"
@@ -607,10 +603,6 @@
 
         </div>
 
-
-        <!-- =================================================
-             MACRO
-        ================================================= -->
 
         <div
             id="dietMacros"
@@ -686,10 +678,6 @@
 
         </div>
 
-
-        <!-- =================================================
-             STATO PIANO
-        ================================================= -->
 
         <div
             id="dietCoachStatus"
@@ -1359,44 +1347,35 @@
 
 
 <!-- =====================================================
-     JAVASCRIPT
+     ENGINE
 ===================================================== -->
 
 <script src="storage.js"></script>
-
 <script src="database.js"></script>
-
 <script src="nutrition.js"></script>
-
 <script src="meals.js"></script>
-
 <script src="workout.js"></script>
-
 <script src="progress.js"></script>
-
 <script src="coach.js"></script>
-
 <script src="app.js"></script>
 
 
 
 <!-- =====================================================
-     MY TRANSFORMATION
-     PATCH FINALE INDEX
+     PATCH DEFINITIVO
 ===================================================== -->
 
 <script>
 
 /* =====================================================
-   GIORNI ITALIANI
+   DATA / CALENDARIO
 ===================================================== */
 
-function getRealItalianDayName(
+function mtGetItalianDayName(
     date = new Date()
 ) {
 
     const days = [
-
         "Domenica",
         "Lunedì",
         "Martedì",
@@ -1404,28 +1383,18 @@ function getRealItalianDayName(
         "Giovedì",
         "Venerdì",
         "Sabato"
-
     ];
 
-    return days[
-        date.getDay()
-    ] || "Oggi";
+    return days[date.getDay()] || "Oggi";
 
 }
 
 
-/* =====================================================
-   INDICE GIORNO SETTIMANA
-   Lunedì = 0
-   Domenica = 6
-===================================================== */
-
-function getCurrentWeekDayIndex(
+function mtGetWeekDayIndex(
     date = new Date()
 ) {
 
-    const day =
-        date.getDay();
+    const day = date.getDay();
 
     return day === 0
         ? 6
@@ -1434,59 +1403,12 @@ function getCurrentWeekDayIndex(
 }
 
 
-/* =====================================================
-   GIORNO CORRENTE COACH
-===================================================== */
-
-function getCoachTodayDay(
-    date = new Date()
-) {
-
-    const plan =
-        typeof getSavedMealsPlan ===
-        "function"
-            ? getSavedMealsPlan()
-            : null;
-
-
-    if (
-        !plan ||
-        !Array.isArray(plan.days) ||
-        plan.days.length !== 7
-    ) {
-
-        return null;
-
-    }
-
-
-    const index =
-        getCurrentWeekDayIndex(
-            date
-        );
-
-
-    return (
-        plan.days[index] ||
-        null
-    );
-
-}
-
-
-/* =====================================================
-   DATA REALE DELLA SETTIMANA
-===================================================== */
-
-function getMondayOfCurrentWeek(
+function mtGetMonday(
     date = new Date()
 ) {
 
     const monday =
-        new Date(
-            date
-        );
-
+        new Date(date);
 
     monday.setHours(
         0,
@@ -1495,97 +1417,66 @@ function getMondayOfCurrentWeek(
         0
     );
 
-
     const day =
         monday.getDay();
 
-
-    const difference =
-        day === 0
-            ? -6
-            : 1 - day;
-
-
     monday.setDate(
         monday.getDate() +
-        difference
+        (
+            day === 0
+                ? -6
+                : 1 - day
+        )
     );
-
 
     return monday;
 
 }
 
 
-function formatLocalDate(
+function mtFormatDate(
     date
 ) {
 
-    const year =
-        date.getFullYear();
-
-
-    const month =
+    return [
+        date.getFullYear(),
         String(
             date.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        );
-
-
-    const day =
+        ).padStart(2, "0"),
         String(
             date.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
-
-
-    return (
-        `${year}-${month}-${day}`
-    );
+        ).padStart(2, "0")
+    ].join("-");
 
 }
 
 
 /* =====================================================
-   SISTEMA LE DATE DELLA SETTIMANA
+   SINCRONIZZAZIONE SETTIMANA
 ===================================================== */
 
-function synchronizeCoachWeekDates() {
+function mtSynchronizeWeek() {
 
     if (
         typeof getSavedMealsPlan !==
         "function"
     ) {
-
-        return false;
-
+        return null;
     }
-
 
     const plan =
         getSavedMealsPlan();
-
 
     if (
         !plan ||
         !Array.isArray(plan.days) ||
         plan.days.length !== 7
     ) {
-
-        return false;
-
+        return null;
     }
 
-
     const monday =
-        getMondayOfCurrentWeek(
-            new Date()
-        );
-
+        mtGetMonday();
 
     plan.days.forEach(
         (
@@ -1593,164 +1484,90 @@ function synchronizeCoachWeekDates() {
             index
         ) => {
 
-            if (!day) {
-                return;
-            }
+            if (!day) return;
 
+            const date =
+                new Date(monday);
 
-            const realDate =
-                new Date(
-                    monday
-                );
-
-
-            realDate.setDate(
+            date.setDate(
                 monday.getDate() +
                 index
             );
 
-
             day.date =
-                formatLocalDate(
-                    realDate
-                );
-
+                mtFormatDate(date);
 
             day.day =
-                getRealItalianDayName(
-                    realDate
-                );
+                mtGetItalianDayName(date);
 
         }
     );
 
-
     plan.startDate =
         plan.days[0].date;
 
-
     plan.endDate =
         plan.days[6].date;
-
 
     if (
         typeof saveMealsPlan ===
         "function"
     ) {
 
-        saveMealsPlan(
-            plan
-        );
+        saveMealsPlan(plan);
 
     }
 
-
-    return true;
+    return plan;
 
 }
 
 
 /* =====================================================
-   OVERRIDE GET MEALS DAY
-   USA IL CALENDARIO REALE
+   GIORNO DI OGGI
 ===================================================== */
 
-const originalGetMealsDay =
-    typeof getMealsDay ===
-    "function"
-        ? getMealsDay
-        : null;
-
-
-function getMealsDay(
-    date = new Date()
-) {
+function mtGetTodayMealDay() {
 
     const plan =
-        typeof getSavedMealsPlan ===
-        "function"
-            ? getSavedMealsPlan()
-            : null;
-
+        mtSynchronizeWeek();
 
     if (
         !plan ||
-        !Array.isArray(plan.days) ||
-        plan.days.length !== 7
+        !Array.isArray(plan.days)
     ) {
-
         return null;
-
     }
-
 
     const index =
-        getCurrentWeekDayIndex(
-            date
-        );
+        mtGetWeekDayIndex();
 
-
-    const day =
-        plan.days[index] ||
-        null;
-
-
-    if (!day) {
-
-        return null;
-
-    }
-
-
-    /*
-       Aggiorna sempre il nome
-       in base al calendario reale.
-    */
-
-    const realDate =
-        new Date(
-            date
-        );
-
-
-    day.day =
-        getRealItalianDayName(
-            realDate
-        );
-
-
-    return day;
+    return plan.days[index] || null;
 
 }
 
 
 /* =====================================================
-   RENDER DIETA COACH
+   RENDER DIETA
 ===================================================== */
 
-function renderCoachImportedDiet() {
-
-    synchronizeCoachWeekDates();
-
-
-    const plan =
-        typeof getSavedMealsPlan ===
-        "function"
-            ? getSavedMealsPlan()
-            : null;
-
+function mtRenderDiet() {
 
     const status =
         document.getElementById(
             "dietCoachStatus"
         );
 
-
-    const todaySection =
+    const section =
         document.getElementById(
             "dietTodaySection"
         );
 
+    const plan =
+        typeof getSavedMealsPlan ===
+        "function"
+            ? getSavedMealsPlan()
+            : null;
 
     if (
         !plan ||
@@ -1763,10 +1580,7 @@ function renderCoachImportedDiet() {
         if (status) {
 
             status.innerHTML = `
-
-                <span>
-                    STATO PIANO
-                </span>
+                <span>STATO PIANO</span>
 
                 <strong>
                     Nessuna settimana del Coach importata.
@@ -1774,41 +1588,37 @@ function renderCoachImportedDiet() {
 
                 <div class="meal-macros">
                     Premi "Genera la mia settimana",
-                    poi copia la risposta di ChatGPT
-                    e torna qui per importarla.
+                    copia la risposta di ChatGPT
+                    e poi premi "Importa settimana del Coach".
                 </div>
-
             `;
 
         }
 
-
-        if (todaySection) {
-
-            todaySection.style.display =
-                "none";
-
+        if (section) {
+            section.style.display = "none";
         }
-
 
         return;
 
     }
 
 
-    const today =
-        getMealsDay(
-            new Date()
-        );
+    const synchronized =
+        mtSynchronizeWeek();
 
+    if (!synchronized) {
+        return;
+    }
+
+
+    const today =
+        mtGetTodayMealDay();
 
     if (!today) {
 
-        if (todaySection) {
-
-            todaySection.style.display =
-                "none";
-
+        if (section) {
+            section.style.display = "none";
         }
 
         return;
@@ -1817,18 +1627,13 @@ function renderCoachImportedDiet() {
 
 
     const todayName =
-        getRealItalianDayName(
-            new Date()
-        );
+        mtGetItalianDayName();
 
 
     if (status) {
 
         status.innerHTML = `
-
-            <span>
-                STATO PIANO
-            </span>
+            <span>STATO PIANO</span>
 
             <strong>
                 ✅ Settimana del Coach attiva
@@ -1841,38 +1646,29 @@ function renderCoachImportedDiet() {
                     : 0}
                 pasti
             </div>
-
         `;
 
     }
 
 
-    if (todaySection) {
-
-        todaySection.style.display =
-            "block";
-
+    if (section) {
+        section.style.display = "block";
     }
 
 
-    const todayTitle =
+    const title =
         document.getElementById(
             "dietTodayTitle"
         );
 
-
-    if (todayTitle) {
-
-        todayTitle.textContent =
+    if (title) {
+        title.textContent =
             todayName;
-
     }
 
 
     const target =
-        today.target ||
-        null;
-
+        today.target || null;
 
     if (target) {
 
@@ -1883,7 +1679,6 @@ function renderCoachImportedDiet() {
                 : "—"
         );
 
-
         setText(
             "dietProtein",
             target.protein
@@ -1891,14 +1686,12 @@ function renderCoachImportedDiet() {
                 : "—"
         );
 
-
         setText(
             "dietCarbs",
             target.carbs
                 ? `${target.carbs} g`
                 : "—"
         );
-
 
         setText(
             "dietFat",
@@ -1911,13 +1704,11 @@ function renderCoachImportedDiet() {
 
 
     const slots = [
-
         "meal1",
         "meal2",
         "meal3",
         "meal4",
         "meal5"
-
     ];
 
 
@@ -1925,16 +1716,10 @@ function renderCoachImportedDiet() {
         id => {
 
             const element =
-                document.getElementById(
-                    id
-                );
-
+                document.getElementById(id);
 
             if (element) {
-
-                element.innerHTML =
-                    "";
-
+                element.innerHTML = "";
             }
 
         }
@@ -1942,9 +1727,7 @@ function renderCoachImportedDiet() {
 
 
     const meals =
-        Array.isArray(
-            today.meals
-        )
+        Array.isArray(today.meals)
             ? today.meals
             : [];
 
@@ -1955,13 +1738,7 @@ function renderCoachImportedDiet() {
             index
         ) => {
 
-            if (
-                index >= 5
-            ) {
-
-                return;
-
-            }
+            if (index >= 5) return;
 
 
             const element =
@@ -1969,76 +1746,55 @@ function renderCoachImportedDiet() {
                     `meal${index + 1}`
                 );
 
-
-            if (!element) {
-
-                return;
-
-            }
+            if (!element) return;
 
 
             const foods =
-                Array.isArray(
-                    meal.foods
-                )
+                Array.isArray(meal.foods)
                     ? meal.foods
                     : [];
 
 
             const foodsHTML =
                 foods.map(
-                    food => {
+                    food => `
 
-                        return `
+                        <div class="meal-food">
 
-                            <div class="meal-food">
+                            <span>
 
-                                <span>
+                                ${escapeHTML(
+                                    food.name
+                                )}
 
-                                    ${escapeHTML(
-                                        food.name
-                                    )}
+                                <small>
+                                    ${food.grams} g
+                                </small>
 
-                                    <small>
-                                        ${food.grams} g
-                                    </small>
+                            </span>
 
-                                </span>
+                            <strong>
+                                ${food.kcal || 0} kcal
+                            </strong>
 
-                                <strong>
-                                    ${food.kcal || 0} kcal
-                                </strong>
+                        </div>
 
-                            </div>
-
-                        `;
-
-                    }
+                    `
                 ).join("");
 
 
             const totals =
                 meal.totals || {
-
                     kcal: 0,
                     protein: 0,
                     carbs: 0,
                     fat: 0
-
                 };
 
 
-            const safeMealId =
+            const mealId =
                 String(
                     meal.id || ""
-                )
-                .replace(
-                    /\\/g,
-                    "\\\\"
-                )
-                .replace(
-                    /'/g,
-                    "\\'"
                 );
 
 
@@ -2069,21 +1825,11 @@ function renderCoachImportedDiet() {
 
                 <div class="meal-macros">
 
-                    P
-                    ${totals.protein || 0}
-                    g
-
+                    P ${totals.protein || 0} g
                     ·
-
-                    C
-                    ${totals.carbs || 0}
-                    g
-
+                    C ${totals.carbs || 0} g
                     ·
-
-                    G
-                    ${totals.fat || 0}
-                    g
+                    G ${totals.fat || 0} g
 
                 </div>
 
@@ -2091,8 +1837,8 @@ function renderCoachImportedDiet() {
                 <button
                     type="button"
                     class="primary-button meal-complete-button"
-                    data-meal-id="${escapeHTML(safeMealId)}"
-                    onclick="completeMeal(this)"
+                    data-meal-id="${escapeHTML(mealId)}"
+                    onclick="mtCompleteMeal(this)"
                 >
 
                     ${
@@ -2111,12 +1857,10 @@ function renderCoachImportedDiet() {
 
     const totals =
         today.totals || {
-
             kcal: 0,
             protein: 0,
             carbs: 0,
             fat: 0
-
         };
 
 
@@ -2125,18 +1869,15 @@ function renderCoachImportedDiet() {
         `${totals.kcal || 0} kcal`
     );
 
-
     setText(
         "dietTotalProtein",
         `${totals.protein || 0} g`
     );
 
-
     setText(
         "dietTotalCarbs",
         `${totals.carbs || 0} g`
     );
-
 
     setText(
         "dietTotalFat",
@@ -2147,32 +1888,20 @@ function renderCoachImportedDiet() {
 
 
 /* =====================================================
-   AGGIORNA SCHERMATA DIETA
+   COMPLETA PASTO
 ===================================================== */
 
-function updateDietScreen() {
-
-    renderCoachImportedDiet();
-
-}
-
-
-/* =====================================================
-   COMPLETAMENTO PASTO
-===================================================== */
-
-function completeMeal(
+function mtCompleteMeal(
     button
 ) {
 
     if (!button) {
-
         return false;
-
     }
 
 
     const mealId =
+        button.dataset.mealId ||
         button.getAttribute(
             "data-meal-id"
         );
@@ -2180,15 +1909,14 @@ function completeMeal(
 
     if (!mealId) {
 
+        alert(
+            "ID del pasto non trovato."
+        );
+
         return false;
 
     }
 
-
-    /*
-       Usa direttamente il motore
-       meals.js.
-    */
 
     if (
         typeof toggleMealCompleted !==
@@ -2212,8 +1940,7 @@ function completeMeal(
 
 
     /*
-       Aggiorna immediatamente
-       il pulsante.
+       Aggiornamento immediato.
     */
 
     if (result === true) {
@@ -2230,11 +1957,11 @@ function completeMeal(
 
 
     /*
-       Ridisegna la schermata
-       per mantenere lo stato.
+       Ridisegna la dieta
+       mantenendo lo stato salvato.
     */
 
-    renderCoachImportedDiet();
+    mtRenderDiet();
 
 
     if (
@@ -2263,7 +1990,18 @@ function completeMeal(
 
 
 /* =====================================================
-   IMPORTAZIONE SETTIMANA COACH
+   OVERRIDE SCHERMATA DIETA
+===================================================== */
+
+function updateDietScreen() {
+
+    mtRenderDiet();
+
+}
+
+
+/* =====================================================
+   IMPORTAZIONE
 ===================================================== */
 
 async function importWeeklyCoachDiet() {
@@ -2303,20 +2041,26 @@ async function importWeeklyCoachDiet() {
         }
 
 
-        /*
-           Dopo l'importazione,
-           trasformiamo i 7 giorni
-           nella settimana reale
-           Lunedì → Domenica.
-        */
-
-        synchronizeCoachWeekDates();
+        mtSynchronizeWeek();
 
 
-        updateAllScreens();
+        mtRenderDiet();
 
 
-        renderCoachImportedDiet();
+        if (
+            typeof updateDashboard ===
+            "function"
+        ) {
+            updateDashboard();
+        }
+
+
+        if (
+            typeof updateProgressScreen ===
+            "function"
+        ) {
+            updateProgressScreen();
+        }
 
 
         alert(
@@ -2329,6 +2073,7 @@ async function importWeeklyCoachDiet() {
     } catch (error) {
 
         console.error(
+            "Errore importazione:",
             error
         );
 
@@ -2347,36 +2092,203 @@ async function importWeeklyCoachDiet() {
 
 
 /* =====================================================
-   GENERAZIONE SETTIMANA
+   PROMPT COACH — SOLO JSON
+===================================================== */
+
+function buildCoachWeeklyPrompt() {
+
+    const profile =
+        typeof appGetProfile ===
+        "function"
+            ? appGetProfile()
+            : null;
+
+
+    const target =
+        typeof getNutritionTarget ===
+        "function"
+            ? getNutritionTarget()
+            : null;
+
+
+    const progress =
+        typeof getProgressSummary ===
+        "function"
+            ? getProgressSummary()
+            : null;
+
+
+    const meals =
+        Number(
+            profile?.meals || 3
+        );
+
+
+    return `Sei il Coach IA ufficiale di MY TRANSFORMATION.
+
+DEVI GENERARE UNA SETTIMANA ALIMENTARE PERSONALIZZATA.
+
+REGOLE ASSOLUTE:
+
+1. Devi generare ESATTAMENTE 7 giorni.
+2. Ogni giorno deve contenere ESATTAMENTE ${meals} pasti.
+3. Devi rispettare profilo, obiettivo, target calorico, progressi, allenamenti, preferenze, alimenti esclusi e allergie.
+4. Devi variare gli alimenti durante la settimana.
+5. Pasta, riso, avena, couscous, cereali e altri cereali: peso a secco.
+6. Carne e pesce: grammi a crudo.
+7. Frutta e verdura: grammi.
+8. Olio: grammi.
+9. Ogni alimento deve avere kcal, protein, carbs e fat.
+10. Tutti i valori numerici devono essere numeri JSON, MAI stringhe.
+11. I totali di ogni pasto devono essere coerenti con gli alimenti.
+12. I totali di ogni giorno devono essere coerenti con i pasti.
+13. Il totale giornaliero deve essere vicino al target calorico.
+14. Non aggiungere spuntini.
+15. Non aggiungere pasti extra.
+16. Non aggiungere spiegazioni.
+17. Non aggiungere commenti.
+18. Non aggiungere tabelle.
+19. Non aggiungere Markdown.
+20. Non usare triple backtick.
+21. Non scrivere testo prima del JSON.
+22. Non scrivere testo dopo il JSON.
+23. Devi rispondere ESCLUSIVAMENTE con i marker e il JSON.
+24. Prima di rispondere controlla che il JSON sia sintatticamente valido.
+
+PROFILO:
+${JSON.stringify(profile)}
+
+TARGET:
+${JSON.stringify(target)}
+
+PROGRESSI:
+${JSON.stringify(progress)}
+
+FORMATO OBBLIGATORIO:
+
+=== MY_TRANSFORMATION_DIET_START ===
+{
+  "version": "4.0",
+  "type": "weekly",
+  "week": [
+    {
+      "day": "Lunedì",
+      "dayType": "training",
+      "meals": [
+        {
+          "name": "Colazione",
+          "foods": [
+            {
+              "name": "Alimento",
+              "grams": 100,
+              "kcal": 100,
+              "protein": 10,
+              "carbs": 10,
+              "fat": 5
+            }
+          ],
+          "totals": {
+            "kcal": 100,
+            "protein": 10,
+            "carbs": 10,
+            "fat": 5
+          }
+        }
+      ],
+      "totals": {
+        "kcal": 100,
+        "protein": 10,
+        "carbs": 10,
+        "fat": 5
+      }
+    }
+  ]
+}
+=== MY_TRANSFORMATION_DIET_END ===
+
+SOSTITUISCI COMPLETAMENTE L'ESEMPIO.
+
+Il risultato finale deve contenere esattamente 7 giorni e ${meals} pasti per ogni giorno.
+
+NON SCRIVERE ALTRO.`;
+
+}
+
+
+/* =====================================================
+   COPIA PROMPT
+===================================================== */
+
+async function copyCoachPrompt() {
+
+    const prompt =
+        buildCoachWeeklyPrompt();
+
+
+    if (
+        navigator.clipboard &&
+        typeof navigator.clipboard.writeText ===
+        "function"
+    ) {
+
+        try {
+
+            await navigator.clipboard.writeText(
+                prompt
+            );
+
+            return true;
+
+        } catch (error) {
+
+            console.error(
+                error
+            );
+
+        }
+
+    }
+
+
+    return false;
+
+}
+
+
+/* =====================================================
+   APERTURA CHATGPT
+===================================================== */
+
+function openChatGPT() {
+
+    window.open(
+        "https://chatgpt.com/",
+        "_blank"
+    );
+
+}
+
+
+/* =====================================================
+   GENERA SETTIMANA
 ===================================================== */
 
 async function openCoachWeeklyPlan() {
 
-    if (
+    const profile =
         typeof appGetProfile ===
-        "function" &&
-        !appGetProfile()
-    ) {
+        "function"
+            ? appGetProfile()
+            : null;
+
+
+    if (!profile) {
 
         alert(
             "Prima devi completare il profilo."
         );
 
         showSetupScreen();
-
-        return false;
-
-    }
-
-
-    if (
-        typeof copyCoachPrompt !==
-        "function"
-    ) {
-
-        alert(
-            "Sistema Coach non disponibile."
-        );
 
         return false;
 
@@ -2402,28 +2314,16 @@ async function openCoachWeeklyPlan() {
         "✅ Prompt copiato!\n\n" +
         "Si aprirà ChatGPT nel browser.\n\n" +
         "Incolla il prompt e invialo.\n\n" +
-        "Quando ChatGPT ha finito:\n" +
+        "IMPORTANTE:\n" +
+        "ChatGPT deve rispondere solamente con il JSON della settimana.\n\n" +
+        "Quando ha finito:\n" +
         "1. Copia tutta la risposta.\n" +
         "2. Torna in MY TRANSFORMATION.\n" +
         "3. Premi IMPORTA SETTIMANA DEL COACH."
     );
 
 
-    if (
-        typeof openChatGPT ===
-        "function"
-    ) {
-
-        openChatGPT();
-
-    } else {
-
-        window.open(
-            "https://chatgpt.com/",
-            "_blank"
-        );
-
-    }
+    openChatGPT();
 
 
     return true;
@@ -2432,13 +2332,10 @@ async function openCoachWeeklyPlan() {
 
 
 /* =====================================================
-   INIZIALIZZAZIONE FINALE
+   INIZIALIZZAZIONE
 ===================================================== */
 
-function initializeCoachIndexPatch() {
-
-    synchronizeCoachWeekDates();
-
+function mtInitializeIndex() {
 
     const plan =
         typeof getSavedMealsPlan ===
@@ -2455,42 +2352,47 @@ function initializeCoachIndexPatch() {
         plan.days.length === 7
     ) {
 
-        renderCoachImportedDiet();
+        mtSynchronizeWeek();
+
+        mtRenderDiet();
 
     }
 
 }
 
 
-/* =====================================================
-   AVVIO PATCH
-===================================================== */
-
 document.addEventListener(
     "DOMContentLoaded",
-    initializeCoachIndexPatch
+    mtInitializeIndex
 );
 
 
 /* =====================================================
-   API GLOBALE
+   API
 ===================================================== */
 
 window.MY_TRANSFORMATION_INDEX = {
 
-    getCoachTodayDay,
+    getToday:
+        mtGetTodayMealDay,
 
-    getCurrentWeekDayIndex,
+    getWeekDayIndex:
+        mtGetWeekDayIndex,
 
-    getRealItalianDayName,
+    getItalianDayName:
+        mtGetItalianDayName,
 
-    synchronizeCoachWeekDates,
+    synchronizeWeek:
+        mtSynchronizeWeek,
 
-    renderCoachImportedDiet,
+    renderDiet:
+        mtRenderDiet,
 
-    completeMeal,
+    completeMeal:
+        mtCompleteMeal,
 
-    importWeeklyCoachDiet
+    importWeeklyDiet:
+        importWeeklyCoachDiet
 
 };
 
