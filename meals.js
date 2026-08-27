@@ -895,10 +895,10 @@ function normalizeCoachFood(
         grams:
             mealsRound(
                 parseMealsNumericValue(
-                    source.grams ??
-                    source.g ||
-                    source.quantity ||
-                    source.amount
+                    (source.grams ??
+                    source.g ??
+                    source.quantity ??
+                    source.amount)
                 ),
                 0
             ),
