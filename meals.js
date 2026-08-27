@@ -1,7 +1,7 @@
 /* =====================================================
    MY TRANSFORMATION
    MEALS ENGINE — COACH IA ONLY
-   VERSIONE DEFINITIVA 4.0
+   VERSIONE DEFINITIVA 5.0
 ===================================================== */
 
 
@@ -73,8 +73,7 @@ function mealsRound(
 
 
     return Math.round(
-        number *
-        multiplier
+        number * multiplier
     ) / multiplier;
 
 }
@@ -210,30 +209,44 @@ function getItalianDayName(
 
 
 /* =====================================================
-   DATA IMPORTAZIONE
+   INDICE GIORNO SETTIMANA
 ===================================================== */
 
-function getImportedDate(
-    dayIndex
+function getItalianWeekDayIndex(
+    date = new Date()
 ) {
 
-    const date =
-        new Date();
+    const day =
+        date.getDay();
 
 
-    date.setHours(
-        0,
-        0,
-        0,
-        0
-    );
+    /*
+       JavaScript:
+       Domenica = 0
+       Lunedì = 1
+       ...
+       Sabato = 6
+
+       Noi utilizziamo:
+       Lunedì = 0
+       ...
+       Domenica = 6
+    */
+
+    return day === 0
+        ? 6
+        : day - 1;
+
+}
 
 
-    date.setDate(
-        date.getDate() +
-        dayIndex
-    );
+/* =====================================================
+   DATA LOCALE YYYY-MM-DD
+===================================================== */
 
+function getLocalDateKey(
+    date = new Date()
+) {
 
     const year =
         date.getFullYear();
@@ -259,6 +272,112 @@ function getImportedDate(
 
     return (
         `${year}-${month}-${day}`
+    );
+
+}
+
+
+/* =====================================================
+   LUNEDÌ DELLA SETTIMANA CORRENTE
+===================================================== */
+
+function getCurrentWeekMonday(
+    date = new Date()
+) {
+
+    const monday =
+        new Date(
+            date
+        );
+
+
+    monday.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+
+    const index =
+        getItalianWeekDayIndex(
+            date
+        );
+
+
+    monday.setDate(
+        monday.getDate() -
+        index
+    );
+
+
+    return monday;
+
+}
+
+
+/* =====================================================
+   DATA GIORNO DELLA SETTIMANA
+===================================================== */
+
+function getCurrentWeekDate(
+    dayIndex,
+    referenceDate = new Date()
+) {
+
+    const monday =
+        getCurrentWeekMonday(
+            referenceDate
+        );
+
+
+    const date =
+        new Date(
+            monday
+        );
+
+
+    date.setDate(
+        monday.getDate() +
+        dayIndex
+    );
+
+
+    return getLocalDateKey(
+        date
+    );
+
+}
+
+
+/* =====================================================
+   DATA IMPORTAZIONE
+===================================================== */
+
+function getImportedDate(
+    dayIndex
+) {
+
+    /*
+       IMPORTANTE:
+
+       La settimana viene sempre
+       sincronizzata con la settimana
+       del calendario reale.
+
+       Esempio:
+       se oggi è Giovedì,
+
+       Lunedì -> data del lunedì
+       Martedì -> data del martedì
+       Mercoledì -> data del mercoledì
+       Giovedì -> data di oggi
+       ...
+    */
+
+    return getCurrentWeekDate(
+        dayIndex,
+        new Date()
     );
 
 }
@@ -555,13 +674,8 @@ function cleanCoachResponse(
 
 
     let cleaned =
-        String(text)
-            .trim();
+        String(text).trim();
 
-
-    /*
-       Rimuove eventuali marker.
-    */
 
     const startMarker =
         "=== MY_TRANSFORMATION_DIET_START ===";
@@ -573,12 +687,6 @@ function cleanCoachResponse(
     const markerStart =
         cleaned.indexOf(
             startMarker
-        );
-
-
-    const markerEnd =
-        cleaned.indexOf(
-            endMarker
         );
 
 
@@ -595,25 +703,21 @@ function cleanCoachResponse(
     }
 
 
+    const markerEnd =
+        cleaned.indexOf(
+            endMarker
+        );
+
+
     if (
         markerEnd !== -1
     ) {
 
-        const endPosition =
-            cleaned.indexOf(
-                endMarker
+        cleaned =
+            cleaned.substring(
+                0,
+                markerEnd
             );
-
-
-        if (endPosition !== -1) {
-
-            cleaned =
-                cleaned.substring(
-                    0,
-                    endPosition
-                );
-
-        }
 
     }
 
@@ -621,10 +725,6 @@ function cleanCoachResponse(
     cleaned =
         cleaned.trim();
 
-
-    /*
-       Rimuove Markdown.
-    */
 
     cleaned =
         cleaned.replace(
@@ -647,11 +747,6 @@ function cleanCoachResponse(
         );
 
 
-    /*
-       Corregge eventuali virgolette
-       tipografiche.
-    */
-
     cleaned =
         cleaned
             .replace(
@@ -670,7 +765,7 @@ function cleanCoachResponse(
 
 
 /* =====================================================
-   ESTRAZIONE OGGETTO JSON
+   ESTRAZIONE JSON
 ===================================================== */
 
 function extractJsonObject(
@@ -844,7 +939,7 @@ function parseCoachDietText(
                 cleanedJson
             );
 
-    } catch (error) {
+    } catch {
 
         console.error(
             "JSON ricevuto dal Coach:",
@@ -872,11 +967,6 @@ function parseCoachDietText(
     }
 
 
-    /*
-       Il formato ufficiale usa:
-       week: []
-    */
-
     if (
         Array.isArray(
             data.week
@@ -887,11 +977,6 @@ function parseCoachDietText(
 
     }
 
-
-    /*
-       Compatibilità con eventuale formato:
-       days: []
-    */
 
     if (
         Array.isArray(
@@ -1154,6 +1239,21 @@ function normalizeCoachDay(
         );
 
 
+    /*
+       Il giorno viene determinato
+       dall'ordine ufficiale della settimana.
+
+       Lunedì = indice 0
+       ...
+       Domenica = indice 6
+    */
+
+    const officialDayName =
+        getItalianDayName(
+            dayIndex
+        );
+
+
     return {
 
         id:
@@ -1165,12 +1265,7 @@ function normalizeCoachDay(
             ),
 
         day:
-            String(
-                source.day ||
-                getItalianDayName(
-                    dayIndex
-                )
-            ).trim(),
+            officialDayName,
 
         dayType:
             source.dayType ||
@@ -1221,10 +1316,6 @@ function normalizeImportedDiet(
             ? data.week
             : null;
 
-
-    /*
-       Compatibilità.
-    */
 
     if (
         !week &&
@@ -1289,12 +1380,6 @@ function normalizeImportedDiet(
                     );
 
 
-                /*
-                   Se il profilo specifica
-                   il numero di pasti,
-                   controlliamo che venga rispettato.
-                */
-
                 if (
                     Number.isFinite(
                         expectedMeals
@@ -1328,7 +1413,7 @@ function normalizeImportedDiet(
         version:
             String(
                 data.version ||
-                "4.0"
+                "5.0"
             ),
 
         type:
@@ -1405,10 +1490,6 @@ function getSavedMealsPlan() {
     }
 
 
-    /*
-       Compatibilità con storage.js.
-    */
-
     if (
         typeof storageGetMeals ===
         "function"
@@ -1439,10 +1520,6 @@ function getSavedMealsPlan() {
 
     }
 
-
-    /*
-       Vecchio storage.
-    */
 
     data =
         localStorage.getItem(
@@ -1562,7 +1639,7 @@ function saveMealsPlan(
 
 
 /* =====================================================
-   TROVA GIORNO
+   TROVA GIORNO CORRENTE
 ===================================================== */
 
 function getMealsDay(
@@ -1577,7 +1654,8 @@ function getMealsDay(
         !plan ||
         !Array.isArray(
             plan.days
-        )
+        ) ||
+        plan.days.length !== 7
     ) {
 
         return null;
@@ -1586,37 +1664,17 @@ function getMealsDay(
 
 
     /*
-       Confronto locale della data.
-       Evita problemi di timezone.
+       PRIMA SCELTA:
+       data esatta del calendario.
     */
 
-    const year =
-        date.getFullYear();
-
-
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        );
-
-
-    const day =
-        String(
-            date.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
-
-
     const dateKey =
-        `${year}-${month}-${day}`;
+        getLocalDateKey(
+            date
+        );
 
 
-    const found =
+    const foundByDate =
         plan.days.find(
             item =>
                 item &&
@@ -1625,25 +1683,105 @@ function getMealsDay(
         );
 
 
-    if (found) {
+    if (foundByDate) {
 
-        return found;
+        return foundByDate;
 
     }
 
 
     /*
-       Fallback.
+       SECONDA SCELTA:
+       indice del giorno della settimana.
+
+       Questo è fondamentale perché
+       anche se la settimana è stata
+       importata in precedenza,
+       sappiamo comunque che:
+
+       Giovedì = indice 3.
     */
 
-    const index =
-        date.getDay() === 0
-            ? 6
-            : date.getDay() - 1;
+    const dayIndex =
+        getItalianWeekDayIndex(
+            date
+        );
+
+
+    const foundByIndex =
+        plan.days[dayIndex];
+
+
+    if (foundByIndex) {
+
+        /*
+           Sincronizziamo la data
+           del giorno con il calendario.
+        */
+
+        foundByIndex.date =
+            getCurrentWeekDate(
+                dayIndex,
+                date
+            );
+
+
+        return foundByIndex;
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =====================================================
+   GIORNO SUCCESSIVO
+===================================================== */
+
+function getNextMealsDay(
+    date = new Date()
+) {
+
+    const plan =
+        getSavedMealsPlan();
+
+
+    if (
+        !plan ||
+        !Array.isArray(
+            plan.days
+        ) ||
+        plan.days.length !== 7
+    ) {
+
+        return null;
+
+    }
+
+
+    const currentIndex =
+        getItalianWeekDayIndex(
+            date
+        );
+
+
+    const nextIndex =
+        currentIndex + 1;
+
+
+    if (
+        nextIndex > 6
+    ) {
+
+        return null;
+
+    }
 
 
     return (
-        plan.days[index] ||
+        plan.days[nextIndex] ||
         null
     );
 
@@ -1651,212 +1789,30 @@ function getMealsDay(
 
 
 /* =====================================================
-   IMPORTAZIONE DIETA COACH
+   CONTROLLA GIORNO COMPLETATO
 ===================================================== */
 
-function importCoachDiet(
-    text
+function isMealsDayCompleted(
+    day
 ) {
 
-    try {
-
-        const data =
-            parseCoachDietText(
-                text
-            );
-
-
-        const plan =
-            normalizeImportedDiet(
-                data
-            );
-
-
-        const saved =
-            saveMealsPlan(
-                plan
-            );
-
-
-        if (!saved) {
-
-            throw new Error(
-                "Non è stato possibile salvare la settimana."
-            );
-
-        }
-
-
-        /*
-           Aggiornamento interfaccia.
-        */
-
-        if (
-            typeof updateAllScreens ===
-            "function"
-        ) {
-
-            try {
-
-                updateAllScreens();
-
-            } catch {}
-
-        }
-
-
-        if (
-            typeof updateDietScreen ===
-            "function"
-        ) {
-
-            try {
-
-                updateDietScreen();
-
-            } catch {}
-
-        }
-
-
-        return {
-
-            success:
-                true,
-
-            plan:
-                plan,
-
-            message:
-                "Settimana del Coach importata correttamente."
-
-        };
-
-    } catch (error) {
-
-        console.error(
-            "Errore importazione dieta:",
-            error
-        );
-
-
-        return {
-
-            success:
-                false,
-
-            plan:
-                null,
-
-            message:
-                error &&
-                error.message
-                    ? error.message
-                    : "Errore durante l'importazione della dieta."
-
-        };
-
-    }
-
-}
-
-
-/* =====================================================
-   IMPORTAZIONE DA CLIPBOARD
-===================================================== */
-
-async function importCoachDietFromClipboard() {
-
     if (
-        !navigator.clipboard ||
-        typeof navigator.clipboard.readText !==
-            "function"
+        !day ||
+        !Array.isArray(
+            day.meals
+        ) ||
+        day.meals.length === 0
     ) {
 
-        return {
-
-            success:
-                false,
-
-            message:
-                "Il browser non permette di leggere gli appunti."
-
-        };
+        return false;
 
     }
 
 
-    try {
-
-        const text =
-            await navigator.clipboard.readText();
-
-
-        if (!text) {
-
-            return {
-
-                success:
-                    false,
-
-                message:
-                    "Gli appunti sono vuoti."
-
-            };
-
-        }
-
-
-        return importCoachDiet(
-            text
-        );
-
-    } catch (error) {
-
-        return {
-
-            success:
-                false,
-
-            message:
-                "Non è stato possibile leggere gli appunti."
-
-        };
-
-    }
-
-}
-
-
-/* =====================================================
-   IMPORTAZIONE MANUALE
-===================================================== */
-
-function importCoachDietFromTextArea() {
-
-    const text =
-        window.prompt(
-            "Incolla qui la risposta completa di ChatGPT:"
-        );
-
-
-    if (!text) {
-
-        return {
-
-            success:
-                false,
-
-            message:
-                "Importazione annullata."
-
-        };
-
-    }
-
-
-    return importCoachDiet(
-        text
+    return day.meals.every(
+        meal =>
+            meal &&
+            meal.completed === true
     );
 
 }
@@ -1920,10 +1876,27 @@ function toggleMealCompleted(
         !meal.completed;
 
 
+    /*
+       Aggiorna automaticamente
+       lo stato della giornata.
+    */
+
+    day.completed =
+        isMealsDayCompleted(
+            day
+        );
+
+
     saveMealsPlan(
         plan
     );
 
+
+    /*
+       Registra il completamento
+       solo quando il pasto viene
+       effettivamente completato.
+    */
 
     if (
         meal.completed &&
@@ -1943,7 +1916,110 @@ function toggleMealCompleted(
     }
 
 
+    /*
+       Evento personalizzato.
+       Permette all'interfaccia di
+       aggiornarsi senza ricaricare
+       tutta la pagina.
+    */
+
+    try {
+
+        window.dispatchEvent(
+            new CustomEvent(
+                "myTransformationMealUpdated",
+                {
+                    detail: {
+
+                        mealId:
+                            meal.id,
+
+                        day:
+                            day,
+
+                        dayCompleted:
+                            day.completed
+
+                    }
+
+                }
+            )
+        );
+
+    } catch {}
+
+
     return meal.completed;
+
+}
+
+
+/* =====================================================
+   COMPLETA GIORNO E PASSA AL SUCCESSIVO
+===================================================== */
+
+function completeCurrentDayAndGetNext(
+    date = new Date()
+) {
+
+    const currentDay =
+        getMealsDay(
+            date
+        );
+
+
+    if (!currentDay) {
+
+        return null;
+
+    }
+
+
+    if (
+        !isMealsDayCompleted(
+            currentDay
+        )
+    ) {
+
+        return currentDay;
+
+    }
+
+
+    const currentIndex =
+        getItalianWeekDayIndex(
+            date
+        );
+
+
+    const nextIndex =
+        currentIndex + 1;
+
+
+    if (
+        nextIndex > 6
+    ) {
+
+        return null;
+
+    }
+
+
+    const plan =
+        getSavedMealsPlan();
+
+
+    if (!plan) {
+
+        return null;
+
+    }
+
+
+    return (
+        plan.days[nextIndex] ||
+        null
+    );
 
 }
 
@@ -2210,6 +2286,214 @@ function regenerateDailyMeals(
 
 
 /* =====================================================
+   IMPORTAZIONE DIETA COACH
+===================================================== */
+
+function importCoachDiet(
+    text
+) {
+
+    try {
+
+        const data =
+            parseCoachDietText(
+                text
+            );
+
+
+        const plan =
+            normalizeImportedDiet(
+                data
+            );
+
+
+        const saved =
+            saveMealsPlan(
+                plan
+            );
+
+
+        if (!saved) {
+
+            throw new Error(
+                "Non è stato possibile salvare la settimana."
+            );
+
+        }
+
+
+        if (
+            typeof updateAllScreens ===
+            "function"
+        ) {
+
+            try {
+
+                updateAllScreens();
+
+            } catch {}
+
+        }
+
+
+        if (
+            typeof updateDietScreen ===
+            "function"
+        ) {
+
+            try {
+
+                updateDietScreen();
+
+            } catch {}
+
+        }
+
+
+        return {
+
+            success:
+                true,
+
+            plan:
+                plan,
+
+            message:
+                "Settimana del Coach importata correttamente."
+
+        };
+
+    } catch (error) {
+
+        console.error(
+            "Errore importazione dieta:",
+            error
+        );
+
+
+        return {
+
+            success:
+                false,
+
+            plan:
+                null,
+
+            message:
+                error &&
+                error.message
+                    ? error.message
+                    : "Errore durante l'importazione della dieta."
+
+        };
+
+    }
+
+}
+
+
+/* =====================================================
+   IMPORTAZIONE DA CLIPBOARD
+===================================================== */
+
+async function importCoachDietFromClipboard() {
+
+    if (
+        !navigator.clipboard ||
+        typeof navigator.clipboard.readText !==
+            "function"
+    ) {
+
+        return {
+
+            success:
+                false,
+
+            message:
+                "Il browser non permette di leggere gli appunti."
+
+        };
+
+    }
+
+
+    try {
+
+        const text =
+            await navigator.clipboard.readText();
+
+
+        if (!text) {
+
+            return {
+
+                success:
+                    false,
+
+                message:
+                    "Gli appunti sono vuoti."
+
+            };
+
+        }
+
+
+        return importCoachDiet(
+            text
+        );
+
+    } catch {
+
+        return {
+
+            success:
+                false,
+
+            message:
+                "Non è stato possibile leggere gli appunti."
+
+        };
+
+    }
+
+}
+
+
+/* =====================================================
+   IMPORTAZIONE MANUALE
+===================================================== */
+
+function importCoachDietFromTextArea() {
+
+    const text =
+        window.prompt(
+            "Incolla qui la risposta completa di ChatGPT:"
+        );
+
+
+    if (!text) {
+
+        return {
+
+            success:
+                false,
+
+            message:
+                "Importazione annullata."
+
+        };
+
+    }
+
+
+    return importCoachDiet(
+        text
+    );
+
+}
+
+
+/* =====================================================
    RESET DIETA
 ===================================================== */
 
@@ -2320,10 +2604,6 @@ function removeLegacyLocalDiet() {
     );
 
 
-    /*
-       Controllo storage.js.
-    */
-
     if (
         typeof storageGetMeals ===
         "function" &&
@@ -2364,41 +2644,201 @@ function removeLegacyLocalDiet() {
 
 
 /* =====================================================
+   SINCRONIZZA SETTIMANA CON CALENDARIO
+===================================================== */
+
+function syncImportedWeekDates(
+    referenceDate = new Date()
+) {
+
+    const plan =
+        getSavedMealsPlan();
+
+
+    if (
+        !plan ||
+        !Array.isArray(
+            plan.days
+        ) ||
+        plan.days.length !== 7
+    ) {
+
+        return false;
+
+    }
+
+
+    let changed =
+        false;
+
+
+    plan.days.forEach(
+        (
+            day,
+            index
+        ) => {
+
+            if (!day) {
+
+                return;
+
+            }
+
+
+            const correctDate =
+                getCurrentWeekDate(
+                    index,
+                    referenceDate
+                );
+
+
+            const correctName =
+                getItalianDayName(
+                    index
+                );
+
+
+            if (
+                day.date !==
+                correctDate
+            ) {
+
+                day.date =
+                    correctDate;
+
+                changed =
+                    true;
+
+            }
+
+
+            if (
+                day.day !==
+                correctName
+            ) {
+
+                day.day =
+                    correctName;
+
+                changed =
+                    true;
+
+            }
+
+        }
+    );
+
+
+    if (changed) {
+
+        plan.startDate =
+            plan.days[0].date;
+
+        plan.endDate =
+            plan.days[6].date;
+
+
+        saveMealsPlan(
+            plan
+        );
+
+    }
+
+
+    return changed;
+
+}
+
+
+/* =====================================================
    INIZIALIZZAZIONE
 ===================================================== */
 
 function initializeMeals() {
 
-    /*
-       Elimina eventuali dati
-       della vecchia dieta locale.
-    */
-
     removeLegacyLocalDiet();
 
-
-    /*
-       Se esiste già una settimana Coach,
-       la manteniamo.
-    */
 
     if (
         hasImportedCoachWeek()
     ) {
 
-        return;
+        /*
+           Mantiene la settimana del Coach
+           sincronizzata con il calendario
+           corrente.
+        */
+
+        syncImportedWeekDates(
+            new Date()
+        );
 
     }
 
-
-    /*
-       Se non esiste una settimana Coach,
-       non viene generata nessuna dieta.
-    */
-
-    return;
-
 }
+
+
+/* =====================================================
+   EVENTO AGGIORNAMENTO
+===================================================== */
+
+window.addEventListener(
+    "myTransformationMealUpdated",
+    event => {
+
+        const detail =
+            event &&
+            event.detail
+                ? event.detail
+                : null;
+
+
+        if (!detail) {
+
+            return;
+
+        }
+
+
+        /*
+           Se tutti i pasti del giorno
+           sono completati, aggiorniamo
+           l'interfaccia.
+
+           L'index.js potrà mostrare
+           automaticamente il giorno
+           successivo.
+        */
+
+        if (
+            typeof updateDashboard ===
+            "function"
+        ) {
+
+            try {
+
+                updateDashboard();
+
+            } catch {}
+
+        }
+
+
+        if (
+            typeof updateProgressScreen ===
+            "function"
+        ) {
+
+            try {
+
+                updateProgressScreen();
+
+            } catch {}
+
+        }
+
+    }
+);
 
 
 /* =====================================================
@@ -2421,6 +2861,14 @@ window.MY_TRANSFORMATION_MEALS = {
 
     getMealsDay,
 
+    getNextMealsDay,
+
+    getItalianDayName,
+
+    getItalianWeekDayIndex,
+
+    getCurrentWeekDate,
+
     getMealsStatus,
 
     saveMealsPlan,
@@ -2434,6 +2882,10 @@ window.MY_TRANSFORMATION_MEALS = {
     hasImportedCoachWeek,
 
     toggleMealCompleted,
+
+    isMealsDayCompleted,
+
+    completeCurrentDayAndGetNext,
 
     getMealCompletionStats,
 
@@ -2451,6 +2903,8 @@ window.MY_TRANSFORMATION_MEALS = {
 
     parseCoachDietText,
 
-    normalizeImportedDiet
+    normalizeImportedDiet,
+
+    syncImportedWeekDates
 
 };
