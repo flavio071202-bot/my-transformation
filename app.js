@@ -17,7 +17,9 @@ function appGetProfile() {
     if (typeof storageGetProfile === "function") {
 
         try {
+
             return storageGetProfile();
+
         } catch {}
 
     }
@@ -27,12 +29,20 @@ function appGetProfile() {
             "myTransformationProfile"
         );
 
-    if (!data) return null;
+    if (!data) {
+
+        return null;
+
+    }
 
     try {
+
         return JSON.parse(data);
+
     } catch {
+
         return null;
+
     }
 
 }
@@ -45,17 +55,29 @@ function appGetProfile() {
 function showSetupScreen() {
 
     const setup =
-        document.getElementById("setupScreen");
+        document.getElementById(
+            "setupScreen"
+        );
 
     const app =
-        document.getElementById("mainApp");
+        document.getElementById(
+            "mainApp"
+        );
 
     if (setup) {
-        setup.classList.remove("hidden");
+
+        setup.classList.remove(
+            "hidden"
+        );
+
     }
 
     if (app) {
-        app.classList.add("hidden");
+
+        app.classList.add(
+            "hidden"
+        );
+
     }
 
 }
@@ -64,17 +86,29 @@ function showSetupScreen() {
 function showMainApplication() {
 
     const setup =
-        document.getElementById("setupScreen");
+        document.getElementById(
+            "setupScreen"
+        );
 
     const app =
-        document.getElementById("mainApp");
+        document.getElementById(
+            "mainApp"
+        );
 
     if (setup) {
-        setup.classList.add("hidden");
+
+        setup.classList.add(
+            "hidden"
+        );
+
     }
 
     if (app) {
-        app.classList.remove("hidden");
+
+        app.classList.remove(
+            "hidden"
+        );
+
     }
 
 }
@@ -84,15 +118,24 @@ function showMainApplication() {
    STORAGE PROFILO
 ===================================================== */
 
-function saveUserProfile(profile) {
+function saveUserProfile(
+    profile
+) {
 
-    if (!profile) return false;
+    if (!profile) {
 
-    if (typeof storageSaveProfile === "function") {
+        return false;
 
-        try {
-            return storageSaveProfile(profile);
-        } catch {}
+    }
+
+    if (
+        typeof storageSaveProfile ===
+        "function"
+    ) {
+
+        return storageSaveProfile(
+            profile
+        );
 
     }
 
@@ -106,13 +149,19 @@ function saveUserProfile(profile) {
 }
 
 
-function getInputValue(id) {
+function getInputValue(
+    id
+) {
 
     const element =
-        document.getElementById(id);
+        document.getElementById(
+            id
+        );
 
     return element
-        ? String(element.value || "").trim()
+        ? String(
+            element.value || ""
+        ).trim()
         : "";
 
 }
@@ -127,40 +176,64 @@ function completeSetup() {
     const profile = {
 
         age:
-            getInputValue("setupAge"),
+            getInputValue(
+                "setupAge"
+            ),
 
         sex:
-            getInputValue("setupSex"),
+            getInputValue(
+                "setupSex"
+            ),
 
         height:
-            getInputValue("setupHeight"),
+            getInputValue(
+                "setupHeight"
+            ),
 
         weight:
-            getInputValue("setupWeight"),
+            getInputValue(
+                "setupWeight"
+            ),
 
         goal:
-            getInputValue("setupGoal"),
+            getInputValue(
+                "setupGoal"
+            ),
 
         trainingDays:
-            getInputValue("setupTrainingDays"),
+            getInputValue(
+                "setupTrainingDays"
+            ),
 
         trainingDuration:
-            getInputValue("setupTrainingDuration"),
+            getInputValue(
+                "setupTrainingDuration"
+            ),
 
         trainingPlace:
-            getInputValue("setupTrainingPlace"),
+            getInputValue(
+                "setupTrainingPlace"
+            ),
 
         meals:
-            getInputValue("setupMeals"),
+            getInputValue(
+                "setupMeals"
+            ),
 
         likes:
-            getInputValue("setupLikes"),
+            getInputValue(
+                "setupLikes"
+            ),
 
         dislikes:
-            getInputValue("setupDislikes"),
+            getInputValue(
+                "setupDislikes"
+            ),
 
         allergies:
-            getInputValue("setupAllergies"),
+            getInputValue(
+                "setupAllergies"
+            ),
 
         createdAt:
             new Date().toISOString(),
@@ -172,19 +245,29 @@ function completeSetup() {
 
 
     const age =
-        Number(profile.age);
+        Number(
+            profile.age
+        );
 
     const height =
-        Number(profile.height);
+        Number(
+            profile.height
+        );
 
     const weight =
-        Number(profile.weight);
+        Number(
+            profile.weight
+        );
 
     const trainingDays =
-        Number(profile.trainingDays);
+        Number(
+            profile.trainingDays
+        );
 
     const meals =
-        Number(profile.meals);
+        Number(
+            profile.meals
+        );
 
 
     if (
@@ -287,7 +370,9 @@ function completeSetup() {
         new Date().toISOString();
 
 
-    saveUserProfile(profile);
+    saveUserProfile(
+        profile
+    );
 
 
     if (
@@ -301,7 +386,7 @@ function completeSetup() {
 
 
     /*
-       Il piano precedente non è più valido
+       Il vecchio piano non è più valido
        dopo una modifica del profilo.
     */
 
@@ -339,7 +424,9 @@ function completeSetup() {
 
     updateAllScreens();
 
-    showScreen("home");
+    showScreen(
+        "home"
+    );
 
     return true;
 
@@ -405,11 +492,17 @@ function editProfile() {
     };
 
 
-    Object.entries(fields).forEach(
-        ([id, value]) => {
+    Object.entries(
+        fields
+    ).forEach(
+        (
+            [id, value]
+        ) => {
 
             const element =
-                document.getElementById(id);
+                document.getElementById(
+                    id
+                );
 
             if (element) {
 
@@ -472,7 +565,11 @@ function updateDashboard() {
     const profile =
         appGetProfile();
 
-    if (!profile) return;
+    if (!profile) {
+
+        return;
+
+    }
 
 
     const target =
@@ -507,14 +604,16 @@ function updateDashboard() {
             "Ricomposizione",
 
         muscle:
-            "Massa"
+            "Massa muscolare"
 
     };
 
 
     setText(
         "homeGoal",
-        goalNames[profile.goal] ||
+        goalNames[
+            profile.goal
+        ] ||
         profile.goal
     );
 
@@ -568,97 +667,6 @@ function updateDashboard() {
 
 
 /* =====================================================
-   DATA / CALENDARIO
-===================================================== */
-
-function getTodayWeekdayIndex(
-    date = new Date()
-) {
-
-    const day =
-        date.getDay();
-
-    return day === 0
-        ? 6
-        : day - 1;
-
-}
-
-
-function getTodayItalianName(
-    date = new Date()
-) {
-
-    const names = [
-
-        "Lunedì",
-        "Martedì",
-        "Mercoledì",
-        "Giovedì",
-        "Venerdì",
-        "Sabato",
-        "Domenica"
-
-    ];
-
-    return names[
-        getTodayWeekdayIndex(date)
-    ];
-
-}
-
-
-function getCalendarMealsDay(
-    date = new Date()
-) {
-
-    const plan =
-        typeof getSavedMealsPlan ===
-        "function"
-            ? getSavedMealsPlan()
-            : null;
-
-
-    if (
-        !plan ||
-        !Array.isArray(plan.days) ||
-        plan.days.length !== 7
-    ) {
-
-        return null;
-
-    }
-
-
-    /*
-       La settimana del Coach è sempre:
-       Lunedì → Domenica.
-
-       Non importa quale giorno sia stato
-       effettuato l'import.
-    */
-
-    const index =
-        getTodayWeekdayIndex(date);
-
-
-    const day =
-        plan.days[index];
-
-
-    if (!day) {
-
-        return null;
-
-    }
-
-
-    return day;
-
-}
-
-
-/* =====================================================
    DIETA
 ===================================================== */
 
@@ -705,9 +713,11 @@ function updateDietScreen() {
 
     if (
         !plan ||
-        plan.imported !== true ||
         plan.source !== "coach_ai" ||
-        !Array.isArray(plan.days) ||
+        plan.imported !== true ||
+        !Array.isArray(
+            plan.days
+        ) ||
         plan.days.length !== 7
     ) {
 
@@ -719,9 +729,12 @@ function updateDietScreen() {
 
 
     const today =
-        getCalendarMealsDay(
-            new Date()
-        );
+        typeof getMealsDay ===
+        "function"
+            ? getMealsDay(
+                new Date()
+            )
+            : null;
 
 
     if (!today) {
@@ -746,49 +759,6 @@ function updateDietScreen() {
 
 function renderWaitingForCoachDiet() {
 
-    const section =
-        document.getElementById(
-            "dietTodaySection"
-        );
-
-
-    if (section) {
-
-        section.style.display =
-            "none";
-
-    }
-
-
-    const status =
-        document.getElementById(
-            "dietCoachStatus"
-        );
-
-
-    if (status) {
-
-        status.innerHTML = `
-
-            <span>
-                STATO PIANO
-            </span>
-
-            <strong>
-                Nessuna settimana del Coach importata.
-            </strong>
-
-            <div class="meal-macros">
-                Premi "Genera la mia settimana",
-                poi copia la risposta di ChatGPT
-                e torna qui per importarla.
-            </div>
-
-        `;
-
-    }
-
-
     const ids = [
 
         "meal1",
@@ -804,14 +774,31 @@ function renderWaitingForCoachDiet() {
         id => {
 
             const element =
-                document.getElementById(id);
+                document.getElementById(
+                    id
+                );
 
-            if (element) {
+            if (!element) {
 
-                element.innerHTML =
-                    "";
+                return;
 
             }
+
+
+            element.innerHTML = `
+
+                <div class="loading">
+
+                    🤖 Nessuna settimana disponibile.
+
+                    <br><br>
+
+                    Premi
+                    "GENERA LA MIA SETTIMANA".
+
+                </div>
+
+            `;
 
         }
     );
@@ -841,72 +828,23 @@ function renderWaitingForCoachDiet() {
 
 
 /* =====================================================
-   RENDER DIETA COACH
+   RENDER PASTI
 ===================================================== */
 
-function renderMealsPlan(day) {
+function renderMealsPlan(
+    day
+) {
 
     if (
         !day ||
-        !Array.isArray(day.meals)
+        !Array.isArray(
+            day.meals
+        )
     ) {
 
         renderWaitingForCoachDiet();
 
         return;
-
-    }
-
-
-    const section =
-        document.getElementById(
-            "dietTodaySection"
-        );
-
-
-    if (section) {
-
-        section.style.display =
-            "block";
-
-    }
-
-
-    const status =
-        document.getElementById(
-            "dietCoachStatus"
-        );
-
-
-    /*
-       Il nome mostrato viene sempre ricavato
-       dal calendario reale.
-    */
-
-    const todayName =
-        getTodayItalianName(
-            new Date()
-        );
-
-
-    if (status) {
-
-        status.innerHTML = `
-
-            <span>
-                STATO PIANO
-            </span>
-
-            <strong>
-                ✅ Settimana del Coach attiva
-            </strong>
-
-            <div class="meal-macros">
-                ${todayName} ·
-                ${day.meals.length} pasti
-            </div>
-
-        `;
 
     }
 
@@ -926,7 +864,9 @@ function renderMealsPlan(day) {
         id => {
 
             const element =
-                document.getElementById(id);
+                document.getElementById(
+                    id
+                );
 
             if (element) {
 
@@ -945,7 +885,13 @@ function renderMealsPlan(day) {
             index
         ) => {
 
-            if (index >= 5) return;
+            if (
+                index >= 5
+            ) {
+
+                return;
+
+            }
 
 
             const element =
@@ -954,11 +900,17 @@ function renderMealsPlan(day) {
                 );
 
 
-            if (!element) return;
+            if (!element) {
+
+                return;
+
+            }
 
 
             const foods =
-                Array.isArray(meal.foods)
+                Array.isArray(
+                    meal.foods
+                )
                     ? meal.foods
                         .map(
                             food => `
@@ -990,7 +942,8 @@ function renderMealsPlan(day) {
 
 
             const totals =
-                meal.totals || {
+                meal.totals ||
+                {
 
                     kcal: 0,
                     protein: 0,
@@ -1001,11 +954,17 @@ function renderMealsPlan(day) {
 
 
             const mealId =
-                escapeHTML(
-                    String(
-                        meal.id || ""
-                    )
+                String(
+                    meal.id || ""
+                )
+                .replace(
+                    /'/g,
+                    "\\'"
                 );
+
+
+            const completed =
+                meal.completed === true;
 
 
             element.innerHTML = `
@@ -1013,14 +972,19 @@ function renderMealsPlan(day) {
                 <div class="meal-header">
 
                     <strong>
+
                         ${escapeHTML(
                             meal.name ||
-                            `Pasto ${index + 1}`
+                            "Pasto"
                         )}
+
                     </strong>
 
                     <span>
-                        ${totals.kcal || 0} kcal
+
+                        ${totals.kcal || 0}
+                        kcal
+
                     </span>
 
                 </div>
@@ -1035,25 +999,35 @@ function renderMealsPlan(day) {
 
                 <div class="meal-macros">
 
-                    P ${totals.protein || 0} g
+                    P
+                    ${totals.protein || 0}
+                    g
+
                     ·
-                    C ${totals.carbs || 0} g
+
+                    C
+                    ${totals.carbs || 0}
+                    g
+
                     ·
-                    G ${totals.fat || 0} g
+
+                    G
+                    ${totals.fat || 0}
+                    g
 
                 </div>
 
 
                 <button
                     type="button"
-                    class="primary-button"
-                    data-meal-id="${mealId}"
-                    onclick="completeMeal(this.dataset.mealId)"
+                    class="primary-button meal-complete-button"
+                    data-meal-id="${escapeHTML(mealId)}"
+                    onclick="completeMeal('${mealId}')"
                 >
 
                     ${
-                        meal.completed
-                            ? "✓ PASTO COMPLETATO"
+                        completed
+                            ? "✅ PASTO COMPLETATO"
                             : "SEGNA COME COMPLETATO"
                     }
 
@@ -1066,7 +1040,8 @@ function renderMealsPlan(day) {
 
 
     const totals =
-        day.totals || {
+        day.totals ||
+        {
 
             kcal: 0,
             protein: 0,
@@ -1130,7 +1105,7 @@ async function importWeeklyCoachDiet() {
 
         if (
             !result ||
-            result.success !== true
+            !result.success
         ) {
 
             alert(
@@ -1143,44 +1118,9 @@ async function importWeeklyCoachDiet() {
         }
 
 
-        /*
-           Verifica reale del salvataggio.
-           Non mostriamo "importata" se il piano
-           non è effettivamente presente nello storage.
-        */
-
-        const savedPlan =
-            typeof getSavedMealsPlan ===
-            "function"
-                ? getSavedMealsPlan()
-                : null;
-
-
-        const valid =
-            savedPlan &&
-            savedPlan.imported === true &&
-            savedPlan.source === "coach_ai" &&
-            Array.isArray(savedPlan.days) &&
-            savedPlan.days.length === 7;
-
-
-        if (!valid) {
-
-            alert(
-                "La risposta è stata letta, ma la settimana non risulta salvata correttamente."
-            );
-
-            return false;
-
-        }
-
-
         updateAllScreens();
 
-
-        showScreen(
-            "diet"
-        );
+        updateDietScreen();
 
 
         alert(
@@ -1193,7 +1133,6 @@ async function importWeeklyCoachDiet() {
     } catch (error) {
 
         console.error(
-            "Errore importazione:",
             error
         );
 
@@ -1212,77 +1151,6 @@ async function importWeeklyCoachDiet() {
 
 
 /* =====================================================
-   COMPLETAMENTO PASTO
-===================================================== */
-
-function completeMeal(
-    mealId
-) {
-
-    if (
-        !mealId ||
-        typeof toggleMealCompleted !==
-        "function"
-    ) {
-
-        return false;
-
-    }
-
-
-    const result =
-        toggleMealCompleted(
-            mealId,
-            new Date()
-        );
-
-
-    /*
-       Se il toggle non trova il pasto,
-       non fingiamo che sia stato completato.
-    */
-
-    if (
-        result === false ||
-        result === undefined
-    ) {
-
-        updateDietScreen();
-
-        return false;
-
-    }
-
-
-    /*
-       Ricarica sempre il piano dallo storage.
-       In questo modo il rendering utilizza
-       esattamente i dati salvati.
-    */
-
-    updateDietScreen();
-
-    updateDashboard();
-
-    updateProgressScreen();
-
-
-    /*
-       Se tutti i pasti del giorno sono stati
-       completati, mostriamo il giorno successivo
-       quando il calendario passa al giorno successivo.
-
-       Non spostiamo artificialmente la data del telefono:
-       il giorno successivo viene quindi mostrato
-       automaticamente al cambio di giornata.
-    */
-
-    return true;
-
-}
-
-
-/* =====================================================
    ALLENAMENTO
 ===================================================== */
 
@@ -1295,7 +1163,11 @@ function updateWorkoutScreen() {
             : null;
 
 
-    if (!workout) return;
+    if (!workout) {
+
+        return;
+
+    }
 
 
     const index =
@@ -1308,7 +1180,11 @@ function updateWorkoutScreen() {
         workout.workouts[index];
 
 
-    if (!today) return;
+    if (!today) {
+
+        return;
+
+    }
 
 
     setText(
@@ -1350,7 +1226,13 @@ function updateWorkoutScreen() {
             index
         ) => {
 
-            if (index >= 10) return;
+            if (
+                index >= 10
+            ) {
+
+                return;
+
+            }
 
 
             const element =
@@ -1359,7 +1241,11 @@ function updateWorkoutScreen() {
                 );
 
 
-            if (!element) return;
+            if (!element) {
+
+                return;
+
+            }
 
 
             element.innerHTML = `
@@ -1367,15 +1253,19 @@ function updateWorkoutScreen() {
                 <div class="exercise-name">
 
                     <strong>
+
                         ${escapeHTML(
                             exercise.name
                         )}
+
                     </strong>
 
                     <small>
+
                         ${escapeHTML(
                             exercise.muscle
                         )}
+
                     </small>
 
                 </div>
@@ -1383,13 +1273,17 @@ function updateWorkoutScreen() {
 
                 <div class="exercise-data">
 
-                    ${exercise.sets} ×
+                    ${exercise.sets}
+                    ×
                     ${escapeHTML(
                         exercise.reps
                     )}
 
                     <span>
-                        RIR ${exercise.rir}
+
+                        RIR
+                        ${exercise.rir}
+
                     </span>
 
                 </div>
@@ -1416,7 +1310,9 @@ function getTrainingDayIndex(
 
     if (
         !workout ||
-        !Array.isArray(workout.workouts) ||
+        !Array.isArray(
+            workout.workouts
+        ) ||
         !workout.workouts.length
     ) {
 
@@ -1431,7 +1327,9 @@ function getTrainingDayIndex(
 
     if (day === 0) {
 
-        return workout.workouts.length - 1;
+        return (
+            workout.workouts.length - 1
+        );
 
     }
 
@@ -1464,7 +1362,11 @@ function updateProgressScreen() {
         getProgressSummary();
 
 
-    if (!progress) return;
+    if (!progress) {
+
+        return;
+
+    }
 
 
     setText(
@@ -1539,7 +1441,11 @@ function updateCoachScreen() {
             : null;
 
 
-    if (!analysis) return;
+    if (!analysis) {
+
+        return;
+
+    }
 
 
     if (analysis.weight) {
@@ -1584,7 +1490,11 @@ function updateProfileScreen() {
         appGetProfile();
 
 
-    if (!profile) return;
+    if (!profile) {
+
+        return;
+
+    }
 
 
     setText(
@@ -1650,7 +1560,9 @@ function showScreen(
 ) {
 
     document
-        .querySelectorAll(".screen")
+        .querySelectorAll(
+            ".screen"
+        )
         .forEach(
             screen => {
 
@@ -1668,7 +1580,11 @@ function showScreen(
         );
 
 
-    if (!target) return;
+    if (!target) {
+
+        return;
+
+    }
 
 
     target.classList.add(
@@ -1677,7 +1593,9 @@ function showScreen(
 
 
     document
-        .querySelectorAll(".nav button")
+        .querySelectorAll(
+            ".nav button"
+        )
         .forEach(
             navButton => {
 
@@ -1714,42 +1632,54 @@ function showScreen(
     }
 
 
-    if (screenId === "home") {
+    if (
+        screenId === "home"
+    ) {
 
         updateDashboard();
 
     }
 
 
-    if (screenId === "diet") {
+    if (
+        screenId === "diet"
+    ) {
 
         updateDietScreen();
 
     }
 
 
-    if (screenId === "workout") {
+    if (
+        screenId === "workout"
+    ) {
 
         updateWorkoutScreen();
 
     }
 
 
-    if (screenId === "progress") {
+    if (
+        screenId === "progress"
+    ) {
 
         updateProgressScreen();
 
     }
 
 
-    if (screenId === "coach") {
+    if (
+        screenId === "coach"
+    ) {
 
         updateCoachScreen();
 
     }
 
 
-    if (screenId === "profile") {
+    if (
+        screenId === "profile"
+    ) {
 
         updateProfileScreen();
 
@@ -1800,6 +1730,66 @@ function completeWorkout(
 
 
 /* =====================================================
+   COMPLETAMENTO PASTO
+===================================================== */
+
+function completeMeal(
+    mealId
+) {
+
+    if (
+        typeof toggleMealCompleted !==
+        "function"
+    ) {
+
+        alert(
+            "Sistema completamento pasti non disponibile."
+        );
+
+        return false;
+
+    }
+
+
+    const result =
+        toggleMealCompleted(
+            mealId,
+            new Date()
+        );
+
+
+    if (
+        result === false
+    ) {
+
+        alert(
+            "Non è stato possibile completare il pasto."
+        );
+
+        return false;
+
+    }
+
+
+    /*
+       Ridisegna immediatamente il pasto.
+       Il pulsante passerà a:
+       ✅ PASTO COMPLETATO
+    */
+
+    updateDietScreen();
+
+    updateDashboard();
+
+    updateProgressScreen();
+
+
+    return true;
+
+}
+
+
+/* =====================================================
    PESO
 ===================================================== */
 
@@ -1817,9 +1807,31 @@ function recordWeight(
     }
 
 
+    const numericWeight =
+        Number(
+            weight
+        );
+
+
+    if (
+        !Number.isFinite(
+            numericWeight
+        ) ||
+        numericWeight <= 0
+    ) {
+
+        alert(
+            "Inserisci un peso valido."
+        );
+
+        return false;
+
+    }
+
+
     const result =
         addWeightEntry(
-            weight
+            numericWeight
         );
 
 
@@ -1913,7 +1925,7 @@ function regenerateWorkout() {
 
 
 /* =====================================================
-   PROMPT COACH
+   PROMPT COACH IA
 ===================================================== */
 
 function buildCoachWeeklyPrompt() {
@@ -1942,44 +1954,205 @@ function buildCoachWeeklyPrompt() {
         );
 
 
-    return `Sei il Coach IA ufficiale di MY TRANSFORMATION.
+    return `SEI IL COACH IA UFFICIALE DI MY TRANSFORMATION.
 
-Crea una settimana alimentare PERSONALIZZATA.
+DEVI CREARE UNA NUOVA SETTIMANA ALIMENTARE PERSONALIZZATA.
 
-OBBLIGATORIO:
-- 7 giorni esatti.
-- Ogni giorno esattamente ${meals} pasti.
-- Rispetta obiettivo, profilo, target, progressi, allenamenti, likes, dislikes e allergie.
-- Varia gli alimenti.
-- Pasta, riso, avena, couscous e cereali: peso a secco.
-- Carne, pesce, frutta e verdura: grammi.
-- Olio: grammi.
-- Calcola kcal, protein, carbs e fat.
-- Tutti i valori numerici devono essere numeri JSON.
-- I totali devono essere coerenti.
-- JSON rigorosamente valido.
-- Nessun testo fuori dai marker.
+====================================================
+REGOLE ASSOLUTAMENTE OBBLIGATORIE
+====================================================
 
-PROFILO:
-${JSON.stringify(profile)}
+1. Devi generare ESATTAMENTE 7 giorni.
 
-TARGET:
-${JSON.stringify(target)}
+2. Ogni giorno deve contenere ESATTAMENTE ${meals} pasti.
 
-PROGRESSI:
-${JSON.stringify(progress)}
+3. OGNI PASTO DEVE CONTENERE ALMENO 1 ALIMENTO.
 
-USA ESATTAMENTE QUESTA STRUTTURA:
+4. NON PUOI MAI creare:
+   "foods": []
+
+5. NON PUOI mai omettere il campo "foods".
+
+6. Ogni alimento deve avere:
+   - name
+   - grams
+   - kcal
+   - protein
+   - carbs
+   - fat
+
+7. Tutti i valori numerici devono essere veri numeri JSON.
+   NON usare:
+   "100 g"
+   "circa 100"
+   "100 kcal"
+   "10g"
+
+   Usa invece:
+   100
+   100
+   10
+
+8. I totali di ogni pasto devono essere la somma degli alimenti.
+
+9. I totali giornalieri devono essere la somma dei pasti.
+
+10. Devi rispettare il target nutrizionale fornito.
+
+11. Devi rispettare:
+    - età
+    - sesso
+    - altezza
+    - peso
+    - obiettivo
+    - allenamenti
+    - durata allenamento
+    - luogo allenamento
+    - numero pasti
+    - alimenti preferiti
+    - alimenti non graditi
+    - allergie/alimenti da evitare
+    - progressi
+    - aderenza
+
+12. Varia gli alimenti durante la settimana.
+
+13. Non creare 7 giorni identici.
+
+14. Pasta, riso, avena, couscous e altri cereali:
+    peso indicato A SECCO.
+
+15. Carne, pesce, uova, frutta e verdura:
+    indica i grammi.
+
+16. Olio:
+    indica i grammi.
+
+17. Non inserire alimenti presenti nelle allergie o negli alimenti da evitare.
+
+18. Non inserire alimenti indicati come dislikes quando esistono alternative equivalenti.
+
+19. Mantieni una distribuzione realistica dei macronutrienti.
+
+20. Prima di rispondere controlla:
+    - 7 giorni
+    - ${meals} pasti per giorno
+    - nessun foods vuoto
+    - nessun pasto senza alimenti
+    - JSON valido
+    - totali coerenti
+
+====================================================
+PROFILO UTENTE
+====================================================
+
+${JSON.stringify(
+    profile,
+    null,
+    2
+)}
+
+====================================================
+TARGET NUTRIZIONALE
+====================================================
+
+${JSON.stringify(
+    target,
+    null,
+    2
+)}
+
+====================================================
+PROGRESSI
+====================================================
+
+${JSON.stringify(
+    progress,
+    null,
+    2
+)}
+
+====================================================
+STRUTTURA JSON OBBLIGATORIA
+====================================================
+
+Devi restituire ESCLUSIVAMENTE questa struttura.
+
+La struttura seguente è SOLO UN MODELLO.
+
+DEVI SOSTITUIRE COMPLETAMENTE
+l'esempio con i 7 giorni reali.
+
+Ogni giorno deve contenere esattamente ${meals} pasti.
+
+Ogni pasto deve contenere almeno 1 alimento.
 
 === MY_TRANSFORMATION_DIET_START ===
-{"version":"4.0","type":"weekly","week":[{"day":"Lunedì","dayType":"training","meals":[{"name":"Colazione","foods":[{"name":"Alimento","grams":100,"kcal":100,"protein":10,"carbs":10,"fat":5}],"totals":{"kcal":100,"protein":10,"carbs":10,"fat":5}}],"totals":{"kcal":100,"protein":10,"carbs":10,"fat":5}}]}
+{
+  "version": "4.1",
+  "type": "weekly",
+  "week": [
+    {
+      "day": "Lunedì",
+      "dayType": "training",
+      "meals": [
+        {
+          "name": "Colazione",
+          "foods": [
+            {
+              "name": "Alimento esempio",
+              "grams": 100,
+              "kcal": 100,
+              "protein": 10,
+              "carbs": 10,
+              "fat": 5
+            }
+          ],
+          "totals": {
+            "kcal": 100,
+            "protein": 10,
+            "carbs": 10,
+            "fat": 5
+          }
+        }
+      ],
+      "totals": {
+        "kcal": 100,
+        "protein": 10,
+        "carbs": 10,
+        "fat": 5
+      }
+    }
+  ]
+}
 === MY_TRANSFORMATION_DIET_END ===
 
-Sostituisci completamente l'esempio con i 7 giorni reali e ${meals} pasti per giorno.
-Non usare markdown.
-Non usare triple backtick.
-Non aggiungere spiegazioni.
-Prima di rispondere verifica che il JSON sia valido.`;
+====================================================
+CONTROLLO FINALE
+====================================================
+
+PRIMA DI INVIARE LA RISPOSTA:
+
+- conta i giorni: devono essere ESATTAMENTE 7
+- conta i pasti di ogni giorno: devono essere ESATTAMENTE ${meals}
+- controlla ogni pasto
+- ogni pasto deve avere "foods"
+- ogni "foods" deve contenere almeno 1 alimento
+- controlla tutti i numeri
+- controlla tutti i totali
+- verifica che il JSON sia valido
+
+NON usare Markdown.
+
+NON usare triple backtick.
+
+NON aggiungere spiegazioni.
+
+NON aggiungere testo prima del marker.
+
+NON aggiungere testo dopo il marker.
+
+Rispondi esclusivamente con il JSON compreso tra i due marker.`;
 
 }
 
@@ -2080,7 +2253,7 @@ async function openCoachWeeklyPlan() {
         "Quando ChatGPT ha finito:\n" +
         "1. Copia tutta la risposta.\n" +
         "2. Torna in MY TRANSFORMATION.\n" +
-        "3. Premi \"IMPORTA SETTIMANA DEL COACH\"."
+        "3. Premi IMPORTA SETTIMANA DEL COACH."
     );
 
 
@@ -2099,18 +2272,24 @@ async function openCoachWeeklyPlan() {
 function importWeeklyCoachDietManual() {
 
     const text =
-        prompt(
+        window.prompt(
             "Incolla qui tutta la risposta di ChatGPT:"
         );
 
 
-    if (!text) return false;
+    if (!text) {
+
+        return false;
+
+    }
 
 
     const result =
         typeof importCoachDiet ===
         "function"
-            ? importCoachDiet(text)
+            ? importCoachDiet(
+                text
+            )
             : null;
 
 
@@ -2129,35 +2308,7 @@ function importWeeklyCoachDietManual() {
     }
 
 
-    const savedPlan =
-        typeof getSavedMealsPlan ===
-        "function"
-            ? getSavedMealsPlan()
-            : null;
-
-
-    if (
-        !savedPlan ||
-        savedPlan.imported !== true ||
-        savedPlan.source !== "coach_ai" ||
-        !Array.isArray(savedPlan.days) ||
-        savedPlan.days.length !== 7
-    ) {
-
-        alert(
-            "La settimana non risulta salvata correttamente."
-        );
-
-        return false;
-
-    }
-
-
     updateAllScreens();
-
-    showScreen(
-        "diet"
-    );
 
 
     alert(
@@ -2176,7 +2327,67 @@ function importWeeklyCoachDietManual() {
 
 async function importWeeklyCoachDietFromClipboard() {
 
-    return importWeeklyCoachDiet();
+    if (
+        typeof importCoachDietFromClipboard !==
+        "function"
+    ) {
+
+        alert(
+            "Motore di importazione non disponibile."
+        );
+
+        return false;
+
+    }
+
+
+    try {
+
+        const result =
+            await importCoachDietFromClipboard();
+
+
+        if (
+            !result ||
+            !result.success
+        ) {
+
+            alert(
+                result?.message ||
+                "La dieta non è stata importata."
+            );
+
+            return false;
+
+        }
+
+
+        updateAllScreens();
+
+
+        alert(
+            "✅ Settimana alimentare importata correttamente!"
+        );
+
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        alert(
+            error?.message ||
+            "Errore durante l'importazione."
+        );
+
+
+        return false;
+
+    }
 
 }
 
@@ -2196,7 +2407,11 @@ function setText(
         );
 
 
-    if (!element) return;
+    if (!element) {
+
+        return;
+
+    }
 
 
     element.textContent =
@@ -2243,35 +2458,9 @@ function escapeHTML(
 
 function getCurrentDateString() {
 
-    const date =
-        new Date();
-
-
-    const year =
-        date.getFullYear();
-
-
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        );
-
-
-    const day =
-        String(
-            date.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
-
-
-    return (
-        `${year}-${month}-${day}`
-    );
+    return new Date()
+        .toISOString()
+        .split("T")[0];
 
 }
 
@@ -2308,7 +2497,9 @@ function initializeApp() {
         "function"
     ) {
 
-        if (!getNutritionTarget()) {
+        if (
+            !getNutritionTarget()
+        ) {
 
             if (
                 typeof refreshNutrition ===
@@ -2329,7 +2520,9 @@ function initializeApp() {
         "function"
     ) {
 
-        if (!getStoredWorkout()) {
+        if (
+            !getStoredWorkout()
+        ) {
 
             if (
                 typeof refreshWorkout ===
@@ -2356,7 +2549,6 @@ function initializeApp() {
 
 
     updateAllScreens();
-
 
     showScreen(
         "home"
@@ -2401,41 +2593,6 @@ window.MY_TRANSFORMATION_APP = {
 
     updateDietScreen,
 
-    getCalendarMealsDay,
-
-    getTodayItalianName
+    completeMeal
 
 };
-
-
-/* =====================================================
-   PROTEZIONE CONTRO OVERRIDE INDEX.HTML
-===================================================== */
-
-/*
-   index.html aveva vecchie funzioni globali
-   updateDietScreen() e completeMeal() definite
-   direttamente nello script finale.
-
-   Questo blocco riporta in primo piano
-   le funzioni corrette dopo il caricamento
-   completo della pagina.
-*/
-
-window.addEventListener(
-    "load",
-    function () {
-
-        window.updateDietScreen =
-            updateDietScreen;
-
-        window.completeMeal =
-            completeMeal;
-
-        window.importWeeklyCoachDiet =
-            importWeeklyCoachDiet;
-
-        updateAllScreens();
-
-    }
-);
